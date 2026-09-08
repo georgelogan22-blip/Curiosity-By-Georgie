@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Log a Sighting — Curiously Georgie</title>
+<meta name="description" content="Log a bird sighting for the Brisbane Air 50 challenge.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Public+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="wrap">
+    <a href="index.html" class="brand">
+      <svg viewBox="0 0 32 24" aria-hidden="true"><path d="M4 18 C4 10,12 6,16 16 C20 6,28 10,28 18 C22 14,18 16,16 20 C14 16,10 14,4 18 Z" fill="currentColor"/></svg>
+      Curiously Georgie
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="rules.html">Rules</a></li>
+      <li><a href="log-sighting.html" aria-current="page">Log a Sighting</a></li>
+      <li><a href="leaderboard.html">Leaderboard</a></li>
+      <li><a href="hall-of-fame.html">Hall of Fame</a></li>
+      <li><a href="checklist.html">Species Checklist</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="page-head wrap">
+  <span class="eyebrow">Log a Sighting</span>
+  <h1>Seen something good?</h1>
+  <p class="lede">Fill in what you saw, when, and roughly where. Your first sighting of each species is what counts toward your fifty. From official launch, a photo will be required with every submission, and sightings will sit as <strong>pending</strong> until reviewed — see the <a href="rules.html">rules</a> for how verification works.</p>
+</header>
+
+<section class="wrap">
+  <div class="log-layout">
+    <form id="sighting-form">
+      <div class="field">
+        <label for="name">Your name or nickname</label>
+        <input type="text" id="name" name="name" placeholder="e.g. Ava T." required>
+        <p class="hint">Use the same name every time so your sightings add up correctly.</p>
+      </div>
+      <div class="field">
+        <label for="species">Species</label>
+        <input type="text" id="species" name="species" list="species-list" placeholder="Start typing… e.g. Rainbow Lorikeet" required>
+        <datalist id="species-list">
+          <option value="Rainbow Lorikeet">
+          <option value="Scaly-breasted Lorikeet">
+          <option value="Pale-headed Rosella">
+          <option value="Australian King-Parrot">
+          <option value="Little Corella">
+          <option value="Sulphur-crested Cockatoo">
+          <option value="Red-winged Parrot">
+          <option value="Noisy Miner">
+          <option value="Blue-faced Honeyeater">
+          <option value="Lewin's Honeyeater">
+          <option value="Scarlet Honeyeater">
+          <option value="Brown Honeyeater">
+          <option value="Superb Fairywren">
+          <option value="Red-backed Fairywren">
+          <option value="Willie Wagtail">
+          <option value="Grey Fantail">
+          <option value="Eastern Yellow Robin">
+          <option value="Pacific Black Duck">
+          <option value="Australian Wood Duck">
+          <option value="Dusky Moorhen">
+          <option value="Purple Swamphen">
+          <option value="Eurasian Coot">
+          <option value="Little Pied Cormorant">
+          <option value="Australian Pelican">
+          <option value="Great Egret">
+          <option value="White-faced Heron">
+          <option value="Striated Heron">
+          <option value="Whistling Kite">
+          <option value="Brahminy Kite">
+          <option value="Nankeen Kestrel">
+          <option value="Wedge-tailed Eagle">
+          <option value="Tawny Frogmouth">
+          <option value="Southern Boobook">
+          <option value="Australian Magpie">
+          <option value="Laughing Kookaburra">
+          <option value="Pied Currawong">
+          <option value="Australian Ibis">
+          <option value="Masked Lapwing">
+          <option value="Magpie-lark">
+          <option value="Crested Pigeon">
+          <option value="Spotted Dove">
+          <option value="Bar-shouldered Dove">
+          <option value="Torresian Crow">
+          <option value="Rainbow Bee-eater">
+          <option value="Welcome Swallow">
+          <option value="Channel-billed Cuckoo">
+          <option value="Eastern Koel">
+          <option value="Silver Gull">
+          <option value="Caspian Tern">
+          <option value="Australasian Figbird">
+        </datalist>
+        <p class="hint">Not on the <a href="checklist.html">reference list</a>? Type it anyway — it still counts.</p>
+      </div>
+      <div class="field">
+        <label for="date">Date seen</label>
+        <input type="date" id="date" name="date" required>
+      </div>
+      <div class="field">
+        <label for="location">Suburb / location</label>
+        <input type="text" id="location" name="location" placeholder="e.g. New Farm Park">
+      </div>
+      <div class="field">
+        <label for="notes">Notes (optional)</label>
+        <textarea id="notes" name="notes" placeholder="Behaviour, count, photo link…"></textarea>
+      </div>
+      <div class="field">
+        <label style="display:flex; align-items:flex-start; gap:8px; font-weight:400;">
+          <input type="checkbox" id="agree" name="agree" required style="width:auto; margin-top:3px;">
+          <span>I confirm I've read and understood the <a href="rules.html">Rules &amp; Regulations</a>, including Rule #1 (Safety First) and the Registration &amp; Liability terms, and I take part at my own risk.</span>
+        </label>
+      </div>
+      <button type="submit" class="btn btn-primary">Log this sighting</button>
+    </form>
+
+    <div>
+      <h3>Today's log <span style="color:var(--ink-soft); font-weight:400;">(<span id="session-count">0</span> this session)</span></h3>
+      <p class="log-empty" id="log-empty">No sightings logged yet in this session — the form above is a live demo.</p>
+      <ul class="log-feed" id="log-feed"></ul>
+      <p class="sample-note"><span class="dot"></span>This log is held in your browser only, for this visit — it resets on reload. A shared database that keeps everyone's sightings (and feeds the real Leaderboard) is the next build step.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="wrap">
+  <p>Every logged species adds to your tally on the <a href="leaderboard.html">Leaderboard</a> once sightings are shared city-wide.</p>
+</footer>
+
+<script src="assets/script.js"></script>
+</body>
+</html>
+
