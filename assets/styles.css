@@ -335,6 +335,28 @@ section { padding: 40px 0; }
   margin-bottom: 0.5em;
 }
 
+.privacy-block {
+  background: color-mix(in srgb, var(--accent-mint) 16%, var(--paper-raised));
+  border: 1px solid var(--accent);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius-md);
+  padding: 26px 28px;
+  margin-bottom: 8px;
+}
+.privacy-block h3 { color: var(--accent); }
+.privacy-block .rule-tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: 999px;
+  padding: 2px 10px;
+  margin-bottom: 0.5em;
+}
+
 /* ---------- forms ---------- */
 .log-layout {
   display: grid;
