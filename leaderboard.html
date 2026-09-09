@@ -46,7 +46,7 @@
           <th>Last sighting</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody id="leaderboard-body">
         <tr><td><span class="rank-badge top1">1</span></td><td>Priya N.</td><td class="num">47</td><td>6 Sep 2026</td></tr>
         <tr><td><span class="rank-badge top2">2</span></td><td>Sam R.</td><td class="num">41</td><td>5 Sep 2026</td></tr>
         <tr><td><span class="rank-badge top3">3</span></td><td>Marco D.</td><td class="num">38</td><td>30 Aug 2026</td></tr>
@@ -60,13 +60,49 @@
       </tbody>
     </table>
   </div>
-  <p class="sample-note"><span class="dot"></span>Example data — this table will populate itself once sightings are logged to a shared database rather than a single browser.</p>
+  <p class="sample-note" id="leaderboard-note"><span class="dot"></span>Example data — this table will populate itself once sightings are logged to the shared database.</p>
 </section>
 
 <footer class="wrap">
   <p>Ready to appear here? <a href="log-sighting.html">Log a sighting</a> or check the <a href="rules.html">rules</a> for how species are counted.</p>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="assets/supabase-client.js"></script>
 <script src="assets/script.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    if (typeof fetchLeaderboard !== "function") return;
+    fetchLeaderboard(25)
+      .then(function (rows) {
+        if (!rows || !rows.length) return; // keep example rows until real ones exist
+        var tbody = document.getElementById("leaderboard-body");
+        var note = document.getElementById("leaderboard-note");
+        tbody.innerHTML = rows
+          .map(function (r, i) {
+            var rank = i + 1;
+            var badgeClass = rank === 1 ? "top1" : rank === 2 ? "top2" : rank === 3 ? "top3" : "";
+            var lastSeen = r.last_sighting
+              ? new Date(r.last_sighting + "T00:00:00").toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })
+              : "—";
+            return (
+              '<tr><td><span class="rank-badge ' + badgeClass + '">' + rank + "</span></td>" +
+              "<td>" + escapeHtml(r.participant_name) + "</td>" +
+              '<td class="num">' + r.species_count + "</td>" +
+              "<td>" + lastSeen + "</td></tr>"
+            );
+          })
+          .join("");
+        if (note) note.hidden = true;
+      })
+      .catch(function () { /* keep example data if the backend isn't reachable */ });
+
+    function escapeHtml(str) {
+      var div = document.createElement("div");
+      div.textContent = str == null ? "" : str;
+      return div.innerHTML;
+    }
+  });
+</script>
 </body>
 </html>
