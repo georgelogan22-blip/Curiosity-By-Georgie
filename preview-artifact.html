@@ -1,0 +1,1793 @@
+<title>Curiously Georgie</title>
+<style>
+/* ==========================================================================
+   Curiously Georgie — The Brisbane Air 50
+   Design tokens: field-journal explorer aesthetic, tuned to the
+   Curiously Georgie logo — leaf green, bucket-hat gold, shirt coral.
+   Fraunces display / Public Sans body / IBM Plex Mono data.
+   (Unchanged from the live site's assets/styles.css — this preview reuses
+   the approved design system rather than reinterpreting it.)
+   ========================================================================== */
+
+:root {
+  /* --- palette (light) --- */
+  --ink: #172621;
+  --ink-soft: #45564f;
+  --paper: #f5f4ea;
+  --paper-raised: #ffffff;
+  --line: #d8d5c4;
+  --accent: #1f7a4d;
+  --accent-ink: #ffffff;
+  --accent-mint: #8bdeb7;
+  --accent-warm: #e8ac5e;
+  --accent-coral: #b7383a;
+  --shadow: 0 1px 2px rgba(23, 38, 33, 0.06), 0 8px 24px rgba(23, 38, 33, 0.06);
+  --tier-blue: #4a7fb5;
+  --tier-orange: #c9762e;
+  --tier-purple: #7c4fd1;
+  --tier-amber: #a1720a;
+
+  /* --- type --- */
+  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --font-body: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ink: #eef2ea;
+    --ink-soft: #b7c4bb;
+    --paper: #101c18;
+    --paper-raised: #16241f;
+    --line: #2a3c34;
+    --accent: #5fd39a;
+    --accent-ink: #0a1512;
+    --accent-mint: #2c4a3c;
+    --accent-warm: #f0bd72;
+    --accent-coral: #e8797c;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+    --tier-blue: #8db6e0;
+    --tier-orange: #eaa563;
+    --tier-purple: #b79af0;
+    --tier-amber: #d9ad4e;
+  }
+}
+:root[data-theme="dark"] {
+  --ink: #eef2ea;
+  --ink-soft: #b7c4bb;
+  --paper: #101c18;
+  --paper-raised: #16241f;
+  --line: #2a3c34;
+  --accent: #5fd39a;
+  --accent-ink: #0a1512;
+  --accent-mint: #2c4a3c;
+  --accent-warm: #f0bd72;
+  --accent-coral: #e8797c;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+  --tier-blue: #8db6e0;
+  --tier-orange: #eaa563;
+  --tier-purple: #b79af0;
+  --tier-amber: #d9ad4e;
+}
+
+* { box-sizing: border-box; }
+html { color-scheme: light dark; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; }
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.12;
+  text-wrap: balance;
+  margin: 0 0 0.5em;
+}
+
+h1 { font-size: clamp(2.3rem, 4vw + 1rem, 3.6rem); font-weight: 700; }
+h2 { font-size: clamp(1.5rem, 1.6vw + 1rem, 2.1rem); }
+h3 { font-size: 1.25rem; }
+
+p { margin: 0 0 1em; max-width: 65ch; }
+p.lede { font-size: 1.15rem; color: var(--ink-soft); }
+
+a { color: var(--accent); }
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ---------- preview banner (this artifact only) ---------- */
+.preview-banner {
+  background: color-mix(in srgb, var(--accent-mint) 22%, var(--paper));
+  border-bottom: 1px solid var(--line);
+}
+.preview-banner .wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 24px;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.02em;
+  color: var(--ink-soft);
+}
+.preview-banner .dot {
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex: none;
+}
+
+/* ---------- nav ---------- */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+.site-nav .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 68px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.brand svg { width: 30px; height: 30px; flex: none; }
+.brand-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  flex: none;
+  border: 1.5px solid var(--line);
+  display: inline-block;
+  background-image: url("data:image/png;base64,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");
+  background-size: cover;
+  background-position: center;
+}
+.nav-links {
+  display: flex;
+  gap: 4px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.nav-links a {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 999px;
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 600;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.nav-links a:hover { background: var(--paper-raised); color: var(--ink); }
+.nav-links a[aria-current="page"] {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* ---------- buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-family: var(--font-body);
+}
+.btn-primary { background: var(--accent); color: var(--accent-ink); }
+.btn-primary:hover { background: color-mix(in srgb, var(--accent) 88%, black); }
+.btn-ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--line);
+}
+.btn-ghost:hover { background: var(--paper-raised); }
+.btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 1.6em; }
+
+/* ---------- hero ---------- */
+.hero {
+  padding: 72px 0 56px;
+  display: grid;
+  grid-template-columns: 1.2fr 0.9fr;
+  gap: 40px;
+  align-items: center;
+}
+.hero-art { display: flex; justify-content: center; }
+.hero-art svg { width: 100%; max-width: 340px; height: auto; }
+@media (max-width: 820px) {
+  .hero { grid-template-columns: 1fr; padding-top: 40px; }
+  .hero-art { order: -1; max-width: 220px; margin: 0 auto; }
+}
+
+/* ---------- sections / cards ---------- */
+section { padding: 40px 0; }
+.section-tight { padding: 16px 0 40px; }
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+}
+.card {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 22px;
+}
+.card h3 { margin-bottom: 0.35em; }
+.card .step-num {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+}
+
+.stat-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.stat-tile {
+  background: var(--paper-raised);
+  padding: 22px 20px;
+}
+.stat-tile .num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 2.1rem;
+  font-weight: 600;
+  color: var(--accent);
+  display: block;
+}
+.stat-tile .label { color: var(--ink-soft); font-size: 0.88rem; }
+
+.sample-note {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--ink-soft);
+  letter-spacing: 0.03em;
+  margin-top: 10px;
+}
+.sample-note .dot {
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent-warm);
+  margin-right: 6px;
+}
+
+/* ---------- page header ---------- */
+.page-head { padding: 48px 0 20px; border-bottom: 1px solid var(--line); }
+.page-head .eyebrow { margin-bottom: 0.6em; }
+.version-tag {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--ink-soft);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 2px 10px;
+  margin-left: 10px;
+}
+
+/* ---------- rules page ---------- */
+.rules-block { padding: 30px 0; border-bottom: 1px dashed var(--line); }
+.rules-block:last-of-type { border-bottom: none; }
+.rules-block ul { padding-left: 1.2em; margin: 0.6em 0 1em; }
+.rules-block li { margin-bottom: 0.5em; max-width: 65ch; }
+.rules-grid {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 28px;
+}
+@media (max-width: 700px) { .rules-grid { grid-template-columns: 1fr; } }
+.rules-grid h3 {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.safety-block {
+  background: color-mix(in srgb, var(--accent-warm) 12%, var(--paper-raised));
+  border: 1px solid var(--accent-warm);
+  border-left: 4px solid var(--accent-warm);
+  border-radius: var(--radius-md);
+  padding: 26px 28px;
+  margin-bottom: 8px;
+}
+.safety-block h3 { color: var(--accent-warm); }
+.safety-block .rule-tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--accent-warm);
+  color: #2a1400;
+  border-radius: 999px;
+  padding: 2px 10px;
+  margin-bottom: 0.5em;
+}
+
+.consent-block {
+  background: color-mix(in srgb, var(--accent-coral) 10%, var(--paper-raised));
+  border: 1px solid var(--accent-coral);
+  border-left: 4px solid var(--accent-coral);
+  border-radius: var(--radius-md);
+  padding: 26px 28px;
+  margin-bottom: 8px;
+}
+.consent-block h3 { color: var(--accent-coral); }
+.consent-block .rule-tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--accent-coral);
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 2px 10px;
+  margin-bottom: 0.5em;
+}
+
+.privacy-block {
+  background: color-mix(in srgb, var(--accent-mint) 16%, var(--paper-raised));
+  border: 1px solid var(--accent);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius-md);
+  padding: 26px 28px;
+  margin-bottom: 8px;
+}
+.privacy-block h3 { color: var(--accent); }
+.privacy-block .rule-tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: 999px;
+  padding: 2px 10px;
+  margin-bottom: 0.5em;
+}
+
+/* ---------- forms ---------- */
+.log-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px;
+  align-items: start;
+}
+@media (max-width: 860px) { .log-layout { grid-template-columns: 1fr; } }
+
+.field { margin-bottom: 18px; }
+.field label {
+  display: block;
+  font-weight: 700;
+  font-size: 0.88rem;
+  margin-bottom: 6px;
+}
+.hint, .field .hint { color: var(--ink-soft); font-size: 0.82rem; margin-top: 4px; }
+input, select, textarea {
+  width: 100%;
+  font: inherit;
+  padding: 11px 13px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--paper-raised);
+  color: var(--ink);
+}
+input:focus, select:focus, textarea:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+textarea { resize: vertical; min-height: 80px; }
+form { background: var(--paper-raised); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 26px; }
+
+.log-feed { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.log-entry {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+}
+.log-entry .meta { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-soft); }
+.log-empty { color: var(--ink-soft); font-size: 0.92rem; padding: 18px 0; }
+
+/* ---------- tables ---------- */
+.table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius-md); }
+table { border-collapse: collapse; width: 100%; min-width: 560px; background: var(--paper-raised); }
+th, td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+th {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+td.num, th.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; text-align: right; }
+tr:last-child td { border-bottom: none; }
+.rank-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; border-radius: 50%;
+  font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700;
+  background: var(--paper); border: 1px solid var(--line);
+}
+.rank-badge.top1 { background: var(--accent-warm); color: #2a1400; border-color: transparent; }
+.rank-badge.top2, .rank-badge.top3 { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+
+/* ---------- Air Points tier badges ---------- */
+.tier-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 1.6em; padding: 1px 7px; border-radius: 999px;
+  font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700;
+  color: #fff; letter-spacing: 0.02em;
+}
+.tier-badge.tier-a { background: var(--tier-blue); }
+.tier-badge.tier-c { background: var(--accent); }
+.tier-badge.tier-u { background: var(--accent-warm); color: #2a1400; }
+.tier-badge.tier-r { background: var(--tier-orange); }
+.tier-badge.tier-s { background: var(--accent-coral); }
+.tier-badge.tier-ss { background: var(--tier-purple); }
+.tier-badge.tier-ssplus { background: var(--tier-amber); color: #2a1400; }
+.tier-points { font-family: var(--font-mono); font-size: 0.76rem; color: var(--ink-soft); white-space: nowrap; }
+
+/* ---------- species autocomplete ---------- */
+.species-autocomplete { position: relative; }
+.species-suggestions {
+  position: absolute; z-index: 30; top: calc(100% + 4px); left: 0; right: 0;
+  max-height: 280px; overflow-y: auto;
+  background: var(--paper-raised); border: 1px solid var(--line);
+  border-radius: var(--radius-sm); box-shadow: var(--shadow); padding: 4px;
+}
+.species-suggestions[hidden] { display: none; }
+.species-suggestion {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 8px 10px; border-radius: var(--radius-sm); cursor: pointer; font-size: 0.92rem;
+}
+.species-suggestion:hover, .species-suggestion.active { background: var(--paper); }
+.species-suggestion .sp-name { font-weight: 600; }
+.species-suggestion .sp-sci { color: var(--ink-soft); font-style: italic; font-size: 0.8rem; margin-left: 6px; }
+.species-suggestion .sp-meta { display: flex; align-items: center; gap: 8px; flex: none; }
+.species-suggestions .no-match { padding: 8px 10px; color: var(--ink-soft); font-size: 0.86rem; }
+
+/* ---------- hall of fame ---------- */
+.fame-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; }
+.fame-card {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--accent-coral);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+.fame-card .name { font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; }
+.fame-card .count {
+  font-family: var(--font-mono);
+  color: var(--accent-coral);
+  font-weight: 700;
+}
+.fame-card .date { color: var(--ink-soft); font-size: 0.82rem; }
+
+/* ---------- checklist ---------- */
+.checklist-group { margin-bottom: 34px; }
+.checklist-group h3 { color: var(--accent); margin-bottom: 0.15em; display: flex; align-items: center; gap: 10px; }
+.checklist-group .tier-desc { color: var(--ink-soft); font-size: 0.88rem; margin: 0 0 0.9em; }
+.checklist-group.tier-a h3 { color: var(--tier-blue); }
+.checklist-group.tier-c h3 { color: var(--accent); }
+.checklist-group.tier-u h3 { color: var(--accent-warm); }
+.checklist-group.tier-r h3 { color: var(--tier-orange); }
+.checklist-group.tier-s h3 { color: var(--accent-coral); }
+.checklist-group.tier-ss h3 { color: var(--tier-purple); }
+.checklist-group.tier-ssplus h3 { color: var(--tier-amber); }
+.species-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.species-row {
+  background: var(--paper-raised);
+  padding: 10px 14px;
+  font-size: 0.92rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.species-row .sp-left { min-width: 0; }
+.species-row .sp-name { display: block; }
+.species-row .sci { color: var(--ink-soft); font-style: italic; font-size: 0.82rem; }
+.species-row .sp-right { display: flex; align-items: center; gap: 6px; flex: none; }
+
+/* ---------- footer ---------- */
+footer {
+  border-top: 1px solid var(--line);
+  margin-top: 40px;
+  padding: 28px 0 40px;
+  color: var(--ink-soft);
+  font-size: 0.86rem;
+}
+footer a { color: var(--ink-soft); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Public+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+
+<div class="preview-banner">
+  <div class="wrap"><span class="dot"></span>Private preview — a snapshot of the site as it stands on the private GitHub repo. Not the live, published site.</div>
+</div>
+
+<nav class="site-nav">
+  <div class="wrap">
+    <a href="#index" class="brand">
+      <span class="brand-logo" aria-hidden="true"></span>
+      Curiously Georgie
+    </a>
+    <ul class="nav-links">
+      <li><a href="#index">Home</a></li>
+      <li><a href="#rules">Rules</a></li>
+      <li><a href="#register">Register</a></li>
+      <li><a href="#log-sighting">Log a Sighting</a></li>
+      <li><a href="#leaderboard">Leaderboard</a></li>
+      <li><a href="#hall-of-fame">Hall of Fame</a></li>
+      <li><a href="#checklist">Species Checklist</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section id="page-index" class="page">
+
+<header class="hero wrap">
+  <div>
+    <span class="eyebrow">Greater Brisbane · Citizen Birding Challenge</span>
+    <h1>The Brisbane Air 50</h1>
+    <p class="lede">Fifty wild bird species. No entry fee, no timer — just your eyes, a notebook, and the river city's flyways. Log every species you spot and see how close you get to the fifty.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="#log-sighting">Log a sighting</a>
+      <a class="btn btn-ghost" href="#rules">Read the rules</a>
+    </div>
+  </div>
+  <div class="hero-art">
+    <svg viewBox="0 0 300 300" role="img" aria-label="Three stylised birds in flight over a river line, with the number fifty, inside a dashed compass ring">
+      <defs>
+        <path id="bird" d="M0 9 C0 5,6 3,8 8 C10 3,16 5,16 9 C11 7,9 8,8 10 C7 8,5 7,0 9 Z"/>
+      </defs>
+      <circle cx="150" cy="150" r="132" fill="none" stroke="var(--line)" stroke-width="1.5" stroke-dasharray="2 7" stroke-linecap="round"/>
+      <circle cx="150" cy="150" r="128" fill="none" stroke="var(--line)" stroke-width="1.5"/>
+      <g fill="var(--accent-coral)" opacity="0.55">
+        <path d="M150 14 l4 10 l-8 0 Z"/>
+        <path d="M150 286 l4 -10 l-8 0 Z"/>
+      </g>
+      <path d="M40 205 C 90 175, 210 175, 260 205" fill="none" stroke="var(--accent)" stroke-width="2" opacity="0.5"/>
+      <path d="M40 205 C 90 175, 210 175, 260 205" fill="none" stroke="var(--accent-warm)" stroke-width="2" stroke-dasharray="1 9" stroke-linecap="round" opacity="0.9"/>
+      <text x="150" y="168" text-anchor="middle" font-family="Fraunces, serif" font-weight="700" font-size="64" fill="var(--ink)" opacity="0.09">50</text>
+      <use href="#bird" transform="translate(96,96) scale(3.6)" fill="var(--accent)"/>
+      <use href="#bird" transform="translate(150,74) scale(2.6)" fill="var(--accent-warm)"/>
+      <use href="#bird" transform="translate(178,118) scale(2.1)" fill="var(--accent-coral)"/>
+    </svg>
+  </div>
+</header>
+
+<section class="wrap">
+  <h2>How it works</h2>
+  <div class="card-grid">
+    <div class="card">
+      <span class="step-num">01 — Go spot birds</span>
+      <h3>Anywhere in Greater Brisbane</h3>
+      <p>Your backyard, New Farm Park, Moreton Island, the D'Aguilar Range — anywhere within the Greater Brisbane boundary counts. Keep an eye and an ear out.</p>
+    </div>
+    <div class="card">
+      <span class="step-num">02 — Log what you see</span>
+      <h3>One entry per species</h3>
+      <p>Record the species, date and suburb on the <a href="#log-sighting">Log a Sighting</a> page. Only your first sighting of each species adds to your tally.</p>
+    </div>
+    <div class="card">
+      <span class="step-num">03 — Chase the fifty</span>
+      <h3>Climb the leaderboard</h3>
+      <p>Track your tally on the <a href="#leaderboard">Leaderboard</a>. Reach 50 unique species and your name goes up in the <a href="#hall-of-fame">Hall of Fame</a>.</p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap section-tight">
+  <h2>City-wide so far</h2>
+  <div class="stat-strip">
+    <div class="stat-tile"><span class="num">34</span><span class="label">Participants</span></div>
+    <div class="stat-tile"><span class="num">118</span><span class="label">Species logged city-wide</span></div>
+    <div class="stat-tile"><span class="num">3</span><span class="label">Hall of Famers</span></div>
+  </div>
+  <p class="sample-note"><span class="dot"></span>Example data — placeholder until sightings are wired to a shared, live database.</p>
+</section>
+
+<footer class="wrap">
+  <p>Curiously Georgie — The Brisbane Air 50. City-wide figures above are example data until sightings are wired to a shared, live database. <a href="#rules">Read the full rules</a>.</p>
+</footer>
+
+</section>
+
+<section id="page-rules" class="page" hidden>
+
+<header class="page-head wrap">
+  <span class="eyebrow">Rules &amp; Regulations</span>
+  <h1>How the Brisbane Air 50 works</h1>
+  <p class="lede">The short version: spot 50 wild bird species anywhere in Greater Brisbane, log each one, and your name climbs the leaderboard. The long version is below.</p>
+</header>
+
+<section class="wrap">
+
+  <div class="rules-block rules-grid safety-block">
+    <h3><span class="rule-tag">Rule #1</span><br>Safety First</h3>
+    <div>
+      <p><strong>Nothing about the Brisbane Air 50 is worth risking harm to a participant or to the wildlife itself.</strong> This is the one rule that overrides every other rule on this page — no species, no leaderboard spot, and no Hall of Fame induction is worth compromising safety.</p>
+      <ul>
+        <li>Keep a safe, respectful distance. Never approach, corner, chase, feed, or bait a bird (or any other animal) to get a better look or a photo.</li>
+        <li>Stay clear of nesting and breeding sites — disturbing them can cause birds to abandon eggs or chicks.</li>
+        <li>Respect closures, private property, and any area marked off-limits, and follow the guidance of park rangers or land managers on-site.</li>
+        <li>As habitat-specific variants like <strong>Land 50</strong> and <strong>Water 50</strong> take shape, expect more encounters with wildlife beyond birds — snakes, spiders, marine stingers, and deep or fast water among them. Know the risks of the terrain you're heading into, and turn back if something feels unsafe.</li>
+        <li>If in doubt, don't. A missed sighting costs nothing; a safety incident affects everyone.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="rules-block rules-grid consent-block">
+    <h3><span class="rule-tag">Required to Play</span><br>Registration &amp; Liability</h3>
+    <div>
+      <p>Because the challenge carries real physical risk — see Rule #1 above — everyone must complete a one-time <a href="#register">registration</a> before logging their first sighting. Simply typing a name into the sighting form is no longer enough. Registering asks for your display name, full legal name, date of birth, residential address, phone number, and email, and asks you to confirm — with a clear checkbox, not a buried assumption — that you've read and understood these Rules &amp; Regulations in full, including Safety First.</p>
+      <p>If you're under 18, a parent or guardian must also tick a consent box during registration confirming they approve of you taking part. Once registered, you take part by typing your exact display name on <a href="#log-sighting">Log a Sighting</a> each time — the same simple, no-password approach the site has always used, now behind a proper sign-up first.</p>
+      <p><strong>Assumption of risk:</strong> the Brisbane Air 50 takes place outdoors, in natural environments, where hazards exist — uneven terrain, weather, water, and wildlife, with further hazards specific to Land 50 and Water 50 as those variants launch. By registering, you acknowledge these risks and take part at your own risk.</p>
+      <p><strong>Limitation of liability:</strong> to the fullest extent permitted by law, Curiously Georgie and its organisers accept no liability for injury, loss, or damage arising from foreseeable accidents connected with participation. This does not exclude any liability that cannot lawfully be excluded — for example, liability for death or personal injury caused by negligence, where the law does not allow that to be excluded.</p>
+      <p><strong>Removal from the challenge:</strong> a participant who causes abuse or harm to another participant, or to wildlife or nature, may be permanently banned — their registration is suspended and they can no longer log sightings under that name, on this site or via its public API.</p>
+      <p class="hint">This wording is a starting point, not legal advice — it should be reviewed by an Australian solicitor before launch, particularly the liability limitation, the collection of participants' personal information (including from minors), and how all of it sits alongside the Civil Liability Act, Australian Consumer Law, and the Privacy Act.</p>
+    </div>
+  </div>
+
+  <div class="rules-block rules-grid privacy-block" id="privacy">
+    <h3><span class="rule-tag">Please Read</span><br>Your Privacy</h3>
+    <div>
+      <p><strong>What registering collects:</strong> your display name, full legal name, date of birth, residential address, phone number, and email — plus a parent/guardian consent tickbox if you're under 18. This is collected once, at <a href="#register">registration</a>, not every time you log a sighting.</p>
+      <p><strong>What's ever shown publicly:</strong> only your <strong>display name</strong> (a nickname is fine), your species tally, and your most recent sighting date — on the <a href="#leaderboard">Leaderboard</a> and <a href="#hall-of-fame">Hall of Fame</a>. Your legal name, date of birth, address, phone, and email are never published, and aren't retrievable through the site's public API at all — only Georgie, signed in as the project's administrator, can see them.</p>
+      <p><strong>Why we collect it:</strong> your address is so a finisher's coin can be posted to you if you complete all fifty. Your legal name, DOB, phone, and email are kept as a registration record, and — this is the part worth being upfront about — so that a participant who causes abuse or harm to another participant, or to wildlife or nature, can be identified and permanently banned from playing. Registering doesn't put you under any extra scrutiny beyond that; it exists so the small number of bad-faith cases can actually be acted on.</p>
+      <p>Sighting and registration data is stored with Supabase, a third-party database provider, hosted in Australia. There's no self-service way to edit or delete your own details yet — if you'd like something corrected, removed, or you'd like to know what's held about you, contact <strong><a href="mailto:contactcuriouslygeorgie@gmail.com">contactcuriouslygeorgie@gmail.com</a></strong> and we'll sort it out directly.</p>
+      <p class="hint">The Brisbane Air 50 is a small, independent project — this notice isn't a formal legal document, just our best effort to tell you plainly what happens to what you submit. Given the amount of personal information registration now collects (including, in some cases, information about minors), this notice and the registration flow should be reviewed against the Australian Privacy Act before official launch — see the note above.</p>
+    </div>
+  </div>
+
+  <div class="rules-block rules-grid">
+    <h3>The Challenge</h3>
+    <div>
+      <p>Spot and log 50 different wild bird species within Greater Brisbane. There's no entry deadline and no time limit — it's an ongoing, go-at-your-own-pace challenge you can pick up any week of the year.</p>
+    </div>
+  </div>
+
+  <div class="rules-block rules-grid">
+    <h3>Who Can Play</h3>
+    <div>
+      <p>Anyone — backyard birders, families out for a walk, seasoned twitchers with a scope. There's no sign-up fee and no equipment requirement, though a pair of binoculars and a field guide certainly help.</p>
+    </div>
+  </div>
+
+  <div class="rules-block rules-grid">
+    <h3>The Boundary</h3>
+    <div>
+      <p>"Greater Brisbane" covers the Brisbane City Council area plus the surrounding region — Moreton Bay, Redlands, Logan, Ipswich, and out to the D'Aguilar Range. A sighting anywhere inside that boundary counts.</p>
+    </div>
+  </div>
+
+  <div class="rules-block rules-grid">
+    <h3>What Counts</h3>
+    <div>
+      <ul>
+        <li>Wild, free-living birds only — no aviary, zoo, or clearly domestic birds (backyard chickens, farmed ducks).</li>
+        <li>Each species counts once per participant. Once you've logged a Rainbow Lorikeet, a second Rainbow Lorikeet doesn't add to your tally — though you're welcome to keep a personal log of repeat sightings.</li>
+        <li>Use the common name from the <a href="#checklist">Species Checklist</a> where you can. A species not on that list still counts, as long as you're confident of the identification.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="rules-block rules-grid">
+    <h3>How To Log It</h3>
+    <div>
+      <p>Submit each sighting through <a href="#log-sighting">Log a Sighting</a> with your name (or a consistent nickname — the leaderboard needs to recognise you across visits), the species, the date, roughly where you saw it, and a clear photo as evidence. From official launch, a photo is required, not optional.</p>
+      <p>Every submission starts as <strong>pending</strong> — it won't appear on the Leaderboard or count toward your tally until it's been reviewed and confirmed, either by an automated check or by Georgie personally. You'll be able to see the status of your own pending sightings while you wait.</p>
+    </div>
+  </div>
+
+  <div class="rules-block rules-grid">
+    <h3>Verification &amp; Launch Date</h3>
+    <div>
+      <p>The Brisbane Air 50 only counts sightings from its official launch date onward. Every submitted photo is checked against its original date and time stamp (EXIF metadata) — if that timestamp is from before launch, the sighting won't be confirmed, even if the photo is completely genuine.</p>
+      <p>This exists so nobody can complete the challenge on day one from an old photo collection — the challenge is about what you spot from launch onward, not what you've already got saved. Submissions that fail the authenticity or timestamp check are rejected with a reason and can be resubmitted with a valid photo.</p>
+    </div>
+  </div>
+
+  <div class="rules-block rules-grid">
+    <h3>Leaderboard &amp; Hall of Fame</h3>
+    <div>
+      <p>The <a href="#leaderboard">Leaderboard</a> ranks everyone by unique <em>confirmed</em> species logged, highest first. Reach 50 confirmed species and you're inducted into the <a href="#hall-of-fame">Hall of Fame</a> — permanently, even if you keep spotting birds past your fiftieth.</p>
+    </div>
+  </div>
+
+  <div class="rules-block rules-grid">
+    <h3>Fair Play</h3>
+    <div>
+      <p>The review step keeps the Leaderboard and Hall of Fame trustworthy, but the spirit of the challenge is still honour and encouragement, not policing. Log sightings you're genuinely confident about, and if you're unsure of an identification, it's fine to ask around before logging it. The point of the Brisbane Air 50 is getting more people outside and looking up, not winning at all costs.</p>
+    </div>
+  </div>
+
+</section>
+
+<footer class="wrap">
+  <p>Got a question the rules don't cover? These are the guidelines the whole challenge runs on — fair play and good judgement fill in the rest.</p>
+</footer>
+
+</section>
+
+<section id="page-register" class="page" hidden>
+
+<header class="page-head wrap">
+  <span class="eyebrow">Register to Play</span>
+  <h1>One-time sign up, before your first sighting</h1>
+  <p class="lede">The Brisbane Air 50 happens outdoors, around real wildlife, so we ask everyone to register properly before they start logging sightings — see <a href="#rules">why, and what happens to your information</a>. It only takes a minute.</p>
+</header>
+
+<section class="wrap section-tight">
+  <div class="rules-block rules-grid consent-block" style="margin-top:0;">
+    <h3><span class="rule-tag">Before You Start</span><br>Why we ask for this</h3>
+    <div>
+      <p>Registering is required because of the real risks involved in the challenge (see Rule #1 — Safety First) and so that we're able to permanently ban anyone who causes abuse or harm to other participants or to wildlife and nature. Your full name and address are also how we post out a finisher's coin if you complete all fifty.</p>
+      <p class="hint">Only your <strong>display name</strong> is ever shown publicly — on the Leaderboard and Hall of Fame. Your legal name, date of birth, address, phone, and email are never published; they're stored for registration records and coin delivery only. Full detail under <a href="#rules">Your Privacy</a> on the Rules page.</p>
+    </div>
+  </div>
+
+  <div class="log-layout" style="grid-template-columns: 1fr; max-width: 640px;">
+    <form id="register-form">
+
+      <div class="field">
+        <label for="reg-display-name">Display name (or nickname)</label>
+        <input type="text" id="reg-display-name" name="displayName" placeholder="e.g. Ava T." required>
+        <p class="hint">This is what appears on the Leaderboard and Hall of Fame, and what you'll type each time you log a sighting — so pick something you'll remember and stick with it. It must be unique; if it's taken, try adding an initial or suburb.</p>
+      </div>
+
+      <div class="field">
+        <label for="reg-full-name">Full legal name</label>
+        <input type="text" id="reg-full-name" name="fullName" placeholder="As you'd like it on a finisher's coin" required>
+        <p class="hint">Never shown publicly — kept for our registration records and for addressing your coin if you complete the challenge.</p>
+      </div>
+
+      <div class="field">
+        <label for="reg-dob">Date of birth</label>
+        <input type="date" id="reg-dob" name="dob" required>
+      </div>
+
+      <div class="field">
+        <label for="reg-address-line">Residential address</label>
+        <input type="text" id="reg-address-line" name="addressLine" placeholder="Street address" required>
+      </div>
+      <div class="field" style="display:grid; grid-template-columns: 2fr 1fr 1fr; gap:12px;">
+        <div>
+          <label for="reg-suburb">Suburb</label>
+          <input type="text" id="reg-suburb" name="suburb" required>
+        </div>
+        <div>
+          <label for="reg-state">State</label>
+          <select id="reg-state" name="state" required>
+            <option value="QLD" selected>QLD</option>
+            <option value="NSW">NSW</option>
+            <option value="VIC">VIC</option>
+            <option value="WA">WA</option>
+            <option value="SA">SA</option>
+            <option value="TAS">TAS</option>
+            <option value="ACT">ACT</option>
+            <option value="NT">NT</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div>
+          <label for="reg-postcode">Postcode</label>
+          <input type="text" id="reg-postcode" name="postcode" inputmode="numeric" required>
+        </div>
+      </div>
+      <p class="hint" style="margin-top:-8px; margin-bottom:18px;">Used only to post out a finisher's coin if you complete all fifty — never shown publicly.</p>
+
+      <div class="field">
+        <label for="reg-phone">Phone number</label>
+        <input type="tel" id="reg-phone" name="phone" placeholder="04xx xxx xxx" required>
+      </div>
+      <div class="field">
+        <label for="reg-email">Email address</label>
+        <input type="email" id="reg-email" name="email" placeholder="you@example.com" required>
+      </div>
+
+      <div class="field" id="reg-parental-consent-field" hidden>
+        <label style="display:flex; align-items:flex-start; gap:8px; font-weight:400;">
+          <input type="checkbox" id="reg-parental-consent" name="parentalConsent" style="width:auto; margin-top:3px;">
+          <span>I confirm I am this participant's parent or guardian, or I have my parent or guardian's permission to register and take part in the Brisbane Air 50.</span>
+        </label>
+        <p class="hint">Shown because the date of birth entered above is under 18 — a parent or guardian's approval is required to register.</p>
+      </div>
+
+      <div class="field">
+        <label style="display:flex; align-items:flex-start; gap:8px; font-weight:400;">
+          <input type="checkbox" id="reg-agree" name="agree" required style="width:auto; margin-top:3px;">
+          <span>I've read and understood the <a href="#rules">Rules &amp; Regulations</a> — including Rule #1 (Safety First), Registration &amp; Liability, and <a href="#rules">how my information is stored and shown</a> — and I take part at my own risk.</span>
+        </label>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Register</button>
+      <p class="hint" id="register-form-status" hidden></p>
+    </form>
+  </div>
+</section>
+
+<footer class="wrap">
+  <p>Already registered? Head straight to <a href="#log-sighting">Log a Sighting</a> and type your display name to pick up where you left off.</p>
+</footer>
+
+</section>
+
+<section id="page-log-sighting" class="page" hidden>
+
+<header class="page-head wrap">
+  <span class="eyebrow">Log a Sighting</span>
+  <h1>Seen something good?</h1>
+  <p class="lede">Fill in what you saw, when, and roughly where. Your first sighting of each species is what counts toward your fifty. From official launch, a photo will be required with every submission, and sightings will sit as <strong>pending</strong> until reviewed — see the <a href="#rules">rules</a> for how verification works.</p>
+</header>
+
+<section class="wrap">
+  <div class="log-layout">
+    <form id="sighting-form">
+      <div class="field">
+        <label for="name">Your name or nickname</label>
+        <input type="text" id="name" name="name" placeholder="e.g. Ava T." required>
+        <p class="hint">Enter your registered display name exactly. Not registered yet? <a href="#register">Register here</a> first — it only takes a minute.</p>
+      </div>
+      <div class="field">
+        <label for="species">Species</label>
+        <div class="species-autocomplete">
+          <input type="text" id="species" name="species" placeholder="Start typing… e.g. Rainbow Lorikeet" autocomplete="off" required>
+          <div class="species-suggestions" id="species-suggestions" hidden></div>
+        </div>
+        <p class="hint" id="species-tier-hint"></p>
+        <p class="hint">Not on the <a href="#checklist">reference list</a>? Type it anyway — it still counts, just without an Air Points tier.</p>
+      </div>
+      <div class="field">
+        <label for="date">Date seen</label>
+        <input type="date" id="date" name="date" required>
+      </div>
+      <div class="field">
+        <label for="location">Suburb / location</label>
+        <input type="text" id="location" name="location" placeholder="e.g. New Farm Park">
+      </div>
+      <div class="field">
+        <label for="notes">Notes (optional)</label>
+        <textarea id="notes" name="notes" placeholder="Behaviour, count, photo link…"></textarea>
+      </div>
+      <div class="field">
+        <label style="display:flex; align-items:flex-start; gap:8px; font-weight:400;">
+          <input type="checkbox" id="agree" name="agree" required style="width:auto; margin-top:3px;">
+          <span>I confirm I've read and understood the <a href="#rules">Rules &amp; Regulations</a> — including Rule #1 (Safety First), the Registration &amp; Liability terms, and <a href="#rules">how my information is stored and shown</a> — and I take part at my own risk.</span>
+        </label>
+      </div>
+      <button type="submit" class="btn btn-primary">Log this sighting</button>
+      <p class="hint" id="form-status" hidden></p>
+    </form>
+
+    <div>
+      <h3>Today's log <span style="color:var(--ink-soft); font-weight:400;">(<span id="session-count">0</span> this session)</span></h3>
+      <p class="log-empty" id="log-empty">No sightings logged yet in this session — the form above is a live demo.</p>
+      <ul class="log-feed" id="log-feed"></ul>
+      <p class="sample-note"><span class="dot"></span>This is your own feed for this visit. Sightings saved to the shared log also feed the real Leaderboard and Hall of Fame.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="wrap">
+  <p>Every logged species adds to your tally on the <a href="#leaderboard">Leaderboard</a> once sightings are shared city-wide.</p>
+</footer>
+
+</section>
+
+<section id="page-leaderboard" class="page" hidden>
+
+<header class="page-head wrap">
+  <span class="eyebrow">Leaderboard</span>
+  <h1>Who's racked up the most Air Points</h1>
+  <p class="lede">Ranked by accumulated Air Points, not raw species count — a handful of rare or legendary sightings can outrank a much longer list of common ones. See the <a href="#checklist">species checklist</a> for each species' tier and point value. Reach 50 unique species (regardless of points) and you're bumped up to the <a href="#hall-of-fame">Hall of Fame</a> instead.</p>
+</header>
+
+<section class="wrap">
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Participant</th>
+          <th class="num">Air Points</th>
+          <th class="num">Species</th>
+          <th>Last sighting</th>
+        </tr>
+      </thead>
+      <tbody id="leaderboard-body">
+        <tr><td><span class="rank-badge top1">1</span></td><td>Priya N.</td><td class="num">187</td><td class="num">22</td><td>6 Sep 2026</td></tr>
+        <tr><td><span class="rank-badge top2">2</span></td><td>Sam R.</td><td class="num">152</td><td class="num">41</td><td>5 Sep 2026</td></tr>
+        <tr><td><span class="rank-badge top3">3</span></td><td>Marco D.</td><td class="num">140</td><td class="num">38</td><td>30 Aug 2026</td></tr>
+        <tr><td><span class="rank-badge">4</span></td><td>Ava T.</td><td class="num">118</td><td class="num">33</td><td>3 Sep 2026</td></tr>
+        <tr><td><span class="rank-badge">5</span></td><td>Chen W.</td><td class="num">96</td><td class="num">29</td><td>1 Sep 2026</td></tr>
+        <tr><td><span class="rank-badge">6</span></td><td>Bilal H.</td><td class="num">71</td><td class="num">24</td><td>28 Aug 2026</td></tr>
+        <tr><td><span class="rank-badge">7</span></td><td>Ruth O.</td><td class="num">52</td><td class="num">19</td><td>25 Aug 2026</td></tr>
+        <tr><td><span class="rank-badge">8</span></td><td>Tane M.</td><td class="num">38</td><td class="num">15</td><td>20 Aug 2026</td></tr>
+        <tr><td><span class="rank-badge">9</span></td><td>Freya S.</td><td class="num">26</td><td class="num">11</td><td>15 Aug 2026</td></tr>
+        <tr><td><span class="rank-badge">10</span></td><td>Django P.</td><td class="num">14</td><td class="num">8</td><td>10 Aug 2026</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="sample-note" id="leaderboard-note"><span class="dot"></span>Example data — this table will populate itself once sightings are logged to a shared database rather than a single browser.</p>
+</section>
+
+<footer class="wrap">
+  <p>Ready to appear here? <a href="#log-sighting">Log a sighting</a> or check the <a href="#rules">rules</a> for how species are counted.</p>
+</footer>
+
+</section>
+
+<section id="page-hall-of-fame" class="page" hidden>
+
+<header class="page-head wrap">
+  <span class="eyebrow">Hall of Fame</span>
+  <h1>Fifty and beyond</h1>
+  <p class="lede">Everyone who has logged their fiftieth wild species, in order of induction. They stay listed here for good, even as their tally keeps climbing.</p>
+</header>
+
+<section class="wrap">
+  <div class="fame-grid" id="fame-grid">
+    <div class="fame-card">
+      <div class="name">Nadia Osei</div>
+      <div class="count">58 species · 312 pts</div>
+      <div class="date">Inducted 20 Apr 2026</div>
+    </div>
+    <div class="fame-card">
+      <div class="name">Helena Cross</div>
+      <div class="count">54 species · 289 pts</div>
+      <div class="date">Inducted 12 Jul 2026</div>
+    </div>
+    <div class="fame-card">
+      <div class="name">Oscar Field</div>
+      <div class="count">51 species · 204 pts</div>
+      <div class="date">Inducted 3 Jun 2026</div>
+    </div>
+  </div>
+  <p class="sample-note" id="fame-note"><span class="dot"></span>Example data — real inductees will appear here automatically the moment their logged tally reaches 50.</p>
+</section>
+
+<footer class="wrap">
+  <p>Not there yet? Check the <a href="#leaderboard">Leaderboard</a> to see how far you've got, or <a href="#log-sighting">log a sighting</a> to add to your tally.</p>
+</footer>
+
+</section>
+
+<section id="page-checklist" class="page" hidden>
+
+<header class="page-head wrap">
+  <span class="eyebrow">Species Checklist</span>
+  <h1>The official fifty</h1>
+  <p class="lede">Every Brisbane Air 50 species, grouped by Air Points tier — from Abundant (easiest to find) up to the single Legendary species. Spotting something not on this list still counts, just without a tier — see the <a href="#rules">rules</a>.</p>
+</header>
+
+<section class="wrap" id="checklist-sections">
+  <p class="hint">Loading species reference…</p>
+</section>
+
+<footer class="wrap">
+  <p>Ready to start ticking these off? <a href="#log-sighting">Log a sighting</a>.</p>
+</footer>
+
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+// Curiously Georgie — The Brisbane Air 50
+// Backend wiring: this preview mirrors the live site's assets/supabase-
+// client.js + assets/script.js (see the project build log). Sightings
+// submitted here go to the real, shared Supabase database — this is a
+// genuinely live preview, not just a mock-up.
+
+var SUPABASE_URL = "https://nduhuiihmagptvrxgkhk.supabase.co";
+var SUPABASE_ANON_KEY = "sb_publishable_4suKIlKFIFlo8WWO4_ZgyA_0GTq8mXf";
+
+var supabaseClient = null;
+if (typeof window !== "undefined" && window.supabase && SUPABASE_URL.indexOf("http") === 0) {
+  supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+
+// --- Brisbane Air 50 official species reference (mirrors assets/species-data.js) ---
+// This is a display-only mirror of supabase/points-migration.sql's
+// species_reference table, so the autocomplete + checklist can show tier
+// and points instantly. The database is what actually decides Leaderboard
+// points.
+var SPECIES_TIERS = {
+  A: { label: "Abundant", points: 1, className: "tier-a", desc: "Very easy to encounter across suitable Brisbane habitats; often found without specialist searching." },
+  C: { label: "Common", points: 2, className: "tier-c", desc: "Generally straightforward to find with modest habitat awareness or a short targeted outing." },
+  U: { label: "Uncommon", points: 3, className: "tier-u", desc: "Requires some deliberate searching, habitat choice or seasonal awareness." },
+  R: { label: "Rare", points: 5, className: "tier-r", desc: "Usually needs targeted habitat, location knowledge or repeated effort." },
+  S: { label: "Special", points: 8, className: "tier-s", desc: "Difficult, localised, seasonal, cryptic or otherwise demanding to photograph." },
+  SS: { label: "Super Special", points: 13, className: "tier-ss", desc: "Exceptionally challenging — strong habitat knowledge, timing, luck or repeated effort may be required." },
+  "SS+": { label: "Legendary", points: 20, className: "tier-ssplus", desc: "The symbolic final objective of Air 50: a genuinely difficult and highly memorable Brisbane capture." },
+};
+
+var TIER_ORDER = ["A", "C", "U", "R", "S", "SS", "SS+"];
+
+var SPECIES_LIST = [
+  { name: "Torresian Crow", sci: "Corvus orru", tier: "A" },
+  { name: "Noisy Miner", sci: "Manorina melanocephala", tier: "A" },
+  { name: "Rainbow Lorikeet", sci: "Trichoglossus moluccanus", tier: "A" },
+  { name: "Australian Magpie", sci: "Gymnorhina tibicen", tier: "A" },
+  { name: "Welcome Swallow", sci: "Hirundo neoxena", tier: "A" },
+  { name: "Australian White Ibis", sci: "Threskiornis molucca", tier: "A" },
+  { name: "Magpie-lark", sci: "Grallina cyanoleuca", tier: "A" },
+  { name: "Willie Wagtail", sci: "Rhipidura leucophrys", tier: "A" },
+  { name: "Grey Butcherbird", sci: "Cracticus torquatus", tier: "A" },
+  { name: "Masked Lapwing", sci: "Vanellus miles", tier: "A" },
+  { name: "Pied Butcherbird", sci: "Cracticus nigrogularis", tier: "A" },
+  { name: "Laughing Kookaburra", sci: "Dacelo novaeguineae", tier: "A" },
+  { name: "Australasian Figbird", sci: "Sphecotheres vieilloti", tier: "A" },
+  { name: "Brown Honeyeater", sci: "Lichmera indistincta", tier: "A" },
+  { name: "Pied Currawong", sci: "Strepera graculina", tier: "A" },
+
+  { name: "Sulphur-crested Cockatoo", sci: "Cacatua galerita", tier: "C" },
+  { name: "Crested Pigeon", sci: "Ocyphaps lophotes", tier: "C" },
+  { name: "Striated Pardalote", sci: "Pardalotus striatus", tier: "C" },
+  { name: "Blue-faced Honeyeater", sci: "Entomyzon cyanotis", tier: "C" },
+  { name: "Australian Brushturkey", sci: "Alectura lathami", tier: "C" },
+  { name: "Galah", sci: "Eolophus roseicapilla", tier: "C" },
+  { name: "Pacific Black Duck", sci: "Anas superciliosa", tier: "C" },
+  { name: "Australian Wood Duck", sci: "Chenonetta jubata", tier: "C" },
+  { name: "Australian Pelican", sci: "Pelecanus conspicillatus", tier: "C" },
+  { name: "Silvereye", sci: "Zosterops lateralis", tier: "C" },
+
+  { name: "Noisy Friarbird", sci: "Philemon corniculatus", tier: "U" },
+  { name: "Rainbow Bee-eater", sci: "Merops ornatus", tier: "U" },
+  { name: "Sacred Kingfisher", sci: "Todiramphus sanctus", tier: "U" },
+  { name: "White-faced Heron", sci: "Egretta novaehollandiae", tier: "U" },
+  { name: "Eastern Yellow Robin", sci: "Eopsaltria australis", tier: "U" },
+  { name: "Red-browed Finch", sci: "Neochmia temporalis", tier: "U" },
+  { name: "Little Corella", sci: "Cacatua sanguinea", tier: "U" },
+
+  { name: "Little Egret", sci: "Egretta garzetta", tier: "R" },
+  { name: "Pheasant Coucal", sci: "Centropus phasianinus", tier: "R" },
+  { name: "Brahminy Kite", sci: "Haliastur indus", tier: "R" },
+  { name: "White-bellied Sea-Eagle", sci: "Icthyophaga leucogaster", tier: "R" },
+  { name: "Black-shouldered Kite", sci: "Elanus axillaris", tier: "R" },
+  { name: "Eastern Osprey", sci: "Pandion cristatus", tier: "R" },
+
+  { name: "Tawny Frogmouth", sci: "Podargus strigoides", tier: "S" },
+  { name: "Dollarbird", sci: "Eurystomus orientalis", tier: "S" },
+  { name: "Far Eastern Curlew", sci: "Numenius madagascariensis", tier: "S" },
+  { name: "Caspian Tern", sci: "Hydroprogne caspia", tier: "S" },
+  { name: "Rufous Fantail", sci: "Rhipidura rufifrons", tier: "S" },
+  { name: "Crimson Rosella", sci: "Platycercus elegans", tier: "S" },
+
+  { name: "Southern Boobook", sci: "Ninox boobook", tier: "SS" },
+  { name: "Powerful Owl", sci: "Ninox strenua", tier: "SS" },
+  { name: "White-throated Needletail", sci: "Hirundapus caudacutus", tier: "SS" },
+  { name: "Noisy Pitta", sci: "Pitta versicolor", tier: "SS" },
+  { name: "Beach Stone-curlew", sci: "Esacus magnirostris", tier: "SS" },
+
+  { name: "Wedge-tailed Eagle", sci: "Aquila audax", tier: "SS+" },
+];
+
+var SPECIES_BY_KEY = {};
+SPECIES_LIST.forEach(function (sp) {
+  var tierInfo = SPECIES_TIERS[sp.tier];
+  SPECIES_BY_KEY[sp.name.toLowerCase().trim()] = {
+    name: sp.name,
+    sci: sp.sci,
+    tier: sp.tier,
+    tierLabel: tierInfo.label,
+    points: tierInfo.points,
+  };
+});
+
+function lookupSpecies(typedName) {
+  if (!typedName) return null;
+  return SPECIES_BY_KEY[String(typedName).toLowerCase().trim()] || null;
+}
+
+function submitSighting(record) {
+  if (!supabaseClient) return Promise.reject(new Error("offline-demo"));
+  return supabaseClient
+    .from("sightings")
+    .insert({
+      participant_name: record.name,
+      species: record.species,
+      sighting_date: record.date,
+      location: record.location || null,
+      notes: record.notes || null,
+    })
+    .select()
+    .single()
+    .then(function (res) {
+      if (res.error) throw res.error;
+      return res.data;
+    });
+}
+
+function registerParticipant(record) {
+  if (!supabaseClient) return Promise.reject(new Error("offline-demo"));
+  return supabaseClient
+    .from("participants")
+    .insert({
+      display_name: record.displayName,
+      full_legal_name: record.fullName,
+      date_of_birth: record.dob,
+      address_line: record.addressLine,
+      suburb: record.suburb,
+      state: record.state,
+      postcode: record.postcode,
+      phone: record.phone,
+      email: record.email,
+      parental_consent: !!record.parentalConsent,
+    })
+    .select()
+    .single()
+    .then(function (res) {
+      if (res.error) throw res.error;
+      return res.data;
+    });
+}
+
+function participantStatus(name) {
+  if (!supabaseClient || !name) return Promise.resolve(null);
+  return supabaseClient
+    .rpc("participant_status", { key: name })
+    .then(function (res) {
+      if (res.error) throw res.error;
+      return res.data || null;
+    });
+}
+
+function fetchLeaderboard(limit) {
+  if (!supabaseClient) return Promise.resolve([]);
+  return supabaseClient
+    .from("leaderboard")
+    .select("*")
+    .order("total_points", { ascending: false })
+    .order("species_count", { ascending: false })
+    .order("last_sighting", { ascending: false })
+    .limit(limit || 25)
+    .then(function (res) {
+      if (res.error) throw res.error;
+      return res.data;
+    });
+}
+
+function fetchHallOfFame() {
+  if (!supabaseClient) return Promise.resolve([]);
+  return supabaseClient
+    .from("leaderboard")
+    .select("*")
+    .gte("species_count", 50)
+    .then(function (res) {
+      if (res.error) throw res.error;
+      var leaders = res.data || [];
+      return Promise.all(
+        leaders.map(function (leader) {
+          return supabaseClient
+            .from("sightings")
+            .select("species_key, sighting_date, created_at")
+            .eq("participant_key", leader.participant_key)
+            .eq("status", "confirmed")
+            .order("created_at", { ascending: true })
+            .then(function (rowsRes) {
+              if (rowsRes.error) throw rowsRes.error;
+              var seen = {};
+              var seenCount = 0;
+              var inductedAt = null;
+              var rows = rowsRes.data || [];
+              for (var i = 0; i < rows.length; i++) {
+                var key = rows[i].species_key;
+                if (!seen[key]) {
+                  seen[key] = true;
+                  seenCount++;
+                  if (seenCount >= 50) {
+                    inductedAt = rows[i].sighting_date;
+                    break;
+                  }
+                }
+              }
+              return { name: leader.participant_name, count: leader.species_count, points: leader.total_points, inductedAt: inductedAt };
+            });
+        })
+      );
+    })
+    .then(function (results) {
+      results.sort(function (a, b) {
+        var da = a.inductedAt || "";
+        var db = b.inductedAt || "";
+        return da < db ? -1 : da > db ? 1 : 0;
+      });
+      return results;
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  var form = document.getElementById("sighting-form");
+  if (!form) return;
+
+  var feed = document.getElementById("log-feed");
+  var empty = document.getElementById("log-empty");
+  var counter = document.getElementById("session-count");
+  var statusEl = document.getElementById("form-status");
+  var entries = [];
+
+  function renderFeed() {
+    if (entries.length === 0) {
+      empty.style.display = "block";
+      feed.innerHTML = "";
+      return;
+    }
+    empty.style.display = "none";
+    feed.innerHTML = entries
+      .map(function (e) {
+        var tierMatch = typeof lookupSpecies === "function" ? lookupSpecies(e.species) : null;
+        var tierBit = tierMatch
+          ? ' <span class="tier-badge ' + SPECIES_TIERS[tierMatch.tier].className + '">' + tierMatch.tier + "</span>" +
+            ' <span class="tier-points">' + tierMatch.points + (tierMatch.points === 1 ? "pt" : "pts") + "</span>"
+          : "";
+        return (
+          '<li class="log-entry">' +
+          "<strong>" + escapeHtml(e.species) + "</strong>" + tierBit + " — " + escapeHtml(e.location) +
+          '<div class="meta">' +
+          escapeHtml(e.name) + " · " + escapeHtml(e.date) +
+          (e.notes ? " · " + escapeHtml(e.notes) : "") +
+          "</div></li>"
+        );
+      })
+      .join("");
+    if (counter) counter.textContent = String(entries.length);
+  }
+
+  function escapeHtml(str) {
+    var div = document.createElement("div");
+    div.textContent = str == null ? "" : str;
+    return div.innerHTML;
+  }
+
+  function resetForNextEntry() {
+    form.reset();
+    var dateInput = form.querySelector('input[name="date"]');
+    if (dateInput && !dateInput.value) {
+      dateInput.value = new Date().toISOString().slice(0, 10);
+    }
+    var nameInput = form.querySelector('input[name="name"]');
+    if (nameInput) nameInput.focus();
+  }
+
+  function setStatusHtml(html) {
+    if (!statusEl) return;
+    statusEl.hidden = !html;
+    statusEl.innerHTML = html || "";
+  }
+
+  form.addEventListener("submit", function (evt) {
+    evt.preventDefault();
+    var data = new FormData(form);
+    var species = (data.get("species") || "").toString().trim();
+    var name = (data.get("name") || "").toString().trim();
+    if (!species || !name) return;
+
+    var record = {
+      name: name,
+      species: species,
+      date: (data.get("date") || "").toString(),
+      location: (data.get("location") || "").toString().trim() || "Greater Brisbane",
+      notes: (data.get("notes") || "").toString().trim(),
+    };
+
+    var submitBtn = form.querySelector('button[type="submit"]');
+    if (submitBtn) submitBtn.disabled = true;
+    setStatusHtml("Checking your registration…");
+
+    participantStatus(name)
+      .catch(function () { return "unknown"; })
+      .then(function (status) {
+        if (status === null) {
+          setStatusHtml('You\'ll need to <a href="#register">register</a> first — it only takes a minute, then come back and log this sighting under the same name.');
+          if (submitBtn) submitBtn.disabled = false;
+          return;
+        }
+        if (status === "banned") {
+          setStatusHtml("This name isn't able to log sightings. If you think this is a mistake, email <a href=\"mailto:contactcuriouslygeorgie@gmail.com\">contactcuriouslygeorgie@gmail.com</a>.");
+          if (submitBtn) submitBtn.disabled = false;
+          return;
+        }
+
+        setStatusHtml("Saving…");
+        return submitSighting(record)
+          .then(function () {
+            setStatusHtml("Saved to the shared log — thanks!");
+            entries.unshift(record);
+            renderFeed();
+            resetForNextEntry();
+            // Refresh the leaderboard/hall of fame data now too, so it's
+            // ready the instant the person switches tabs to go look.
+            if (typeof loadLeaderboard === "function") loadLeaderboard();
+            if (typeof loadHallOfFame === "function") loadHallOfFame();
+          })
+          .catch(function (err) {
+            entries.unshift(record);
+            renderFeed();
+            resetForNextEntry();
+            if (err && err.message === "offline-demo") {
+              setStatusHtml("Demo mode — this entry isn't saved anywhere yet.");
+            } else if (err && err.code === "42501") {
+              setStatusHtml('That name isn\'t registered yet — <a href="#register">register here</a>, then log this sighting again.');
+            } else {
+              setStatusHtml("Couldn't reach the shared log right now — kept locally for this session.");
+            }
+          })
+          .then(function () {
+            if (submitBtn) submitBtn.disabled = false;
+          });
+      });
+  });
+
+  // Pre-fill today's date, and the name field if this browser has
+  // registered before in this preview.
+  var dateField = form.querySelector('input[name="date"]');
+  if (dateField) dateField.value = new Date().toISOString().slice(0, 10);
+
+  var nameField = form.querySelector('input[name="name"]');
+  if (nameField && !nameField.value) {
+    try {
+      var savedName = window.localStorage.getItem("cg_participant_name");
+      if (savedName) nameField.value = savedName;
+    } catch (e) { /* localStorage unavailable — fine */ }
+  }
+
+  renderFeed();
+});
+
+// Registration form (mirrors assets/register.js). Handles the
+// parental-consent checkbox (shown only when the entered date of birth
+// is under 18) and submits to Supabase via registerParticipant() above.
+document.addEventListener("DOMContentLoaded", function () {
+  var form = document.getElementById("register-form");
+  if (!form) return;
+
+  var dobInput = document.getElementById("reg-dob");
+  var consentField = document.getElementById("reg-parental-consent-field");
+  var consentBox = document.getElementById("reg-parental-consent");
+  var statusEl = document.getElementById("register-form-status");
+
+  function isUnder18(dobStr) {
+    if (!dobStr) return false;
+    var dob = new Date(dobStr + "T00:00:00");
+    if (isNaN(dob.getTime())) return false;
+    var today = new Date();
+    var age = today.getFullYear() - dob.getFullYear();
+    var hasHadBirthdayThisYear =
+      today.getMonth() > dob.getMonth() ||
+      (today.getMonth() === dob.getMonth() && today.getDate() >= dob.getDate());
+    if (!hasHadBirthdayThisYear) age--;
+    return age < 18;
+  }
+
+  function refreshConsentVisibility() {
+    var minor = isUnder18(dobInput.value);
+    consentField.hidden = !minor;
+    consentBox.required = minor;
+    if (!minor) consentBox.checked = false;
+  }
+
+  dobInput.addEventListener("change", refreshConsentVisibility);
+  dobInput.addEventListener("blur", refreshConsentVisibility);
+
+  function setStatus(text) {
+    if (!statusEl) return;
+    statusEl.hidden = !text;
+    statusEl.textContent = text || "";
+  }
+
+  form.addEventListener("submit", function (evt) {
+    evt.preventDefault();
+
+    var dobStr = dobInput.value;
+    var dob = new Date(dobStr + "T00:00:00");
+    if (isNaN(dob.getTime()) || dob.getTime() > Date.now()) {
+      setStatus("Please enter a valid date of birth.");
+      return;
+    }
+
+    var data = new FormData(form);
+    var record = {
+      displayName: (data.get("displayName") || "").toString().trim(),
+      fullName: (data.get("fullName") || "").toString().trim(),
+      dob: dobStr,
+      addressLine: (data.get("addressLine") || "").toString().trim(),
+      suburb: (data.get("suburb") || "").toString().trim(),
+      state: (data.get("state") || "").toString().trim(),
+      postcode: (data.get("postcode") || "").toString().trim(),
+      phone: (data.get("phone") || "").toString().trim(),
+      email: (data.get("email") || "").toString().trim(),
+      parentalConsent: !!(data.get("parentalConsent")),
+    };
+
+    if (isUnder18(record.dob) && !record.parentalConsent) {
+      setStatus("A parent or guardian needs to tick the approval box above before this can be submitted.");
+      return;
+    }
+
+    var submitBtn = form.querySelector('button[type="submit"]');
+    if (submitBtn) submitBtn.disabled = true;
+    setStatus("Registering…");
+
+    registerParticipant(record)
+      .then(function () {
+        try { window.localStorage.setItem("cg_participant_name", record.displayName); } catch (e) {}
+        form.hidden = true;
+        setStatus("You're registered as “" + record.displayName + "” — head to Log a Sighting to get started.");
+      })
+      .catch(function (err) {
+        var code = err && err.code;
+        var message = "Something went wrong — please try again, or email contactcuriouslygeorgie@gmail.com if it keeps happening.";
+        if (err && err.message === "offline-demo") {
+          message = "Registration isn't connected to the shared database right now — please try again shortly.";
+        } else if (code === "23505") {
+          message = "That display name is already registered — try adding an initial or your suburb, or if that's you, head to Log a Sighting.";
+        } else if (code === "23514") {
+          message = "A parent or guardian needs to tick the approval box above before this can be submitted.";
+        }
+        setStatus(message);
+        if (submitBtn) submitBtn.disabled = false;
+      });
+  });
+});
+
+// Tier-aware species autocomplete for the Log a Sighting form (mirrors
+// assets/species-autocomplete.js). Typing something not on the official
+// 50 is still allowed — it just won't show a tier badge.
+document.addEventListener("DOMContentLoaded", function () {
+  var input = document.getElementById("species");
+  var box = document.getElementById("species-suggestions");
+  var hint = document.getElementById("species-tier-hint");
+  if (!input || !box || typeof SPECIES_LIST === "undefined") return;
+
+  var activeIndex = -1;
+  var currentMatches = [];
+
+  function tierBadgeHtml(tier) {
+    var info = SPECIES_TIERS[tier];
+    if (!info) return "";
+    var cls = "tier-badge " + info.className;
+    return '<span class="' + cls + '">' + tier + "</span>";
+  }
+
+  function updateHint() {
+    var match = typeof lookupSpecies === "function" ? lookupSpecies(input.value) : null;
+    if (match) {
+      hint.innerHTML =
+        tierBadgeHtml(match.tier) +
+        ' <span class="tier-points">' +
+        match.tierLabel +
+        " · " +
+        match.points +
+        (match.points === 1 ? " point" : " points") +
+        "</span>";
+    } else if (input.value.trim()) {
+      hint.textContent = "Not on the official 50 — still counts, no Air Points tier assigned.";
+    } else {
+      hint.textContent = "";
+    }
+  }
+
+  function closeSuggestions() {
+    box.hidden = true;
+    box.innerHTML = "";
+    activeIndex = -1;
+    currentMatches = [];
+  }
+
+  function selectSpecies(name) {
+    input.value = name;
+    closeSuggestions();
+    updateHint();
+    input.focus();
+  }
+
+  function renderSuggestions(query) {
+    var q = query.trim().toLowerCase();
+    if (!q) {
+      closeSuggestions();
+      return;
+    }
+    var starts = [];
+    var contains = [];
+    SPECIES_LIST.forEach(function (sp) {
+      var lower = sp.name.toLowerCase();
+      if (lower.indexOf(q) === 0) starts.push(sp);
+      else if (lower.indexOf(q) !== -1) contains.push(sp);
+    });
+    currentMatches = starts.concat(contains).slice(0, 8);
+    activeIndex = -1;
+
+    if (!currentMatches.length) {
+      box.innerHTML = '<div class="no-match">No official match — you can still log it as typed.</div>';
+      box.hidden = false;
+      return;
+    }
+
+    box.innerHTML = currentMatches
+      .map(function (sp, i) {
+        var info = SPECIES_TIERS[sp.tier];
+        return (
+          '<div class="species-suggestion" data-index="' +
+          i +
+          '" role="option">' +
+          '<span class="sp-left"><span class="sp-name">' +
+          sp.name +
+          '</span><span class="sp-sci">' +
+          sp.sci +
+          "</span></span>" +
+          '<span class="sp-meta">' +
+          tierBadgeHtml(sp.tier) +
+          '<span class="tier-points">' +
+          info.points +
+          "pt</span></span>" +
+          "</div>"
+        );
+      })
+      .join("");
+    box.hidden = false;
+  }
+
+  function setActive(index) {
+    var items = box.querySelectorAll(".species-suggestion");
+    items.forEach(function (el, i) {
+      el.classList.toggle("active", i === index);
+    });
+    activeIndex = index;
+  }
+
+  input.addEventListener("input", function () {
+    renderSuggestions(input.value);
+    updateHint();
+  });
+
+  input.addEventListener("keydown", function (evt) {
+    var items = box.querySelectorAll(".species-suggestion");
+    if (box.hidden || !items.length) return;
+    if (evt.key === "ArrowDown") {
+      evt.preventDefault();
+      setActive(Math.min(activeIndex + 1, items.length - 1));
+    } else if (evt.key === "ArrowUp") {
+      evt.preventDefault();
+      setActive(Math.max(activeIndex - 1, 0));
+    } else if (evt.key === "Enter") {
+      if (activeIndex >= 0 && currentMatches[activeIndex]) {
+        evt.preventDefault();
+        selectSpecies(currentMatches[activeIndex].name);
+      }
+    } else if (evt.key === "Escape") {
+      closeSuggestions();
+    }
+  });
+
+  box.addEventListener("mousedown", function (evt) {
+    var row = evt.target.closest(".species-suggestion");
+    if (!row) return;
+    var idx = Number(row.getAttribute("data-index"));
+    if (currentMatches[idx]) selectSpecies(currentMatches[idx].name);
+  });
+
+  document.addEventListener("click", function (evt) {
+    if (evt.target !== input && !box.contains(evt.target)) closeSuggestions();
+  });
+
+  input.addEventListener("blur", function () {
+    // slight delay so a mousedown-selection above still registers first
+    setTimeout(updateHint, 0);
+  });
+});
+
+// Populate the Species Checklist page, grouped by Air Points tier
+// (mirrors checklist.html's inline script).
+document.addEventListener("DOMContentLoaded", function () {
+  var container = document.getElementById("checklist-sections");
+  if (!container || typeof SPECIES_LIST === "undefined") return;
+
+  function escapeHtmlChecklist(str) {
+    var div = document.createElement("div");
+    div.textContent = str == null ? "" : str;
+    return div.innerHTML;
+  }
+
+  var byTier = {};
+  SPECIES_LIST.forEach(function (sp) {
+    (byTier[sp.tier] = byTier[sp.tier] || []).push(sp);
+  });
+
+  container.innerHTML = TIER_ORDER.map(function (tierKey) {
+    var info = SPECIES_TIERS[tierKey];
+    var species = byTier[tierKey] || [];
+    var rows = species
+      .map(function (sp) {
+        return (
+          '<div class="species-row">' +
+          '<span class="sp-left"><span class="sp-name">' + escapeHtmlChecklist(sp.name) + '</span> ' +
+          '<span class="sci">' + escapeHtmlChecklist(sp.sci) + "</span></span>" +
+          '<span class="sp-right"><span class="tier-points">' + info.points + (info.points === 1 ? "pt" : "pts") + "</span></span>" +
+          "</div>"
+        );
+      })
+      .join("");
+    return (
+      '<div class="checklist-group tier-' + tierKey.toLowerCase().replace("+", "plus") + '">' +
+      '<h3><span class="tier-badge ' + info.className + '">' + tierKey + "</span> " + info.label +
+      ' <span class="tier-points">(' + info.points + (info.points === 1 ? " point" : " points") + " each)</span></h3>" +
+      '<p class="tier-desc">' + info.desc + "</p>" +
+      '<div class="species-grid">' + rows + "</div>" +
+      "</div>"
+    );
+  }).join("");
+});
+
+function escapeHtmlGlobal(str) {
+  var div = document.createElement("div");
+  div.textContent = str == null ? "" : str;
+  return div.innerHTML;
+}
+
+// Both of these are called on first load AND every time the hash router
+// (below) navigates to their page, so the tables always show fresh data —
+// not just whatever was fetched once when the page first loaded.
+function loadLeaderboard() {
+  fetchLeaderboard(25)
+    .then(function (rows) {
+      var tbody = document.getElementById("leaderboard-body");
+      var note = document.getElementById("leaderboard-note");
+      if (!rows || !rows.length) return; // keep example rows until real ones exist
+      tbody.innerHTML = rows
+        .map(function (r, i) {
+          var rank = i + 1;
+          var badgeClass = rank === 1 ? "top1" : rank === 2 ? "top2" : rank === 3 ? "top3" : "";
+          var lastSeen = r.last_sighting
+            ? new Date(r.last_sighting + "T00:00:00").toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })
+            : "—";
+          return (
+            '<tr><td><span class="rank-badge ' + badgeClass + '">' + rank + "</span></td>" +
+            "<td>" + escapeHtmlGlobal(r.participant_name) + "</td>" +
+            '<td class="num">' + r.total_points + "</td>" +
+            '<td class="num">' + r.species_count + "</td>" +
+            "<td>" + lastSeen + "</td></tr>"
+          );
+        })
+        .join("");
+      if (note) note.hidden = true;
+    })
+    .catch(function () { /* keep example data if the backend isn't reachable */ });
+}
+
+function loadHallOfFame() {
+  fetchHallOfFame()
+    .then(function (rows) {
+      var grid = document.getElementById("fame-grid");
+      var note = document.getElementById("fame-note");
+      if (!rows || !rows.length) return; // keep example cards until real inductees exist
+      grid.innerHTML = rows
+        .map(function (r) {
+          var inducted = r.inductedAt
+            ? new Date(r.inductedAt + "T00:00:00").toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })
+            : "—";
+          return (
+            '<div class="fame-card"><div class="name">' + escapeHtmlGlobal(r.name) + "</div>" +
+            '<div class="count">' + r.count + " species · " + r.points + " pts</div>" +
+            '<div class="date">Inducted ' + inducted + "</div></div>"
+          );
+        })
+        .join("");
+      if (note) note.hidden = true;
+    })
+    .catch(function () { /* keep example data if the backend isn't reachable */ });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  loadLeaderboard();
+  loadHallOfFame();
+});
+
+// Simple hash router so this single preview page can stand in for the
+// site's six separate pages.
+(function () {
+  var routes = ["index", "rules", "register", "log-sighting", "leaderboard", "hall-of-fame", "checklist"];
+  function currentRoute() {
+    var h = (location.hash || "").replace("#", "");
+    return routes.indexOf(h) !== -1 ? h : "index";
+  }
+  function render() {
+    var route = currentRoute();
+    routes.forEach(function (r) {
+      var el = document.getElementById("page-" + r);
+      if (el) el.hidden = r !== route;
+    });
+    document.querySelectorAll(".nav-links a").forEach(function (a) {
+      var target = (a.getAttribute("href") || "").replace("#", "");
+      if (target === route) a.setAttribute("aria-current", "page");
+      else a.removeAttribute("aria-current");
+    });
+    // Re-fetch fresh data every time we navigate to these pages, not just
+    // once on first load, so a newly logged sighting shows up right away.
+    if (route === "leaderboard" && typeof loadLeaderboard === "function") loadLeaderboard();
+    if (route === "hall-of-fame" && typeof loadHallOfFame === "function") loadHallOfFame();
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener("hashchange", render);
+  document.addEventListener("DOMContentLoaded", render);
+})();
+</script>
