@@ -40,12 +40,16 @@ function submitSighting(record) {
     });
 }
 
-// Top N participants by confirmed unique-species count.
+// Top N participants by accumulated Air Points (see
+// supabase/points-migration.sql — the leaderboard view sums each
+// participant's confirmed distinct species' tier points; species_count
+// is still returned too, for display and for Hall of Fame eligibility).
 function fetchLeaderboard(limit) {
   if (!supabaseClient) return Promise.resolve([]);
   return supabaseClient
     .from("leaderboard")
     .select("*")
+    .order("total_points", { ascending: false })
     .order("species_count", { ascending: false })
     .order("last_sighting", { ascending: false })
     .limit(limit || 25)
@@ -96,6 +100,7 @@ function fetchHallOfFame() {
               return {
                 name: leader.participant_name,
                 count: leader.species_count,
+                points: leader.total_points,
                 inductedAt: inductedAt,
               };
             });

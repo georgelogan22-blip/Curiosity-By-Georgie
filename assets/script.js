@@ -25,9 +25,14 @@ document.addEventListener("DOMContentLoaded", function () {
     empty.style.display = "none";
     feed.innerHTML = entries
       .map(function (e) {
+        var tierMatch = typeof lookupSpecies === "function" ? lookupSpecies(e.species) : null;
+        var tierBit = tierMatch
+          ? ' <span class="tier-badge ' + SPECIES_TIERS[tierMatch.tier].className + '">' + tierMatch.tier + "</span>" +
+            ' <span class="tier-points">' + tierMatch.points + (tierMatch.points === 1 ? "pt" : "pts") + "</span>"
+          : "";
         return (
           '<li class="log-entry">' +
-          "<strong>" + escapeHtml(e.species) + "</strong> — " + escapeHtml(e.location) +
+          "<strong>" + escapeHtml(e.species) + "</strong>" + tierBit + " — " + escapeHtml(e.location) +
           '<div class="meta">' +
           escapeHtml(e.name) + " · " + escapeHtml(e.date) +
           (e.notes ? " · " + escapeHtml(e.notes) : "") +
