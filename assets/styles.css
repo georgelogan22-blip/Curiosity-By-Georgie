@@ -477,3 +477,93 @@ footer a { color: var(--ink-soft); }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
 }
+
+/* ---------- Air Points tier colours (added by points-system update) ---------- */
+:root {
+  --tier-blue: #4a7fb5;
+  --tier-orange: #c9762e;
+  --tier-purple: #7c4fd1;
+  --tier-amber: #a1720a;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --tier-blue: #8db6e0;
+    --tier-orange: #eaa563;
+    --tier-purple: #b79af0;
+    --tier-amber: #d9ad4e;
+  }
+}
+
+/* ---------- Air Points tier badges ---------- */
+.tier-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.6em;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+.tier-badge.tier-a { background: var(--tier-blue); }
+.tier-badge.tier-c { background: var(--accent); }
+.tier-badge.tier-u { background: var(--accent-warm); color: #2a1400; }
+.tier-badge.tier-r { background: var(--tier-orange); }
+.tier-badge.tier-s { background: var(--accent-coral); }
+.tier-badge.tier-ss { background: var(--tier-purple); }
+.tier-badge.tier-ssplus { background: var(--tier-amber); color: #2a1400; }
+
+.tier-points {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+/* ---------- species autocomplete ---------- */
+.species-autocomplete { position: relative; }
+.species-suggestions {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  max-height: 280px;
+  overflow-y: auto;
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+  padding: 4px;
+}
+.species-suggestions[hidden] { display: none; }
+.species-suggestion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.92rem;
+}
+.species-suggestion:hover,
+.species-suggestion.active { background: var(--paper); }
+.species-suggestion .sp-name { font-weight: 600; }
+.species-suggestion .sp-sci { color: var(--ink-soft); font-style: italic; font-size: 0.8rem; margin-left: 6px; }
+.species-suggestion .sp-meta { display: flex; align-items: center; gap: 8px; flex: none; }
+.species-suggestions .no-match { padding: 8px 10px; color: var(--ink-soft); font-size: 0.86rem; }
+
+/* ---------- checklist tier heading colours ---------- */
+.checklist-group.tier-a h3 { color: var(--tier-blue); }
+.checklist-group.tier-c h3 { color: var(--accent); }
+.checklist-group.tier-u h3 { color: var(--accent-warm); }
+.checklist-group.tier-r h3 { color: var(--tier-orange); }
+.checklist-group.tier-s h3 { color: var(--accent-coral); }
+.checklist-group.tier-ss h3 { color: var(--tier-purple); }
+.checklist-group.tier-ssplus h3 { color: var(--tier-amber); }
+
+.species-row .sp-right { display: flex; align-items: center; gap: 6px; flex: none; }
