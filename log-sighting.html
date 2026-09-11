@@ -33,7 +33,7 @@
 <header class="page-head wrap">
   <span class="eyebrow">Log a Sighting</span>
   <h1>Seen something good?</h1>
-  <p class="lede">Fill in what you saw, when, and roughly where. Your first sighting of each species is what counts toward your fifty. From official launch, a photo will be required with every submission, and sightings will sit as <strong>pending</strong> until reviewed — see the <a href="rules.html">rules</a> for how verification works.</p>
+  <p class="lede">Fill in what you saw, when, and roughly where, and attach a clear photo as evidence. Your first sighting of each species is what counts toward your fifty. Every submission sits as <strong>pending</strong> until it's checked — automatically in most cases, or by Georgie personally if the automatic check isn't sure — see the <a href="rules.html">rules</a> for how verification works.</p>
 </header>
 
 <section class="wrap">
@@ -67,6 +67,11 @@
         <input type="text" id="location" name="location" placeholder="e.g. New Farm Park">
       </div>
       <div class="field">
+        <label for="photo">Photo evidence</label>
+        <input type="file" id="photo" name="photo" accept="image/*" required>
+        <p class="hint">A clear, unedited photo of the bird — this is what gets checked (species match + capture date) before the sighting is confirmed.</p>
+      </div>
+      <div class="field">
         <label for="notes">Notes (optional)</label>
         <textarea id="notes" name="notes" placeholder="Behaviour, count, photo link…"></textarea>
       </div>
@@ -94,6 +99,7 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/exifr/dist/lite.umd.js"></script>
 <script src="assets/species-data.js"></script>
 <script src="assets/supabase-client.js"></script>
 <script src="assets/script.js"></script>
