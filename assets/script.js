@@ -78,6 +78,13 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
+    var photoInput = form.querySelector('input[name="photo"]');
+    var photoFile = photoInput && photoInput.files && photoInput.files[0];
+    if (!photoFile) {
+      setStatusHtml("Attach a photo of the bird as evidence — every sighting needs one.");
+      return;
+    }
+
     var record = {
       name: name,
       species: species,
@@ -117,18 +124,34 @@ document.addEventListener("DOMContentLoaded", function () {
           return;
         }
 
-        setStatusHtml("Saving…");
+        setStatusHtml("Uploading photo…");
         var save =
-          typeof submitSighting === "function" && typeof hashPin === "function"
-            ? hashPin(pin).then(function (pinHash) {
-                record.pinHash = pinHash;
-                return submitSighting(record);
-              })
+          typeof submitSighting === "function" &&
+          typeof hashPin === "function" &&
+          typeof uploadSightingPhoto === "function"
+            ? uploadSightingPhoto(photoFile)
+                .then(function (photoPath) {
+                  record.photoPath = photoPath;
+                  return typeof readPhotoTakenDate === "function"
+                    ? readPhotoTakenDate(photoFile)
+                    : null;
+                })
+                .then(function (photoTakenAt) {
+                  record.photoTakenAt = photoTakenAt;
+                  setStatusHtml("Saving…");
+                  return hashPin(pin);
+                })
+                .then(function (pinHash) {
+                  record.pinHash = pinHash;
+                  return submitSighting(record);
+                })
             : Promise.reject(new Error("offline-demo"));
 
         return save
           .then(function () {
-            setStatusHtml("Saved to the shared log — thanks!");
+            setStatusHtml(
+              "Saved — sitting as <strong>pending</strong> while it's checked. Confirmed sightings show up on the Leaderboard within a minute or two; anything the automatic check isn't sure about waits for Georgie to take a look."
+            );
             entries.unshift(record);
             renderFeed();
             resetForNextEntry();
@@ -153,6 +176,8 @@ document.addEventListener("DOMContentLoaded", function () {
               );
             } else if (msg === "invalid_pin") {
               setStatusHtml("That PIN doesn't match this name — check it and try again.");
+            } else if (msg === "photo_required") {
+              setStatusHtml("That photo didn't come through — please attach it again and resubmit.");
             } else {
               setStatusHtml("Couldn't reach the shared log right now — kept locally for this session.");
             }
