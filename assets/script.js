@@ -59,12 +59,24 @@ document.addEventListener("DOMContentLoaded", function () {
     if (nameInput) nameInput.focus();
   }
 
+  function setStatusHtml(html) {
+    if (!statusEl) return;
+    statusEl.hidden = !html;
+    statusEl.innerHTML = html || "";
+  }
+
   form.addEventListener("submit", function (evt) {
     evt.preventDefault();
     var data = new FormData(form);
     var species = (data.get("species") || "").toString().trim();
     var name = (data.get("name") || "").toString().trim();
+    var pin = (data.get("pin") || "").toString().trim();
     if (!species || !name) return;
+
+    if (!/^[0-9]{4}$/.test(pin)) {
+      setStatusHtml("Enter the 4-digit PIN you chose when you registered.");
+      return;
+    }
 
     var record = {
       name: name,
@@ -76,42 +88,96 @@ document.addEventListener("DOMContentLoaded", function () {
 
     var submitBtn = form.querySelector('button[type="submit"]');
     if (submitBtn) submitBtn.disabled = true;
-    if (statusEl) {
-      statusEl.hidden = false;
-      statusEl.textContent = "Saving…";
-    }
+    setStatusHtml("Checking your registration…");
 
-    var save = typeof submitSighting === "function"
-      ? submitSighting(record)
-      : Promise.reject(new Error("offline-demo"));
+    var checkStatus = typeof participantStatus === "function"
+      ? participantStatus(name)
+      : Promise.resolve(null);
 
-    save
-      .then(function () {
-        if (statusEl) statusEl.textContent = "Saved to the shared log — thanks!";
-        entries.unshift(record);
-        renderFeed();
-        resetForNextEntry();
+    checkStatus
+      .catch(function () {
+        // Status check failed for some other reason (network hiccup,
+        // backend not configured) — don't block the attempt on that;
+        // let the actual save below succeed or fail on its own.
+        return "unknown";
       })
-      .catch(function (err) {
-        // Backend not configured yet, or the request failed — still show
-        // the entry in this session's own feed so the form isn't a dead end.
-        entries.unshift(record);
-        renderFeed();
-        resetForNextEntry();
-        if (statusEl) {
-          statusEl.textContent = (err && err.message === "offline-demo")
-            ? "Demo mode — this entry isn't saved anywhere yet."
-            : "Couldn't reach the shared log right now — kept locally for this session.";
+      .then(function (status) {
+        if (status === null) {
+          setStatusHtml(
+            'You\'ll need to <a href="register.html">register</a> first — it only takes a minute, then come back and log this sighting under the same name.'
+          );
+          if (submitBtn) submitBtn.disabled = false;
+          return;
         }
-      })
-      .then(function () {
-        if (submitBtn) submitBtn.disabled = false;
+        if (status === "banned") {
+          setStatusHtml(
+            "This name isn't able to log sightings. If you think this is a mistake, email <a href=\"mailto:contactcuriouslygeorgie@gmail.com\">contactcuriouslygeorgie@gmail.com</a>."
+          );
+          if (submitBtn) submitBtn.disabled = false;
+          return;
+        }
+
+        setStatusHtml("Saving…");
+        var save =
+          typeof submitSighting === "function" && typeof hashPin === "function"
+            ? hashPin(pin).then(function (pinHash) {
+                record.pinHash = pinHash;
+                return submitSighting(record);
+              })
+            : Promise.reject(new Error("offline-demo"));
+
+        return save
+          .then(function () {
+            setStatusHtml("Saved to the shared log — thanks!");
+            entries.unshift(record);
+            renderFeed();
+            resetForNextEntry();
+          })
+          .catch(function (err) {
+            // Registered (or status unknown) but the save itself failed
+            // — still show the entry in this session's own feed so the
+            // form isn't a dead end.
+            entries.unshift(record);
+            renderFeed();
+            resetForNextEntry();
+            var msg = err && err.message;
+            if (msg === "offline-demo") {
+              setStatusHtml("Demo mode — this entry isn't saved anywhere yet.");
+            } else if (msg === "not_registered" || err && err.code === "42501") {
+              setStatusHtml(
+                'That name isn\'t registered yet — <a href="register.html">register here</a>, then log this sighting again.'
+              );
+            } else if (msg === "not_active") {
+              setStatusHtml(
+                "This name isn't able to log sightings. If you think this is a mistake, email <a href=\"mailto:contactcuriouslygeorgie@gmail.com\">contactcuriouslygeorgie@gmail.com</a>."
+              );
+            } else if (msg === "invalid_pin") {
+              setStatusHtml("That PIN doesn't match this name — check it and try again.");
+            } else {
+              setStatusHtml("Couldn't reach the shared log right now — kept locally for this session.");
+            }
+          })
+          .then(function () {
+            if (submitBtn) submitBtn.disabled = false;
+          });
       });
   });
 
-  // Pre-fill today's date.
+  // Pre-fill today's date, and the name field if this browser has
+  // registered before (see assets/register.js) — matches the site's
+  // simple "type your name" pattern, just saving a retype.
   var dateField = form.querySelector('input[name="date"]');
   if (dateField) dateField.value = new Date().toISOString().slice(0, 10);
+
+  var nameField = form.querySelector('input[name="name"]');
+  if (nameField && !nameField.value) {
+    try {
+      var savedName = window.localStorage.getItem("cg_participant_name");
+      if (savedName) nameField.value = savedName;
+    } catch (e) {
+      // localStorage unavailable — fine, just means no prefill.
+    }
+  }
 
   renderFeed();
 });

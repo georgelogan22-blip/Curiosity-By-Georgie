@@ -17,26 +17,96 @@ if (
   supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
 
-// Submit one sighting. Resolves with the saved row, or rejects if the
-// backend isn't configured yet / the request fails.
+// Hashes a PIN with SHA-256 and returns the hex digest — the same
+// digest format supabase/registration-migration.sql's pin_hash column
+// expects. The raw PIN is never sent to or stored by Supabase, only
+// this digest. Shared by assets/register.js (hashes the PIN chosen at
+// registration) and assets/script.js (hashes the PIN re-entered at
+// sighting-log time), so the two digests can be compared server-side
+// without either end ever seeing the other's actual PIN.
+function hashPin(pin) {
+  var bytes = new TextEncoder().encode(String(pin).trim());
+  return crypto.subtle.digest("SHA-256", bytes).then(function (buf) {
+    return Array.prototype.map
+      .call(new Uint8Array(buf), function (b) {
+        return b.toString(16).padStart(2, "0");
+      })
+      .join("");
+  });
+}
+
+// Submit one sighting via the submit_sighting() database function (see
+// supabase/registration-migration.sql) — this checks, in one call, that
+// record.name is registered, active (not banned), and that
+// record.pinHash matches the PIN hash stored at registration, before
+// inserting. Resolves with the saved row. Rejects with an error whose
+// .message is one of "not_registered", "not_active", or "invalid_pin"
+// (raised by the database function) so the form can show a specific
+// hint for each case — see assets/script.js.
 function submitSighting(record) {
   if (!supabaseClient) {
     return Promise.reject(new Error("offline-demo"));
   }
   return supabaseClient
-    .from("sightings")
+    .rpc("submit_sighting", {
+      p_name: record.name,
+      p_pin_hash: record.pinHash,
+      p_species: record.species,
+      p_sighting_date: record.date,
+      p_location: record.location || null,
+      p_notes: record.notes || null,
+    })
+    .then(function (res) {
+      if (res.error) throw res.error;
+      return Array.isArray(res.data) ? res.data[0] : res.data;
+    });
+}
+
+// Register a new participant (see supabase/registration-migration.sql).
+// Resolves with the saved row, or rejects with the Supabase/Postgres
+// error (err.code is the Postgres error code — e.g. "23505" for a
+// duplicate display name, "23514" for the parental-consent check) so
+// the form can show a friendly message for the common cases.
+function registerParticipant(record) {
+  if (!supabaseClient) {
+    return Promise.reject(new Error("offline-demo"));
+  }
+  return supabaseClient
+    .from("participants")
     .insert({
-      participant_name: record.name,
-      species: record.species,
-      sighting_date: record.date,
-      location: record.location || null,
-      notes: record.notes || null,
+      display_name: record.displayName,
+      full_legal_name: record.fullName,
+      date_of_birth: record.dob,
+      address_line: record.addressLine,
+      suburb: record.suburb,
+      state: record.state,
+      postcode: record.postcode,
+      phone: record.phone,
+      email: record.email,
+      parental_consent: !!record.parentalConsent,
+      pin_hash: record.pinHash,
     })
     .select()
     .single()
     .then(function (res) {
       if (res.error) throw res.error;
       return res.data;
+    });
+}
+
+// Looks up whether a display name is registered, without exposing any
+// of that participant's actual details — calls the participant_status()
+// database function (SECURITY DEFINER, see the migration). Resolves
+// with "active", "banned", or null (not registered at all). Resolves
+// with null (rather than rejecting) if the backend isn't configured,
+// so callers can treat "unknown" the same as "not registered".
+function participantStatus(name) {
+  if (!supabaseClient || !name) return Promise.resolve(null);
+  return supabaseClient
+    .rpc("participant_status", { key: name })
+    .then(function (res) {
+      if (res.error) throw res.error;
+      return res.data || null;
     });
 }
 
