@@ -36,13 +36,18 @@ function hashPin(pin) {
 }
 
 // Submit one sighting via the submit_sighting() database function (see
-// supabase/registration-migration.sql) — this checks, in one call, that
-// record.name is registered, active (not banned), and that
-// record.pinHash matches the PIN hash stored at registration, before
-// inserting. Resolves with the saved row. Rejects with an error whose
-// .message is one of "not_registered", "not_active", or "invalid_pin"
-// (raised by the database function) so the form can show a specific
-// hint for each case — see assets/script.js.
+// supabase/registration-migration.sql + photo-verification-migration.sql)
+// — this checks, in one call, that record.name is registered, active
+// (not banned), and that record.pinHash matches the PIN hash stored at
+// registration, before inserting. The row always starts out 'pending';
+// the verify-sighting Edge Function (triggered by a Database Webhook —
+// see supabase/functions/verify-sighting) auto-confirms it moments later
+// if the photo's date and species both check out, otherwise it stays
+// pending for Georgie to review by eye. Resolves with the saved row.
+// Rejects with an error whose .message is one of "not_registered",
+// "not_active", "invalid_pin", or "photo_required" (raised by the
+// database function) so the form can show a specific hint for each case
+// — see assets/script.js.
 function submitSighting(record) {
   if (!supabaseClient) {
     return Promise.reject(new Error("offline-demo"));
@@ -55,10 +60,61 @@ function submitSighting(record) {
       p_sighting_date: record.date,
       p_location: record.location || null,
       p_notes: record.notes || null,
+      p_photo_path: record.photoPath,
+      p_photo_taken_at: record.photoTakenAt || null,
     })
     .then(function (res) {
       if (res.error) throw res.error;
       return Array.isArray(res.data) ? res.data[0] : res.data;
+    });
+}
+
+// Uploads the evidence photo to the public "sighting-photos" Storage
+// bucket (see photo-verification-migration.sql) ahead of the actual
+// submit_sighting() call, and resolves with the storage path to pass in
+// as record.photoPath. Each photo gets a random, collision-proof name —
+// the original filename is never used or stored, so it can't leak
+// anything about the participant's device or photo library.
+function uploadSightingPhoto(file) {
+  if (!supabaseClient) {
+    return Promise.reject(new Error("offline-demo"));
+  }
+  var ext = (file.name && file.name.indexOf(".") !== -1)
+    ? file.name.slice(file.name.lastIndexOf(".") + 1).toLowerCase().replace(/[^a-z0-9]/g, "")
+    : "jpg";
+  var id = (typeof crypto !== "undefined" && crypto.randomUUID)
+    ? crypto.randomUUID()
+    : Date.now().toString(36) + Math.random().toString(36).slice(2);
+  var path = id + "." + (ext || "jpg");
+  return supabaseClient.storage
+    .from("sighting-photos")
+    .upload(path, file, { contentType: file.type || "image/jpeg", upsert: false })
+    .then(function (res) {
+      if (res.error) throw res.error;
+      return res.data.path;
+    });
+}
+
+// Reads a photo's original capture date (EXIF "DateTimeOriginal") using
+// the exifr library (see the <script> tag on log-sighting.html) —
+// exactly what supabase/functions/verify-sighting checks against the
+// challenge's launch date, so a screenshot or a photo with its metadata
+// stripped shows up as "no date" rather than silently passing. Resolves
+// with a "YYYY-MM-DD" string, or null if no date could be read (missing
+// EXIF, unsupported format, or the exifr library failed to load).
+function readPhotoTakenDate(file) {
+  if (typeof exifr === "undefined") return Promise.resolve(null);
+  return exifr
+    .parse(file, ["DateTimeOriginal", "CreateDate"])
+    .then(function (tags) {
+      var d = tags && (tags.DateTimeOriginal || tags.CreateDate);
+      if (!d) return null;
+      var date = d instanceof Date ? d : new Date(d);
+      if (isNaN(date.getTime())) return null;
+      return date.toISOString().slice(0, 10);
+    })
+    .catch(function () {
+      return null;
     });
 }
 
