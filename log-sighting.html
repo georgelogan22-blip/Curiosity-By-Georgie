@@ -21,6 +21,7 @@
     <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
       <li><a href="rules.html">Rules</a></li>
+      <li><a href="register.html">Register</a></li>
       <li><a href="log-sighting.html" aria-current="page">Log a Sighting</a></li>
       <li><a href="leaderboard.html">Leaderboard</a></li>
       <li><a href="hall-of-fame.html">Hall of Fame</a></li>
@@ -41,7 +42,12 @@
       <div class="field">
         <label for="name">Your name or nickname</label>
         <input type="text" id="name" name="name" placeholder="e.g. Ava T." required>
-        <p class="hint">Use the same name every time so your sightings add up correctly.</p>
+        <p class="hint">Enter your registered display name exactly. Not registered yet? <a href="register.html">Register here</a> first — it only takes a minute.</p>
+      </div>
+      <div class="field">
+        <label for="pin">Your PIN</label>
+        <input type="password" id="pin" name="pin" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="••••" required style="max-width:120px;">
+        <p class="hint">The 4-digit PIN you chose when you registered.</p>
       </div>
       <div class="field">
         <label for="species">Species</label>

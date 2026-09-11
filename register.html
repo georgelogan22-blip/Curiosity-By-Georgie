@@ -104,6 +104,18 @@
         <input type="email" id="email" name="email" placeholder="you@example.com" required>
       </div>
 
+      <div class="field" style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+        <div>
+          <label for="pin">Choose a 4-digit PIN</label>
+          <input type="password" id="pin" name="pin" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="••••" required>
+        </div>
+        <div>
+          <label for="pin-confirm">Confirm PIN</label>
+          <input type="password" id="pin-confirm" name="pinConfirm" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="••••" required>
+        </div>
+      </div>
+      <p class="hint" style="margin-top:-8px; margin-bottom:18px;">You'll enter this alongside your display name whenever you log a sighting, so no one else can log sightings under your name. Keep it simple — there's no self-service reset, so if you forget it you'll need to email <a href="mailto:contactcuriouslygeorgie@gmail.com">contactcuriouslygeorgie@gmail.com</a>.</p>
+
       <div class="field" id="parental-consent-field" hidden>
         <label style="display:flex; align-items:flex-start; gap:8px; font-weight:400;">
           <input type="checkbox" id="parental-consent" name="parentalConsent" style="width:auto; margin-top:3px;">
