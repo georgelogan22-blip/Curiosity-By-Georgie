@@ -909,7 +909,7 @@ footer a { color: var(--ink-soft); }
 <header class="page-head wrap">
   <span class="eyebrow">Log a Sighting</span>
   <h1>Seen something good?</h1>
-  <p class="lede">Fill in what you saw, when, and roughly where. Your first sighting of each species is what counts toward your fifty. From official launch, a photo will be required with every submission, and sightings will sit as <strong>pending</strong> until reviewed — see the <a href="#rules">rules</a> for how verification works.</p>
+  <p class="lede">Fill in what you saw, when, and roughly where, and attach a clear photo as evidence. Your first sighting of each species is what counts toward your fifty. Every submission sits as <strong>pending</strong> until it's checked — automatically in most cases, or by Georgie personally if the automatic check isn't sure — see the <a href="#rules">rules</a> for how verification works.</p>
 </header>
 
 <section class="wrap">
@@ -941,6 +941,11 @@ footer a { color: var(--ink-soft); }
       <div class="field">
         <label for="location">Suburb / location</label>
         <input type="text" id="location" name="location" placeholder="e.g. New Farm Park">
+      </div>
+      <div class="field">
+        <label for="photo">Photo evidence</label>
+        <input type="file" id="photo" name="photo" accept="image/*" required>
+        <p class="hint">A clear, unedited photo of the bird — this is what gets checked (species match + capture date) before the sighting is confirmed.</p>
       </div>
       <div class="field">
         <label for="notes">Notes (optional)</label>
@@ -1068,6 +1073,7 @@ footer a { color: var(--ink-soft); }
 </section>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/exifr/dist/lite.umd.js"></script>
 <script>
 // Curiously Georgie — The Brisbane Air 50
 // Backend wiring: this preview mirrors the live site's assets/supabase-
@@ -1192,10 +1198,14 @@ function hashPin(pin) {
 }
 
 // Calls the submit_sighting() database function (see
-// supabase/registration-migration.sql), which checks the name is
-// registered, active, and that the PIN hash matches, before inserting.
+// supabase/registration-migration.sql + photo-verification-migration.sql),
+// which checks the name is registered, active, and that the PIN hash
+// matches, before inserting — always as 'pending'. The verify-sighting
+// Edge Function auto-confirms it moments later if the photo's date and
+// species both check out, otherwise it stays pending for Georgie.
 // Rejects with an error whose .message is "not_registered",
-// "not_active", or "invalid_pin" so the form can show a specific hint.
+// "not_active", "invalid_pin", or "photo_required" so the form can show
+// a specific hint.
 function submitSighting(record) {
   if (!supabaseClient) return Promise.reject(new Error("offline-demo"));
   return supabaseClient
@@ -1206,10 +1216,53 @@ function submitSighting(record) {
       p_sighting_date: record.date,
       p_location: record.location || null,
       p_notes: record.notes || null,
+      p_photo_path: record.photoPath,
+      p_photo_taken_at: record.photoTakenAt || null,
     })
     .then(function (res) {
       if (res.error) throw res.error;
       return Array.isArray(res.data) ? res.data[0] : res.data;
+    });
+}
+
+// Uploads the evidence photo to the public "sighting-photos" Storage
+// bucket ahead of the submit_sighting() call, resolving with the storage
+// path to pass in as record.photoPath. Each photo gets a random name —
+// the original filename is never used or stored.
+function uploadSightingPhoto(file) {
+  if (!supabaseClient) return Promise.reject(new Error("offline-demo"));
+  var ext = (file.name && file.name.indexOf(".") !== -1)
+    ? file.name.slice(file.name.lastIndexOf(".") + 1).toLowerCase().replace(/[^a-z0-9]/g, "")
+    : "jpg";
+  var id = (typeof crypto !== "undefined" && crypto.randomUUID)
+    ? crypto.randomUUID()
+    : Date.now().toString(36) + Math.random().toString(36).slice(2);
+  var path = id + "." + (ext || "jpg");
+  return supabaseClient.storage
+    .from("sighting-photos")
+    .upload(path, file, { contentType: file.type || "image/jpeg", upsert: false })
+    .then(function (res) {
+      if (res.error) throw res.error;
+      return res.data.path;
+    });
+}
+
+// Reads a photo's EXIF "DateTimeOriginal" via the exifr library (loaded
+// above) — what verify-sighting checks against the launch date.
+// Resolves with a "YYYY-MM-DD" string, or null if no date could be read.
+function readPhotoTakenDate(file) {
+  if (typeof exifr === "undefined") return Promise.resolve(null);
+  return exifr
+    .parse(file, ["DateTimeOriginal", "CreateDate"])
+    .then(function (tags) {
+      var d = tags && (tags.DateTimeOriginal || tags.CreateDate);
+      if (!d) return null;
+      var date = d instanceof Date ? d : new Date(d);
+      if (isNaN(date.getTime())) return null;
+      return date.toISOString().slice(0, 10);
+    })
+    .catch(function () {
+      return null;
     });
 }
 
@@ -1384,6 +1437,13 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
+    var photoInput = form.querySelector('input[name="photo"]');
+    var photoFile = photoInput && photoInput.files && photoInput.files[0];
+    if (!photoFile) {
+      setStatusHtml("Attach a photo of the bird as evidence — every sighting needs one.");
+      return;
+    }
+
     var record = {
       name: name,
       species: species,
@@ -1410,14 +1470,23 @@ document.addEventListener("DOMContentLoaded", function () {
           return;
         }
 
-        setStatusHtml("Saving…");
-        return hashPin(pin)
+        setStatusHtml("Uploading photo…");
+        return uploadSightingPhoto(photoFile)
+          .then(function (photoPath) {
+            record.photoPath = photoPath;
+            return readPhotoTakenDate(photoFile);
+          })
+          .then(function (photoTakenAt) {
+            record.photoTakenAt = photoTakenAt;
+            setStatusHtml("Saving…");
+            return hashPin(pin);
+          })
           .then(function (pinHash) {
             record.pinHash = pinHash;
             return submitSighting(record);
           })
           .then(function () {
-            setStatusHtml("Saved to the shared log — thanks!");
+            setStatusHtml("Saved — sitting as <strong>pending</strong> while it's checked. Confirmed sightings show up on the Leaderboard within a minute or two; anything the automatic check isn't sure about waits for Georgie to take a look.");
             entries.unshift(record);
             renderFeed();
             resetForNextEntry();
@@ -1439,6 +1508,8 @@ document.addEventListener("DOMContentLoaded", function () {
               setStatusHtml("This name isn't able to log sightings. If you think this is a mistake, email <a href=\"mailto:contactcuriouslygeorgie@gmail.com\">contactcuriouslygeorgie@gmail.com</a>.");
             } else if (msg === "invalid_pin") {
               setStatusHtml("That PIN doesn't match this name — check it and try again.");
+            } else if (msg === "photo_required") {
+              setStatusHtml("That photo didn't come through — please attach it again and resubmit.");
             } else {
               setStatusHtml("Couldn't reach the shared log right now — kept locally for this session.");
             }
