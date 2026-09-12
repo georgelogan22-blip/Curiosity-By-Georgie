@@ -119,10 +119,21 @@ function readPhotoTakenDate(file) {
 }
 
 // Register a new participant (see supabase/registration-migration.sql).
-// Resolves with the saved row, or rejects with the Supabase/Postgres
-// error (err.code is the Postgres error code — e.g. "23505" for a
-// duplicate display name, "23514" for the parental-consent check) so
-// the form can show a friendly message for the common cases.
+// Resolves once the row is saved (with no data — see note below), or
+// rejects with the Supabase/Postgres error (err.code is the Postgres
+// error code — e.g. "23505" for a duplicate display name, "23514" for
+// the parental-consent check) so the form can show a friendly message
+// for the common cases.
+//
+// Deliberately does NOT chain .select() here. participants only has an
+// INSERT policy for the anon role, not a SELECT one (it holds full
+// legal names, addresses, phone numbers and pin_hash — not something
+// to expose via a public read policy), and Postgres checks a
+// RETURNING/`.select()` row against SELECT policies too. Asking for
+// the row back therefore fails RLS even though the insert itself is
+// allowed. Nothing currently needs the returned row (register.js uses
+// the record it already has locally), so the fix is simply not to ask
+// for it back.
 function registerParticipant(record) {
   if (!supabaseClient) {
     return Promise.reject(new Error("offline-demo"));
@@ -240,4 +251,22 @@ function fetchHallOfFame() {
       return results;
     });
 }
-"Fix registration RSL bug"
+
+// Looks up one participant's own sightings (status, and — while
+// pending — whatever the automated review already found), gated by
+// name + PIN so no one can browse another participant's queue just by
+// guessing their display name. Calls the participant_sightings()
+// database function (see supabase/my-sightings-migration.sql).
+// Resolves with an array of rows (newest first), or rejects with an
+// error whose .message is "not_registered" or "invalid_pin" (raised by
+// the database function) so the page can show a specific message —
+// see assets/my-sightings.js.
+function fetchMySightings(name, pinHash) {
+  if (!supabaseClient) return Promise.reject(new Error("offline-demo"));
+  return supabaseClient
+    .rpc("participant_sightings", { p_name: name, p_pin_hash: pinHash })
+    .then(function (res) {
+      if (res.error) throw res.error;
+      return res.data || [];
+    });
+}
