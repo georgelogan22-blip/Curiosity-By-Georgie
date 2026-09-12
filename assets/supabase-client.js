@@ -183,9 +183,12 @@ function participantStatus(name) {
 }
 
 // Top N participants by accumulated Air Points (see
-// supabase/points-migration.sql — the leaderboard view sums each
-// participant's confirmed distinct species' tier points; species_count
-// is still returned too, for display and for Hall of Fame eligibility).
+// supabase/points-migration.sql and supabase/air50-hall-of-fame-migration.sql
+// — the leaderboard view sums each participant's confirmed distinct
+// species' tier points, where an off-list species is worth 0 points.
+// species_count (ALL distinct confirmed species, official or not) is
+// still returned for display; air50_species_count (official-50-only) is
+// what fetchHallOfFame() below actually gates induction on.
 function fetchLeaderboard(limit) {
   if (!supabaseClient) return Promise.resolve([]);
   return supabaseClient
@@ -201,53 +204,70 @@ function fetchLeaderboard(limit) {
     });
 }
 
-// Everyone with 50+ confirmed species, with the date each reached their
-// fiftieth. Small dataset per participant, so the induction date is
-// worked out here by walking their sightings in submission order, rather
-// than with a heavier SQL window query.
+// Everyone who has confirmed all 50 OFFICIAL Brisbane Air 50 species
+// (air50_species_count >= 50 — see air50-hall-of-fame-migration.sql),
+// with the date each reached their fiftieth official species. George's
+// decision, 2026-09-13: off-list sightings still add to a participant's
+// overall species_count (shown as "count" below) and are honour-system
+// welcome, but only the 50 official species gate Hall of Fame entry —
+// so the walk below skips any species_key not in species_reference when
+// working out seenCount/inductedAt. Small dataset per participant, so
+// this is worked out here by walking their sightings in submission
+// order, rather than with a heavier SQL window query.
 function fetchHallOfFame() {
   if (!supabaseClient) return Promise.resolve([]);
   return supabaseClient
-    .from("leaderboard")
-    .select("*")
-    .gte("species_count", 50)
-    .then(function (res) {
-      if (res.error) throw res.error;
-      var leaders = res.data || [];
-      return Promise.all(
-        leaders.map(function (leader) {
-          return supabaseClient
-            .from("sightings")
-            .select("species_key, sighting_date, created_at")
-            .eq("participant_key", leader.participant_key)
-            .eq("status", "confirmed")
-            .order("created_at", { ascending: true })
-            .then(function (rowsRes) {
-              if (rowsRes.error) throw rowsRes.error;
-              var seen = {};
-              var seenCount = 0;
-              var inductedAt = null;
-              var rows = rowsRes.data || [];
-              for (var i = 0; i < rows.length; i++) {
-                var key = rows[i].species_key;
-                if (!seen[key]) {
-                  seen[key] = true;
-                  seenCount++;
-                  if (seenCount >= 50) {
-                    inductedAt = rows[i].sighting_date;
-                    break;
+    .from("species_reference")
+    .select("species_key")
+    .then(function (refRes) {
+      if (refRes.error) throw refRes.error;
+      var officialKeys = {};
+      (refRes.data || []).forEach(function (row) {
+        officialKeys[row.species_key] = true;
+      });
+      return supabaseClient
+        .from("leaderboard")
+        .select("*")
+        .gte("air50_species_count", 50)
+        .then(function (res) {
+          if (res.error) throw res.error;
+          var leaders = res.data || [];
+          return Promise.all(
+            leaders.map(function (leader) {
+              return supabaseClient
+                .from("sightings")
+                .select("species_key, sighting_date, created_at")
+                .eq("participant_key", leader.participant_key)
+                .eq("status", "confirmed")
+                .order("created_at", { ascending: true })
+                .then(function (rowsRes) {
+                  if (rowsRes.error) throw rowsRes.error;
+                  var seen = {};
+                  var seenCount = 0;
+                  var inductedAt = null;
+                  var rows = rowsRes.data || [];
+                  for (var i = 0; i < rows.length; i++) {
+                    var key = rows[i].species_key;
+                    if (!officialKeys[key]) continue; // off-list — doesn't count toward induction
+                    if (!seen[key]) {
+                      seen[key] = true;
+                      seenCount++;
+                      if (seenCount >= 50) {
+                        inductedAt = rows[i].sighting_date;
+                        break;
+                      }
+                    }
                   }
-                }
-              }
-              return {
-                name: leader.participant_name,
-                count: leader.species_count,
-                points: leader.total_points,
-                inductedAt: inductedAt,
-              };
-            });
-        })
-      );
+                  return {
+                    name: leader.participant_name,
+                    count: leader.species_count,
+                    points: leader.total_points,
+                    inductedAt: inductedAt,
+                  };
+                });
+            })
+          );
+        });
     })
     .then(function (results) {
       results.sort(function (a, b) {
