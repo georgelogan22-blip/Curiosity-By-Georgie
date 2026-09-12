@@ -427,6 +427,15 @@ section { padding: 40px 0; }
 }
 .hint, .field .hint { color: var(--ink-soft); font-size: 0.82rem; margin-top: 4px; }
 .status-warn { color: var(--accent-warm); font-weight: 600; }
+.status-pill {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 2px 10px; border-radius: 999px;
+  font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.02em; white-space: nowrap;
+}
+.status-pill-pending { background: color-mix(in srgb, var(--accent-warm) 20%, var(--paper-raised)); color: var(--accent-warm); }
+.status-pill-confirmed { background: color-mix(in srgb, var(--accent) 16%, var(--paper-raised)); color: var(--accent); }
+.status-pill-rejected { background: color-mix(in srgb, var(--accent-coral) 14%, var(--paper-raised)); color: var(--accent-coral); }
 input, select, textarea {
   width: 100%;
   font: inherit;
@@ -596,6 +605,7 @@ footer a { color: var(--ink-soft); }
       <li><a href="#rules">Rules</a></li>
       <li><a href="#register">Register</a></li>
       <li><a href="#log-sighting">Log a Sighting</a></li>
+      <li><a href="#my-sightings">My Sightings</a></li>
       <li><a href="#leaderboard">Leaderboard</a></li>
       <li><a href="#hall-of-fame">Hall of Fame</a></li>
       <li><a href="#checklist">Species Checklist</a></li>
@@ -756,7 +766,7 @@ footer a { color: var(--ink-soft); }
     <h3>How To Log It</h3>
     <div>
       <p>Submit each sighting through <a href="#log-sighting">Log a Sighting</a> with your name (or a consistent nickname — the leaderboard needs to recognise you across visits), the species, the date, roughly where you saw it, and a clear photo as evidence. From official launch, a photo is required, not optional.</p>
-      <p>Every submission starts as <strong>pending</strong> — it won't appear on the Leaderboard or count toward your tally until it's been reviewed and confirmed, either by an automated check or by Georgie personally. You'll be able to see the status of your own pending sightings while you wait.</p>
+      <p>Every submission starts as <strong>pending</strong> — it won't appear on the Leaderboard or count toward your tally until it's been reviewed and confirmed, either by an automated check (most sightings, within moments) or by Georgie personally. Manual reviews can take up to 48 hours, so a pending sighting isn't a sign anything's wrong — it just hasn't been looked at yet. You can check the status of your own sightings any time on <a href="#my-sightings">My Sightings</a>.</p>
     </div>
   </div>
 
@@ -973,6 +983,39 @@ footer a { color: var(--ink-soft); }
 
 <footer class="wrap">
   <p>Every logged species adds to your tally on the <a href="#leaderboard">Leaderboard</a> once sightings are shared city-wide.</p>
+</footer>
+
+</section>
+
+<section id="page-my-sightings" class="page" hidden>
+
+<header class="page-head wrap">
+  <span class="eyebrow">My Sightings</span>
+  <h1>Check the status of what you've logged</h1>
+  <p class="lede">Enter your registered display name and PIN to see your own sightings and whether each is still <strong>pending</strong>, has been <strong>confirmed</strong>, or was <strong>rejected</strong> — including a plain-language note for anything the automated check flagged.</p>
+</header>
+
+<section class="wrap section-tight">
+  <div class="log-layout" style="grid-template-columns: 1fr; max-width: 480px;">
+    <form id="my-sightings-form">
+      <div class="field">
+        <label for="mys-name">Your name or nickname</label>
+        <input type="text" id="mys-name" name="name" placeholder="e.g. Ava T." required>
+      </div>
+      <div class="field">
+        <label for="mys-pin">Your 4-digit PIN</label>
+        <input type="password" id="mys-pin" name="pin" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="••••" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Check my sightings</button>
+      <p class="hint" id="mys-status" hidden></p>
+    </form>
+  </div>
+
+  <div id="mys-results" style="margin-top:28px;"></div>
+</section>
+
+<footer class="wrap">
+  <p>Not seeing what you expect? Email <a href="mailto:contactcuriouslygeorgie@gmail.com">contactcuriouslygeorgie@gmail.com</a> and Georgie can take a look.</p>
 </footer>
 
 </section>
@@ -1644,6 +1687,128 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
+// "My Sightings" status check — lets a participant look up their own
+// logged sightings (pending / confirmed / rejected) by re-entering their
+// display name + PIN, the same credentials used to log a sighting.
+document.addEventListener("DOMContentLoaded", function () {
+  var mysForm = document.getElementById("my-sightings-form");
+  if (!mysForm) return;
+
+  var mysStatusEl = document.getElementById("mys-status");
+  var mysResults = document.getElementById("mys-results");
+
+  function mysSetStatus(html) {
+    if (!mysStatusEl) return;
+    mysStatusEl.hidden = !html;
+    mysStatusEl.innerHTML = html || "";
+  }
+
+  function escapeHtml(str) {
+    var div = document.createElement("div");
+    div.textContent = str == null ? "" : str;
+    return div.innerHTML;
+  }
+
+  // status -> { label, className } for the small pill shown per row.
+  // Reuses the site's existing accent colours (gold = "in progress",
+  // green = "good", coral = "needs attention").
+  var MYS_STATUS_META = {
+    pending: { label: "Pending review", className: "status-pill-pending" },
+    confirmed: { label: "Confirmed", className: "status-pill-confirmed" },
+    rejected: { label: "Rejected", className: "status-pill-rejected" },
+  };
+
+  function mysFriendlyPendingNote(row) {
+    if (row.review_notes) return row.review_notes;
+    return "Waiting to be checked — most sightings are reviewed within 48 hours.";
+  }
+
+  function mysRenderResults(rows) {
+    if (!rows.length) {
+      mysResults.innerHTML =
+        '<p class="hint">No sightings found yet for that name. Logged one recently? It can take a moment to appear here.</p>';
+      return;
+    }
+    mysResults.innerHTML =
+      '<div class="table-scroll"><table><thead><tr>' +
+      "<th>Species</th><th>Status</th><th>Date seen</th><th>Note</th>" +
+      "</tr></thead><tbody>" +
+      rows
+        .map(function (row) {
+          var meta = MYS_STATUS_META[row.status] || { label: row.status, className: "" };
+          var note =
+            row.status === "pending"
+              ? mysFriendlyPendingNote(row)
+              : row.status === "rejected"
+              ? row.review_notes || "Didn't pass review — email us if you think this is a mistake."
+              : "On the Leaderboard now.";
+          return (
+            "<tr><td>" +
+            escapeHtml(row.species) +
+            "</td><td><span class=\"status-pill " +
+            meta.className +
+            "\">" +
+            escapeHtml(meta.label) +
+            "</span></td><td>" +
+            escapeHtml(row.sighting_date || "—") +
+            "</td><td>" +
+            escapeHtml(note) +
+            "</td></tr>"
+          );
+        })
+        .join("") +
+      "</tbody></table></div>";
+  }
+
+  mysForm.addEventListener("submit", function (evt) {
+    evt.preventDefault();
+    var data = new FormData(mysForm);
+    var name = (data.get("name") || "").toString().trim();
+    var pin = (data.get("pin") || "").toString().trim();
+
+    if (!name) return;
+    if (!/^[0-9]{4}$/.test(pin)) {
+      mysSetStatus("Enter the 4-digit PIN you chose when you registered.");
+      return;
+    }
+
+    var mysSubmitBtn = mysForm.querySelector('button[type="submit"]');
+    if (mysSubmitBtn) mysSubmitBtn.disabled = true;
+    mysResults.innerHTML = "";
+    mysSetStatus("Checking…");
+
+    if (typeof fetchMySightings !== "function" || typeof hashPin !== "function") {
+      mysSetStatus("This isn't connected to the shared log right now — please try again shortly.");
+      if (mysSubmitBtn) mysSubmitBtn.disabled = false;
+      return;
+    }
+
+    hashPin(pin)
+      .then(function (pinHash) {
+        return fetchMySightings(name, pinHash);
+      })
+      .then(function (rows) {
+        mysSetStatus("");
+        mysRenderResults(rows || []);
+      })
+      .catch(function (err) {
+        var msg = err && err.message;
+        if (msg === "offline-demo") {
+          mysSetStatus("This isn't connected to the shared log right now — please try again shortly.");
+        } else if (msg === "not_registered") {
+          mysSetStatus('That name isn\'t registered yet — <a href="#register">register here</a> first.');
+        } else if (msg === "invalid_pin") {
+          mysSetStatus('<span class="status-warn">That PIN doesn\'t match this name — check it and try again.</span>');
+        } else {
+          mysSetStatus("Couldn't reach the shared log right now — please try again.");
+        }
+      })
+      .then(function () {
+        if (mysSubmitBtn) mysSubmitBtn.disabled = false;
+      });
+  });
+});
+
 // Tier-aware species autocomplete for the Log a Sighting form (mirrors
 // assets/species-autocomplete.js). Typing something not on the official
 // 50 is still allowed — it just won't show a tier badge.
@@ -1891,6 +2056,22 @@ function loadHallOfFame() {
     .catch(function () { /* keep example data if the backend isn't reachable */ });
 }
 
+// Calls the participant_status()-style PIN-gated participant_sightings()
+// database function (see supabase/my-sightings-migration.sql) so a
+// visitor can only see their own sightings, not anyone else's pending
+// queue, by proving they know the matching PIN. Resolves with an array
+// of { species, status, sighting_date, review_notes } rows. Rejects
+// with an error whose .message is "not_registered" or "invalid_pin".
+function fetchMySightings(name, pinHash) {
+  if (!supabaseClient) return Promise.reject(new Error("offline-demo"));
+  return supabaseClient
+    .rpc("participant_sightings", { p_name: name, p_pin_hash: pinHash })
+    .then(function (res) {
+      if (res.error) throw res.error;
+      return res.data || [];
+    });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   loadLeaderboard();
   loadHallOfFame();
@@ -1899,7 +2080,7 @@ document.addEventListener("DOMContentLoaded", function () {
 // Simple hash router so this single preview page can stand in for the
 // site's six separate pages.
 (function () {
-  var routes = ["index", "rules", "register", "log-sighting", "leaderboard", "hall-of-fame", "checklist"];
+  var routes = ["index", "rules", "register", "log-sighting", "my-sightings", "leaderboard", "hall-of-fame", "checklist"];
   function currentRoute() {
     var h = (location.hash || "").replace("#", "");
     return routes.indexOf(h) !== -1 ? h : "index";
