@@ -135,13 +135,20 @@ async function checkSpeciesWithVision(
               type: "text",
               text:
                 `A participant in a Brisbane, Australia bird-spotting challenge has logged this photo as a "${species}". ` +
+                `This photo's file metadata has already been checked separately and confirmed as a genuine, ` +
+                `unedited capture from a real camera — so judge only whether the photo itself is a real ` +
+                `photograph and whether it shows that species. Do NOT lower your confidence just because the ` +
+                `bird looks unusually still, clean, glossy, or "too perfect" — real wildlife photos, especially ` +
+                `of pale/white birds like cockatoos in bright sun, often look exactly like that; a real bird ` +
+                `standing still is not evidence of anything fake. ` +
                 `Reply with ONLY a single JSON object, no other text: ` +
                 `{"confidence": "high"|"medium"|"low", "reason": "one short sentence"}. ` +
-                `Use "high" only if you're confident this photo genuinely shows that species, AND it looks like an ` +
-                `authentic, unedited wildlife photo (not a drawing, screenshot, watermarked stock photo, or an ` +
-                `AI-generated image). Use "medium" if it's probably right but you're not fully sure (poor angle, ` +
-                `blur, a similar-looking species). Use "low" if it's probably wrong, you can't tell, or the image ` +
-                `doesn't look like a genuine photo at all.`,
+                `Use "high" if you're reasonably confident the photo shows that species and is a genuine ` +
+                `photograph — not a drawing, painting, cartoon, screenshot of a screen or app, or an obvious ` +
+                `digital illustration/render. Use "medium" if it's probably right but you're not fully sure ` +
+                `(poor angle, blur, partially obscured, a similar-looking species). Use "low" only if the ` +
+                `species shown is clearly wrong, or the image clearly isn't a photograph at all (a drawing, a ` +
+                `screenshot, an icon/graphic, or text).`,
             },
           ],
         },
