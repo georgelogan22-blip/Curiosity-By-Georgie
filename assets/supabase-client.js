@@ -204,78 +204,46 @@ function fetchLeaderboard(limit) {
     });
 }
 
-// Everyone who has confirmed all 50 OFFICIAL Brisbane Air 50 species
-// (air50_species_count >= 50 — see air50-hall-of-fame-migration.sql),
-// with the date each reached their fiftieth official species. George's
-// decision, 2026-09-13: off-list sightings still add to a participant's
-// overall species_count (shown as "count" below) and are honour-system
-// welcome, but only the 50 official species gate Hall of Fame entry —
-// so the walk below skips any species_key not in species_reference when
-// working out seenCount/inductedAt. Small dataset per participant, so
-// this is worked out here by walking their sightings in submission
-// order, rather than with a heavier SQL window query.
+// Everyone George has actually PUBLISHED to the Hall of Fame — see
+// supabase/hall-of-fame-inductions-migration.sql. Reaching
+// air50_species_count >= 50 on the leaderboard (all 50 OFFICIAL Brisbane
+// Air 50 species confirmed) only makes someone ELIGIBLE for induction; it
+// no longer publishes them automatically. George's decision, 2026-09-13:
+// before anyone goes up permanently, he does one final manual look back
+// over that participant's 50 confirmed sightings (their evidence photos
+// are already sitting in storage from when each was originally logged —
+// no new submission needed) and only then adds their induction row. So
+// this just reads hall_of_fame_inductions and joins in each inductee's
+// current species_count/total_points from the leaderboard for display.
 function fetchHallOfFame() {
   if (!supabaseClient) return Promise.resolve([]);
   return supabaseClient
-    .from("species_reference")
-    .select("species_key")
-    .then(function (refRes) {
-      if (refRes.error) throw refRes.error;
-      var officialKeys = {};
-      (refRes.data || []).forEach(function (row) {
-        officialKeys[row.species_key] = true;
-      });
+    .from("hall_of_fame_inductions")
+    .select("participant_key, inducted_at")
+    .order("inducted_at", { ascending: true })
+    .then(function (indRes) {
+      if (indRes.error) throw indRes.error;
+      var inductions = indRes.data || [];
+      if (!inductions.length) return [];
       return supabaseClient
         .from("leaderboard")
         .select("*")
-        .gte("air50_species_count", 50)
-        .then(function (res) {
-          if (res.error) throw res.error;
-          var leaders = res.data || [];
-          return Promise.all(
-            leaders.map(function (leader) {
-              return supabaseClient
-                .from("sightings")
-                .select("species_key, sighting_date, created_at")
-                .eq("participant_key", leader.participant_key)
-                .eq("status", "confirmed")
-                .order("created_at", { ascending: true })
-                .then(function (rowsRes) {
-                  if (rowsRes.error) throw rowsRes.error;
-                  var seen = {};
-                  var seenCount = 0;
-                  var inductedAt = null;
-                  var rows = rowsRes.data || [];
-                  for (var i = 0; i < rows.length; i++) {
-                    var key = rows[i].species_key;
-                    if (!officialKeys[key]) continue; // off-list — doesn't count toward induction
-                    if (!seen[key]) {
-                      seen[key] = true;
-                      seenCount++;
-                      if (seenCount >= 50) {
-                        inductedAt = rows[i].sighting_date;
-                        break;
-                      }
-                    }
-                  }
-                  return {
-                    name: leader.participant_name,
-                    count: leader.species_count,
-                    points: leader.total_points,
-                    inductedAt: inductedAt,
-                  };
-                });
-            })
-          );
+        .then(function (lbRes) {
+          if (lbRes.error) throw lbRes.error;
+          var byKey = {};
+          (lbRes.data || []).forEach(function (row) {
+            byKey[row.participant_key] = row;
+          });
+          return inductions.map(function (ind) {
+            var lb = byKey[ind.participant_key] || {};
+            return {
+              name: lb.participant_name || ind.participant_key,
+              count: lb.species_count,
+              points: lb.total_points,
+              inductedAt: ind.inducted_at,
+            };
+          });
         });
-    })
-    .then(function (results) {
-      results.sort(function (a, b) {
-        var da = a.inductedAt || "";
-        var db = b.inductedAt || "";
-        return da < db ? -1 : da > db ? 1 : 0;
-      });
-      return results;
     });
 }
 
