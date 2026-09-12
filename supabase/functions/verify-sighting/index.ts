@@ -73,13 +73,26 @@ Deno.serve(async (req) => {
     }
     if (!photoPath) {
       // Shouldn't happen — submit_sighting() requires a photo — but
-      // leave it pending rather than guess if it somehow does.
+      // leave it pending rather than guess if it somehow does. This is
+      // just as much a "needs a manual look" situation as any other
+      // pending sighting, so it gets the same email nudge (found missing
+      // during testing, 2026-09-13 — this early-return used to skip the
+      // notification entirely).
       await updateSighting(sightingId, {
         review_confidence: "low",
         review_notes: "No photo on this row — needs a manual look.",
         reviewed_at: new Date().toISOString(),
       });
-      return json({ skipped: "missing photo_path" });
+      const notified = await sendReviewNotification({
+        sightingId,
+        participantName: row.participant_name ?? "(unknown)",
+        species: species ?? "(unknown)",
+        sightingDate: row.sighting_date ?? null,
+        location: row.location ?? null,
+        confidence: "low",
+        notes: "No photo on this row — needs a manual look.",
+      });
+      return json({ skipped: "missing photo_path", notified });
     }
 
     const dateOk = !!photoTakenAt && photoTakenAt >= LAUNCH_DATE;
