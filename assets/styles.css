@@ -375,6 +375,15 @@ section { padding: 40px 0; }
 }
 .hint, .field .hint { color: var(--ink-soft); font-size: 0.82rem; margin-top: 4px; }
 .status-warn { color: var(--accent-warm); font-weight: 600; }
+.status-pill {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 2px 10px; border-radius: 999px;
+  font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.02em; white-space: nowrap;
+}
+.status-pill-pending { background: color-mix(in srgb, var(--accent-warm) 20%, var(--paper-raised)); color: var(--accent-warm); }
+.status-pill-confirmed { background: color-mix(in srgb, var(--accent) 16%, var(--paper-raised)); color: var(--accent); }
+.status-pill-rejected { background: color-mix(in srgb, var(--accent-coral) 14%, var(--paper-raised)); color: var(--accent-coral); }
 input, select, textarea {
   width: 100%;
   font: inherit;
