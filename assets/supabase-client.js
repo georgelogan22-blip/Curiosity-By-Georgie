@@ -104,8 +104,15 @@ function uploadSightingPhoto(file) {
 // EXIF, unsupported format, or the exifr library failed to load).
 function readPhotoTakenDate(file) {
   if (typeof exifr === "undefined") return Promise.resolve(null);
+  // Note: exifr.parse(file, ["DateTimeOriginal", "CreateDate"]) — the
+  // array-shorthand "pick" form — throws in the exifr build this site
+  // loads ("undefined is not iterable"), which was silently swallowed by
+  // the .catch() below, so EVERY sighting was coming back "no readable
+  // capture date" regardless of the photo. Calling parse() with no
+  // options at all reads the full tag set reliably; we just pick the two
+  // fields we need out of it ourselves.
   return exifr
-    .parse(file, ["DateTimeOriginal", "CreateDate"])
+    .parse(file)
     .then(function (tags) {
       var d = tags && (tags.DateTimeOriginal || tags.CreateDate);
       if (!d) return null;
