@@ -1025,7 +1025,7 @@ footer a { color: var(--ink-soft); }
 <header class="page-head wrap">
   <span class="eyebrow">Leaderboard</span>
   <h1>Who's racked up the most Air Points</h1>
-  <p class="lede">Ranked by accumulated Air Points, not raw species count — a handful of rare or legendary sightings can outrank a much longer list of common ones. See the <a href="#checklist">species checklist</a> for each species' tier and point value. Species outside the official 50 still add to your tally but earn no Air Points. Confirm all 50 official species and you're bumped up to the <a href="#hall-of-fame">Hall of Fame</a> instead.</p>
+  <p class="lede">Ranked by accumulated Air Points, not raw species count — a handful of rare or legendary sightings can outrank a much longer list of common ones. See the <a href="#checklist">species checklist</a> for each species' tier and point value. The Species column counts only the official 50, so you can see at a glance how close everyone is to completing the set — sightings outside the official 50 still add to your personal tally but earn no Air Points and aren't reflected here. Confirm all 50 official species and you're eligible for the <a href="#hall-of-fame">Hall of Fame</a>.</p>
 </header>
 
 <section class="wrap">
@@ -1036,7 +1036,7 @@ footer a { color: var(--ink-soft); }
           <th>Rank</th>
           <th>Participant</th>
           <th class="num">Air Points</th>
-          <th class="num">Species</th>
+          <th class="num">Species /50</th>
           <th>Last sighting</th>
         </tr>
       </thead>
@@ -1356,7 +1356,7 @@ function fetchLeaderboard(limit) {
     .from("leaderboard")
     .select("*")
     .order("total_points", { ascending: false })
-    .order("species_count", { ascending: false })
+    .order("air50_species_count", { ascending: false })
     .order("last_sighting", { ascending: false })
     .limit(limit || 25)
     .then(function (res) {
@@ -2013,7 +2013,7 @@ function loadLeaderboard() {
             '<tr><td><span class="rank-badge ' + badgeClass + '">' + rank + "</span></td>" +
             "<td>" + escapeHtmlGlobal(r.participant_name) + "</td>" +
             '<td class="num">' + r.total_points + "</td>" +
-            '<td class="num">' + r.species_count + "</td>" +
+            '<td class="num">' + r.air50_species_count + "</td>" +
             "<td>" + lastSeen + "</td></tr>"
           );
         })
