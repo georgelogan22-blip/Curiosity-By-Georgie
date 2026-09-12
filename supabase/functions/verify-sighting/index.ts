@@ -28,12 +28,26 @@
 // errs toward more manual review, not fewer: a false "confirmed" costs
 // more (a bogus entry on the public Leaderboard) than a false "pending"
 // (one more row in Georgie's queue).
+//
+// George's decision, 2026-09-13: whenever a sighting is left 'pending'
+// above, also email him at contactcuriouslygeorgie@gmail.com so he finds
+// out about review-queue items without having to remember to check the
+// dashboard. Sent via Resend (a transactional-email API — see George's own
+// words in the project doc: a site can't send from a personal Gmail
+// account directly). Uses Resend's shared onboarding@resend.dev sender, no
+// custom domain or DNS records needed, since the only recipient is
+// George's own inbox — the same address the Resend account itself is
+// signed up under. If RESEND_API_KEY isn't set yet, this is skipped
+// quietly (same pattern as ANTHROPIC_API_KEY below) — the sighting is
+// still safely left pending either way, just without the email nudge.
 
 const LAUNCH_DATE = "2026-01-01"; // TODO: George — set the real Brisbane Air 50 launch date here
+const NOTIFY_EMAIL = "contactcuriouslygeorgie@gmail.com";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
+const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
 // Haiku, not Sonnet or Opus — this is a cheap, high-volume, low-stakes
 // classification call (bird photo → species name + confidence), not
@@ -96,7 +110,20 @@ Deno.serve(async (req) => {
       reviewed_at: new Date().toISOString(),
     });
 
-    return json({ ok: true, sightingId, status: finalStatus, confidence });
+    let notified = false;
+    if (finalStatus === "pending") {
+      notified = await sendReviewNotification({
+        sightingId,
+        participantName: row.participant_name ?? "(unknown)",
+        species,
+        sightingDate: row.sighting_date ?? null,
+        location: row.location ?? null,
+        confidence,
+        notes,
+      });
+    }
+
+    return json({ ok: true, sightingId, status: finalStatus, confidence, notified });
   } catch (err) {
     // Never throw back a 5xx for a webhook — Supabase will retry it
     // repeatedly, and either way the sighting is already safely sitting
@@ -181,6 +208,65 @@ async function checkSpeciesWithVision(
   }
 }
 
+// Returns true if an email was actually sent (for the "notified" field in
+// the function's own JSON response — handy when checking logs). Never
+// throws back to the caller: a failed notification should never affect
+// the sighting's own review outcome, which is already saved by this point.
+async function sendReviewNotification(details: {
+  sightingId: string;
+  participantName: string;
+  species: string;
+  sightingDate: string | null;
+  location: string | null;
+  confidence: string;
+  notes: string;
+}): Promise<boolean> {
+  if (!RESEND_API_KEY) return false;
+  try {
+    const resp = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        authorization: `Bearer ${RESEND_API_KEY}`,
+      },
+      body: JSON.stringify({
+        from: "Curiously Georgie <onboarding@resend.dev>",
+        to: [NOTIFY_EMAIL],
+        subject: `Pending review: ${details.species} — ${details.participantName}`,
+        html:
+          `<p>A new sighting needs a manual look before it can be confirmed.</p>` +
+          `<ul>` +
+          `<li><strong>Participant:</strong> ${escapeHtml(details.participantName)}</li>` +
+          `<li><strong>Species:</strong> ${escapeHtml(details.species)}</li>` +
+          `<li><strong>Date seen:</strong> ${escapeHtml(details.sightingDate ?? "—")}</li>` +
+          `<li><strong>Location:</strong> ${escapeHtml(details.location ?? "—")}</li>` +
+          `<li><strong>Automated check:</strong> ${escapeHtml(details.confidence)} confidence — ${escapeHtml(details.notes)}</li>` +
+          `</ul>` +
+          `<p>Review it via the Supabase dashboard: SQL Editor → ` +
+          `<code>select * from public.pending_sightings_review;</code>, or Table Editor → ` +
+          `sightings → find sighting id <code>${escapeHtml(details.sightingId)}</code> directly.</p>`,
+      }),
+    });
+    if (!resp.ok) {
+      console.error("Resend notification failed:", resp.status, await resp.text().catch(() => ""));
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error("Resend notification failed:", err);
+    return false;
+  }
+}
+
+function escapeHtml(str: string): string {
+  return String(str)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
 async function updateSighting(id: string, fields: Record<string, unknown>) {
   await fetch(`${SUPABASE_URL}/rest/v1/sightings?id=eq.${id}`, {
     method: "PATCH",
@@ -225,6 +311,26 @@ function json(body: unknown) {
 //        Edge Function: verify-sighting
 //
 // 5. Update LAUNCH_DATE above to the real go-live date, then redeploy.
+//
+// 6. (Optional, but recommended) Email notifications on pending review —
+//    George, this step is yours to do, Claude can't sign up for
+//    third-party accounts or enter API keys on your behalf:
+//      a. Sign up for a free Resend account at resend.com using
+//         contactcuriouslygeorgie@gmail.com as the account email — this
+//         matters, since it's what lets you skip domain verification (see
+//         below).
+//      b. Dashboard → API Keys → create one, copy it.
+//      c. Back in Supabase: Dashboard → Edge Functions → verify-sighting →
+//         Secrets → add RESEND_API_KEY = <your Resend key>.
+//      d. Redeploy this function (paste this file's latest contents in
+//         again) so it picks up the new code above.
+//    That's it — no DNS/domain setup needed. Resend's shared
+//    onboarding@resend.dev sender can send to your own account's email
+//    address without a verified domain; since every notification here
+//    only ever goes to contactcuriouslygeorgie@gmail.com, that's exactly
+//    what's needed. If RESEND_API_KEY is never set, everything above still
+//    works exactly as before — sightings just won't email you when they're
+//    left pending.
 //
 // To test without waiting for a real submission: Table Editor → sightings
 // → insert a test row with a photo_path pointing at any file already in
