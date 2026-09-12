@@ -157,12 +157,6 @@ document.addEventListener("DOMContentLoaded", function () {
             resetForNextEntry();
           })
           .catch(function (err) {
-            // Registered (or status unknown) but the save itself failed
-            // — still show the entry in this session's own feed so the
-            // form isn't a dead end.
-            entries.unshift(record);
-            renderFeed();
-            resetForNextEntry();
             var msg = err && err.message;
             if (msg === "offline-demo") {
               setStatusHtml("Demo mode — this entry isn't saved anywhere yet.");
@@ -179,7 +173,7 @@ document.addEventListener("DOMContentLoaded", function () {
             } else if (msg === "photo_required") {
               setStatusHtml("That photo didn't come through — please attach it again and resubmit.");
             } else {
-              setStatusHtml("Couldn't reach the shared log right now — kept locally for this session.");
+              setStatusHtml("Couldn't reach the shared log right now — please try again.");
             }
           })
           .then(function () {
