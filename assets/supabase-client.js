@@ -142,8 +142,6 @@ function registerParticipant(record) {
       parental_consent: !!record.parentalConsent,
       pin_hash: record.pinHash,
     })
-    .select()
-    .single()
     .then(function (res) {
       if (res.error) throw res.error;
       return res.data;
@@ -242,3 +240,4 @@ function fetchHallOfFame() {
       return results;
     });
 }
+"Fix registration RSL bug"
