@@ -781,7 +781,7 @@ footer a { color: var(--ink-soft); }
   <div class="rules-block rules-grid">
     <h3>Leaderboard &amp; Hall of Fame</h3>
     <div>
-      <p>The <a href="#leaderboard">Leaderboard</a> ranks everyone by accumulated Air Points from unique <em>confirmed</em> species, highest first. You're free to log birds outside the official 50 too — they still add to your overall tally — but only the official 50 earn Air Points or count toward the Hall of Fame. Confirm all 50 official Brisbane Air 50 species and you're inducted into the <a href="#hall-of-fame">Hall of Fame</a> — permanently, even if you keep spotting birds past that point.</p>
+      <p>The <a href="#leaderboard">Leaderboard</a> ranks everyone by accumulated Air Points from unique <em>confirmed</em> species, highest first. You're free to log birds outside the official 50 too — they still add to your overall tally — but only the official 50 earn Air Points or count toward the Hall of Fame. Confirm all 50 official Brisbane Air 50 species and you're eligible for the <a href="#hall-of-fame">Hall of Fame</a> — Georgie does one final manual check over your 50 confirmed sightings (no new submission needed, just a last look at the evidence photos already on file) before you go up permanently, even if you keep spotting birds past that point.</p>
     </div>
   </div>
 
@@ -1068,7 +1068,7 @@ footer a { color: var(--ink-soft); }
 <header class="page-head wrap">
   <span class="eyebrow">Hall of Fame</span>
   <h1>Fifty and beyond</h1>
-  <p class="lede">Everyone who has confirmed all 50 official Brisbane Air 50 species, in order of induction. They stay listed here for good, even as their tally keeps climbing.</p>
+  <p class="lede">Everyone who has confirmed all 50 official Brisbane Air 50 species, in order of induction. They stay listed here for good, even as their tally keeps climbing. Confirming your fiftieth doesn't add you instantly — Georgie does one final photo check before you go up permanently, so there can be a short delay.</p>
 </header>
 
 <section class="wrap">
@@ -1089,7 +1089,7 @@ footer a { color: var(--ink-soft); }
       <div class="date">Inducted 3 Jun 2026</div>
     </div>
   </div>
-  <p class="sample-note" id="fame-note"><span class="dot"></span>Example data — real inductees will appear here automatically the moment they've confirmed all 50 official species.</p>
+  <p class="sample-note" id="fame-note"><span class="dot"></span>Example data — real inductees appear here once Georgie has reviewed and confirmed a completed set of all 50 official species.</p>
 </section>
 
 <footer class="wrap">
@@ -1368,60 +1368,32 @@ function fetchLeaderboard(limit) {
 function fetchHallOfFame() {
   if (!supabaseClient) return Promise.resolve([]);
   return supabaseClient
-    .from("species_reference")
-    .select("species_key")
-    .then(function (refRes) {
-      if (refRes.error) throw refRes.error;
-      var officialKeys = {};
-      (refRes.data || []).forEach(function (row) {
-        officialKeys[row.species_key] = true;
-      });
+    .from("hall_of_fame_inductions")
+    .select("participant_key, inducted_at")
+    .order("inducted_at", { ascending: true })
+    .then(function (indRes) {
+      if (indRes.error) throw indRes.error;
+      var inductions = indRes.data || [];
+      if (!inductions.length) return [];
       return supabaseClient
         .from("leaderboard")
         .select("*")
-        .gte("air50_species_count", 50)
-        .then(function (res) {
-          if (res.error) throw res.error;
-          var leaders = res.data || [];
-          return Promise.all(
-            leaders.map(function (leader) {
-              return supabaseClient
-                .from("sightings")
-                .select("species_key, sighting_date, created_at")
-                .eq("participant_key", leader.participant_key)
-                .eq("status", "confirmed")
-                .order("created_at", { ascending: true })
-                .then(function (rowsRes) {
-                  if (rowsRes.error) throw rowsRes.error;
-                  var seen = {};
-                  var seenCount = 0;
-                  var inductedAt = null;
-                  var rows = rowsRes.data || [];
-                  for (var i = 0; i < rows.length; i++) {
-                    var key = rows[i].species_key;
-                    if (!officialKeys[key]) continue; // off-list — doesn't count toward induction
-                    if (!seen[key]) {
-                      seen[key] = true;
-                      seenCount++;
-                      if (seenCount >= 50) {
-                        inductedAt = rows[i].sighting_date;
-                        break;
-                      }
-                    }
-                  }
-                  return { name: leader.participant_name, count: leader.species_count, points: leader.total_points, inductedAt: inductedAt };
-                });
-            })
-          );
+        .then(function (lbRes) {
+          if (lbRes.error) throw lbRes.error;
+          var byKey = {};
+          (lbRes.data || []).forEach(function (row) {
+            byKey[row.participant_key] = row;
+          });
+          return inductions.map(function (ind) {
+            var lb = byKey[ind.participant_key] || {};
+            return {
+              name: lb.participant_name || ind.participant_key,
+              count: lb.species_count,
+              points: lb.total_points,
+              inductedAt: ind.inducted_at,
+            };
+          });
         });
-    })
-    .then(function (results) {
-      results.sort(function (a, b) {
-        var da = a.inductedAt || "";
-        var db = b.inductedAt || "";
-        return da < db ? -1 : da > db ? 1 : 0;
-      });
-      return results;
     });
 }
 
