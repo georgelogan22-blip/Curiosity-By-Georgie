@@ -10,10 +10,15 @@
 //      calls the "Verification & Launch Date" check — it can't be
 //      faked by just typing a different "date seen" in the form, since
 //      it comes from the photo file itself.
-//   2. A vision model's best guess at whether the photo plausibly shows
-//      the claimed species, and whether it looks like a genuine,
-//      unedited wildlife photo (not a drawing, screenshot, stock photo,
-//      or obviously AI-generated image).
+//   2. A vision model's best guess at whether the photo is a genuine,
+//      unedited photograph of a real bird (not a drawing, screenshot,
+//      stock photo, or obviously AI-generated image). It deliberately
+//      does NOT try to verify the specific species claimed — two real
+//      Australian look-alikes (Australian Magpie vs. Pied Butcherbird /
+//      Magpie-lark) were tripping the model up and getting genuine
+//      sightings wrongly rejected, so as of 2026-09-12 species naming is
+//      trusted from the participant; George can still catch a genuine
+//      mislabeling by eye via the pending-review queue if one matters.
 //
 // A sighting is auto-confirmed only when the date passes AND the vision
 // check comes back "high" confidence. Everything else — no date, a
@@ -134,21 +139,24 @@ async function checkSpeciesWithVision(
             {
               type: "text",
               text:
-                `A participant in a Brisbane, Australia bird-spotting challenge has logged this photo as a "${species}". ` +
-                `This photo's file metadata has already been checked separately and confirmed as a genuine, ` +
-                `unedited capture from a real camera — so judge only whether the photo itself is a real ` +
-                `photograph and whether it shows that species. Do NOT lower your confidence just because the ` +
-                `bird looks unusually still, clean, glossy, or "too perfect" — real wildlife photos, especially ` +
-                `of pale/white birds like cockatoos in bright sun, often look exactly like that; a real bird ` +
-                `standing still is not evidence of anything fake. ` +
+                `A participant in a Brisbane, Australia bird-spotting challenge has logged this photo, ` +
+                `describing it as a "${species}". This photo's file metadata has already been checked ` +
+                `separately and confirmed as a genuine, unedited capture from a real camera. Do NOT try to ` +
+                `verify whether that species name is correct — participants can occasionally misname or ` +
+                `mis-ID a species (this is expected and fine; a human reviewer can catch a genuine ` +
+                `mislabeling by eye later if it matters). Your only job is to judge whether this image is a ` +
+                `real, unedited photograph that shows an actual bird (any bird at all), as opposed to a ` +
+                `drawing, painting, cartoon, screenshot, meme, watermarked stock photo, or an obviously ` +
+                `AI-generated/rendered image. Do NOT lower your confidence just because the bird looks ` +
+                `unusually still, clean, glossy, or "too perfect" — real wildlife photos often look exactly ` +
+                `like that; a bird standing still or looking unusually smart is not evidence of anything fake. ` +
                 `Reply with ONLY a single JSON object, no other text: ` +
                 `{"confidence": "high"|"medium"|"low", "reason": "one short sentence"}. ` +
-                `Use "high" if you're reasonably confident the photo shows that species and is a genuine ` +
-                `photograph — not a drawing, painting, cartoon, screenshot of a screen or app, or an obvious ` +
-                `digital illustration/render. Use "medium" if it's probably right but you're not fully sure ` +
-                `(poor angle, blur, partially obscured, a similar-looking species). Use "low" only if the ` +
-                `species shown is clearly wrong, or the image clearly isn't a photograph at all (a drawing, a ` +
-                `screenshot, an icon/graphic, or text).`,
+                `Use "high" if this clearly is a real photograph showing a real bird. Use "medium" if you're ` +
+                `not fully sure it's a genuine photo (heavily filtered/edited, very unclear, ambiguous). Use ` +
+                `"low" only if the image clearly is NOT a real photo of a bird at all (a drawing, painting, ` +
+                `cartoon, screenshot, an icon/graphic, text, a watermarked stock image, or an AI-generated/ ` +
+                `rendered image).`,
             },
           ],
         },
