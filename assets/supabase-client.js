@@ -186,16 +186,20 @@ function participantStatus(name) {
 // supabase/points-migration.sql and supabase/air50-hall-of-fame-migration.sql
 // — the leaderboard view sums each participant's confirmed distinct
 // species' tier points, where an off-list species is worth 0 points.
-// species_count (ALL distinct confirmed species, official or not) is
-// still returned for display; air50_species_count (official-50-only) is
-// what fetchHallOfFame() below actually gates induction on.
+// George’s decision, 2026-09-13: species logging itself stays open — no
+// restriction to the official 50, since that’s core to the spirit of the
+// game — but the "Species" column shown on the Leaderboard uses
+// air50_species_count (official-50-only), not the raw species_count (which
+// includes off-list species), so the leaderboard reads as clean progress
+// toward the full set of 50 rather than a number that can outrun it. Same
+// field fetchHallOfFame() below gates induction on.
 function fetchLeaderboard(limit) {
   if (!supabaseClient) return Promise.resolve([]);
   return supabaseClient
     .from("leaderboard")
     .select("*")
     .order("total_points", { ascending: false })
-    .order("species_count", { ascending: false })
+    .order("air50_species_count", { ascending: false })
     .order("last_sighting", { ascending: false })
     .limit(limit || 25)
     .then(function (res) {
