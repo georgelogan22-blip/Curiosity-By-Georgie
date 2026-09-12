@@ -169,7 +169,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 "This name isn't able to log sightings. If you think this is a mistake, email <a href=\"mailto:contactcuriouslygeorgie@gmail.com\">contactcuriouslygeorgie@gmail.com</a>."
               );
             } else if (msg === "invalid_pin") {
-              setStatusHtml("That PIN doesn't match this name — check it and try again.");
+              setStatusHtml('<span class="status-warn">That PIN doesn\'t match this name — check it and try again.</span>');
             } else if (msg === "photo_required") {
               setStatusHtml("That photo didn't come through — please attach it again and resubmit.");
             } else {
