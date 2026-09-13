@@ -161,6 +161,7 @@ a { color: var(--accent); }
 /* ---------- mobile nav toggle ---------- */
 .nav-toggle {
   display: none;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 40px;
@@ -172,22 +173,26 @@ a { color: var(--accent); }
   cursor: pointer;
   flex: none;
 }
-/* Three-dot "kebab" style, swapped in for the original hamburger bars —
-   same <span><span><span> markup in the HTML and same nav.js toggle
-   logic, just restyled as dots instead of lines. */
+/* Back to the three-bar hamburger. Root cause of both this and the
+   three-dot version looking "wonky": .nav-toggle is a flex container,
+   but was missing flex-direction: column — so its three <span> children
+   laid out side by side in a row instead of stacking, with the
+   margin-top meant to space them vertically just shoving each one
+   further down, producing a crooked staircase instead of a clean stack.
+   Fixed by adding flex-direction: column above; the bars now actually
+   stack as intended. */
 .nav-toggle span {
   display: block;
-  width: 4px;
-  height: 4px;
+  width: 20px;
+  height: 2px;
   background: var(--ink);
-  border-radius: 50%;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  border-radius: 2px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
-.nav-toggle span + span { margin-top: 4px; }
-.nav-toggle[aria-expanded="true"] span {
-  background: var(--accent);
-  transform: scale(1.2);
-}
+.nav-toggle span + span { margin-top: 5px; }
+.nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
 @media (max-width: 780px) {
   .site-nav .wrap { position: relative; }
