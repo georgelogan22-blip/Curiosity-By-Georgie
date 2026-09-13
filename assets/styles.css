@@ -321,6 +321,14 @@ section { padding: 40px 0; }
 }
 .stat-tile .label { color: var(--ink-soft); font-size: 0.88rem; }
 
+/* Below this width, .stat-strip's auto-fit grid only has room for 2 of
+   the 3 tiles per row, leaving an odd empty cell next to the last one
+   (as seen with "Hall of Famers" on a phone) — stack to one full-width
+   column instead so every tile reads cleanly. */
+@media (max-width: 560px) {
+  .stat-strip { grid-template-columns: 1fr; }
+}
+
 .sample-note {
   font-family: var(--font-mono);
   font-size: 0.74rem;
