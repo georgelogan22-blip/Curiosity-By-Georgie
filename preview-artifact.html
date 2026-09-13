@@ -210,6 +210,80 @@ a { color: var(--accent); }
   color: var(--accent-ink);
 }
 
+/* ---------- "More" dropdown (desktop) ----------
+   Keeps the top-level nav bar to a handful of pill links (Home, Rules,
+   Leaderboard, Hall of Fame) and tucks the rest (Register, Log a Sighting,
+   My Sightings, Species Checklist) behind a small "More" button, so the
+   bar doesn't get more crowded every time a new challenge variant (Land 50,
+   Water 50, etc.) adds another page down the line. Below the mobile
+   breakpoint this group is flattened back into the ordinary hamburger
+   list — see the @media block below. */
+.nav-more { position: relative; }
+.nav-more-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 999px;
+  background: none;
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.nav-more-toggle::after {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg) translateY(-2px);
+  transition: transform 0.15s ease;
+}
+.nav-more-toggle:hover { background: var(--paper-raised); color: var(--ink); }
+.nav-more.open .nav-more-toggle { background: var(--paper-raised); color: var(--ink); }
+.nav-more.open .nav-more-toggle::after { transform: rotate(225deg) translateY(2px); }
+.nav-more:has(.nav-more-menu a[aria-current="page"]) .nav-more-toggle {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.nav-more-menu {
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 180px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.12);
+  z-index: 30;
+}
+.nav-more.open .nav-more-menu { display: flex; }
+.nav-more-menu a {
+  display: block;
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 600;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.nav-more-menu a:hover { background: var(--paper-raised); color: var(--ink); }
+.nav-more-menu a[aria-current="page"] {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
 /* ---------- mobile nav toggle ---------- */
 .nav-toggle {
   display: none;
@@ -265,6 +339,22 @@ a { color: var(--accent); }
   }
   .nav-links.nav-open { display: flex; }
   .nav-links a { width: 100%; text-align: left; padding: 12px 14px; }
+  /* Flatten the desktop "More" grouping back into one plain list — on a
+     phone there's no crowding problem to solve, and nesting a dropdown
+     inside the hamburger menu would just cost an extra tap for no reason. */
+  .nav-more { position: static; }
+  .nav-more-toggle { display: none; }
+  .nav-more-menu {
+    display: flex;
+    position: static;
+    flex-direction: column;
+    padding: 0;
+    margin: 0;
+    background: none;
+    border: none;
+    box-shadow: none;
+    min-width: 0;
+  }
 }
 
 /* ---------- buttons ---------- */
@@ -728,12 +818,17 @@ footer a { color: var(--ink-soft); }
     <ul class="nav-links" id="primary-nav">
       <li><a href="#index">Home</a></li>
       <li><a href="#rules">Rules</a></li>
-      <li><a href="#register">Register</a></li>
-      <li><a href="#log-sighting">Log a Sighting</a></li>
-      <li><a href="#my-sightings">My Sightings</a></li>
       <li><a href="#leaderboard">Leaderboard</a></li>
       <li><a href="#hall-of-fame">Hall of Fame</a></li>
-      <li><a href="#checklist">Species Checklist</a></li>
+      <li class="nav-more">
+        <button type="button" class="nav-more-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="nav-more-menu">More</button>
+        <ul class="nav-more-menu" id="nav-more-menu">
+          <li><a href="#register">Register</a></li>
+          <li><a href="#log-sighting">Log a Sighting</a></li>
+          <li><a href="#my-sightings">My Sightings</a></li>
+          <li><a href="#checklist">Species Checklist</a></li>
+        </ul>
+      </li>
     </ul>
   </div>
 </nav>
@@ -2234,6 +2329,43 @@ document.addEventListener("DOMContentLoaded", function () {
   });
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape") closeMenu();
+  });
+})();
+
+// Desktop "More" dropdown (mirrors assets/nav.js): secondary nav links
+// live behind a small "More" button on wide screens so the bar stays tidy
+// as more challenge variants add more pages. Below the mobile breakpoint
+// this group is flattened back into the plain hamburger list by CSS.
+(function () {
+  var more = document.querySelector(".nav-more");
+  var moreToggle = document.querySelector(".nav-more-toggle");
+  if (!more || !moreToggle) return;
+  function closeMore() {
+    more.classList.remove("open");
+    moreToggle.setAttribute("aria-expanded", "false");
+  }
+  function openMore() {
+    more.classList.add("open");
+    moreToggle.setAttribute("aria-expanded", "true");
+  }
+  moreToggle.addEventListener("click", function (e) {
+    e.stopPropagation();
+    if (more.classList.contains("open")) closeMore();
+    else openMore();
+  });
+  more.addEventListener("click", function (e) {
+    if (e.target.closest("a")) closeMore();
+  });
+  document.addEventListener("click", function (e) {
+    if (!more.classList.contains("open")) return;
+    if (more.contains(e.target)) return;
+    closeMore();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeMore();
+  });
+  window.addEventListener("resize", function () {
+    if (window.innerWidth <= 780) closeMore();
   });
 })();
 
