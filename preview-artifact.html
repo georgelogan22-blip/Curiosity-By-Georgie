@@ -306,7 +306,10 @@ a { color: var(--accent); }
 
 /* ---------- sections / cards ---------- */
 section { padding: 40px 0; }
-.section-tight { padding: 16px 0 40px; }
+/* Top/bottom only — this class is often combined with .wrap
+   (class="wrap section-tight"), and a padding shorthand here would zero
+   out .wrap's side padding instead of adding to it. */
+.section-tight { padding-top: 16px; padding-bottom: 40px; }
 
 .card-grid {
   display: grid;
@@ -373,7 +376,10 @@ section { padding: 40px 0; }
 }
 
 /* ---------- page header ---------- */
-.page-head { padding: 48px 0 20px; border-bottom: 1px solid var(--line); }
+/* Top/bottom only — every non-homepage page uses class="page-head wrap"
+   together, so a padding shorthand here would zero out .wrap's side
+   padding instead of adding to it (same bug as .hero, fixed above). */
+.page-head { padding-top: 48px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
 .page-head .eyebrow { margin-bottom: 0.6em; }
 .version-tag {
   font-family: var(--font-mono);
