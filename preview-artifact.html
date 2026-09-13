@@ -156,6 +156,7 @@ a { color: var(--accent); }
   border-bottom: 1px solid var(--line);
 }
 .site-nav .wrap {
+  max-width: 1600px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -309,6 +310,27 @@ a { color: var(--accent); }
   background: var(--accent);
   color: var(--accent-ink);
 }
+.nav-more-menu .nav-soon {
+  display: block;
+  padding: 7px 12px;
+  border-radius: 8px;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+  font-weight: 600;
+  opacity: 0.55;
+  cursor: default;
+  white-space: nowrap;
+  user-select: none;
+}
+.nav-more-menu .nav-soon small {
+  display: block;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-top: 1px;
+}
+.nav-group-label { display: none; }
 
 /* ---------- mobile nav toggle ---------- */
 .nav-toggle {
@@ -345,7 +367,7 @@ a { color: var(--accent); }
 .nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
 .nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-@media (max-width: 780px) {
+@media (max-width: 1200px) {
   .site-nav .wrap { position: relative; }
   .nav-toggle { display: inline-flex; }
   .nav-links {
@@ -380,6 +402,16 @@ a { color: var(--accent); }
     border: none;
     box-shadow: none;
     min-width: 0;
+  }
+  .nav-group-label {
+    display: block;
+    padding: 10px 14px 0;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    opacity: 0.7;
   }
 }
 
@@ -842,17 +874,42 @@ footer a { color: var(--ink-soft); }
       <span></span><span></span><span></span>
     </button>
     <ul class="nav-links" id="primary-nav">
-      <li><a href="#index">Home</a></li>
+      <li class="nav-more">
+        <button type="button" class="nav-more-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="nav-b250-menu">The Brisbane 250</button>
+        <ul class="nav-more-menu" id="nav-b250-menu">
+          <li class="nav-group-label">The Brisbane 250</li>
+          <li><a href="#index">Air 50</a></li>
+          <li class="nav-soon"><span>Land 50</span><small>Coming soon</small></li>
+          <li class="nav-soon"><span>Water 50</span><small>Coming soon</small></li>
+          <li class="nav-soon"><span>Botanical 50</span><small>Coming soon</small></li>
+          <li class="nav-soon"><span>Macro 50</span><small>Coming soon</small></li>
+        </ul>
+      </li>
       <li><a href="#rules">Rules</a></li>
+      <li><a href="#register">Register</a></li>
+      <li class="nav-more">
+        <button type="button" class="nav-more-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="nav-sightings-menu">Sightings</button>
+        <ul class="nav-more-menu" id="nav-sightings-menu">
+          <li class="nav-group-label">Sightings</li>
+          <li><a href="#log-sighting">Log a Sighting</a></li>
+          <li><a href="#my-sightings">My Sightings</a></li>
+        </ul>
+      </li>
       <li><a href="#leaderboard">Leaderboard</a></li>
       <li><a href="#hall-of-fame">Hall of Fame</a></li>
       <li class="nav-more">
+        <button type="button" class="nav-more-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="nav-checklist-menu">Species Checklist</button>
+        <ul class="nav-more-menu" id="nav-checklist-menu">
+          <li class="nav-group-label">Species Checklist</li>
+          <li><a href="#checklist">Air 50</a></li>
+        </ul>
+      </li>
+      <li class="nav-more">
         <button type="button" class="nav-more-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="nav-more-menu">More</button>
         <ul class="nav-more-menu" id="nav-more-menu">
-          <li><a href="#register">Register</a></li>
-          <li><a href="#log-sighting">Log a Sighting</a></li>
-          <li><a href="#my-sightings">My Sightings</a></li>
-          <li><a href="#checklist">Species Checklist</a></li>
+          <li class="nav-group-label">More</li>
+          <li class="nav-soon"><span>Chat</span><small>Coming soon</small></li>
+          <li class="nav-soon"><span>Merchandise</span><small>Coming soon</small></li>
         </ul>
       </li>
     </ul>
@@ -2351,47 +2408,56 @@ document.addEventListener("DOMContentLoaded", function () {
     closeMenu();
   });
   window.addEventListener("resize", function () {
-    if (window.innerWidth > 780) closeMenu();
+    if (window.innerWidth > 1200) closeMenu();
   });
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape") closeMenu();
   });
 })();
 
-// Desktop "More" dropdown (mirrors assets/nav.js): secondary nav links
-// live behind a small "More" button on wide screens so the bar stays tidy
-// as more challenge variants add more pages. Below the mobile breakpoint
-// this group is flattened back into the plain hamburger list by CSS.
+// Desktop nav dropdowns (mirrors assets/nav.js): related links group behind
+// a small toggle button on wide screens — Brisbane 250, Sightings, Species
+// Checklist, More — so the bar stays tidy as more challenge variants add
+// more pages. Generic over every ".nav-more" group. Below the mobile
+// breakpoint every group is flattened back into the plain hamburger list.
 (function () {
-  var more = document.querySelector(".nav-more");
-  var moreToggle = document.querySelector(".nav-more-toggle");
-  if (!more || !moreToggle) return;
-  function closeMore() {
-    more.classList.remove("open");
-    moreToggle.setAttribute("aria-expanded", "false");
+  var groups = Array.prototype.slice.call(document.querySelectorAll(".nav-more"));
+  if (!groups.length) return;
+  function closeGroup(group) {
+    var t = group.querySelector(".nav-more-toggle");
+    group.classList.remove("open");
+    if (t) t.setAttribute("aria-expanded", "false");
   }
-  function openMore() {
-    more.classList.add("open");
-    moreToggle.setAttribute("aria-expanded", "true");
+  function closeAll(except) {
+    groups.forEach(function (g) { if (g !== except) closeGroup(g); });
   }
-  moreToggle.addEventListener("click", function (e) {
-    e.stopPropagation();
-    if (more.classList.contains("open")) closeMore();
-    else openMore();
-  });
-  more.addEventListener("click", function (e) {
-    if (e.target.closest("a")) closeMore();
+  groups.forEach(function (group) {
+    var toggle = group.querySelector(".nav-more-toggle");
+    if (!toggle) return;
+    toggle.addEventListener("click", function (e) {
+      e.stopPropagation();
+      var isOpen = group.classList.contains("open");
+      closeAll(group);
+      if (isOpen) closeGroup(group);
+      else {
+        group.classList.add("open");
+        toggle.setAttribute("aria-expanded", "true");
+      }
+    });
+    group.addEventListener("click", function (e) {
+      if (e.target.closest("a")) closeGroup(group);
+    });
   });
   document.addEventListener("click", function (e) {
-    if (!more.classList.contains("open")) return;
-    if (more.contains(e.target)) return;
-    closeMore();
+    groups.forEach(function (group) {
+      if (group.classList.contains("open") && !group.contains(e.target)) closeGroup(group);
+    });
   });
   document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape") closeMore();
+    if (e.key === "Escape") closeAll(null);
   });
   window.addEventListener("resize", function () {
-    if (window.innerWidth <= 780) closeMore();
+    if (window.innerWidth <= 1200) closeAll(null);
   });
 })();
 
