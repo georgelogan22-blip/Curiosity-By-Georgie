@@ -46,3 +46,53 @@
     if (e.key === "Escape") closeMenu();
   });
 })();
+
+// Desktop "More" dropdown: on wide screens, secondary nav links (Register,
+// Log a Sighting, My Sightings, Species Checklist) live behind a small
+// "More" button instead of being spelled out in the bar, so the bar stays
+// tidy as more challenge variants add more pages down the line. Below the
+// mobile breakpoint this group is flattened back into the plain hamburger
+// list by CSS, and the toggle button is hidden, so this script is a no-op
+// there.
+(function () {
+  var more = document.querySelector(".nav-more");
+  var moreToggle = document.querySelector(".nav-more-toggle");
+  if (!more || !moreToggle) return;
+
+  function closeMore() {
+    more.classList.remove("open");
+    moreToggle.setAttribute("aria-expanded", "false");
+  }
+  function openMore() {
+    more.classList.add("open");
+    moreToggle.setAttribute("aria-expanded", "true");
+  }
+
+  moreToggle.addEventListener("click", function (e) {
+    e.stopPropagation();
+    if (more.classList.contains("open")) closeMore();
+    else openMore();
+  });
+
+  // Close once a link inside the dropdown is chosen (matters for the
+  // hosted preview's hash-based routing, where a click doesn't unload
+  // the page at all).
+  more.addEventListener("click", function (e) {
+    if (e.target.closest("a")) closeMore();
+  });
+
+  document.addEventListener("click", function (e) {
+    if (!more.classList.contains("open")) return;
+    if (more.contains(e.target)) return;
+    closeMore();
+  });
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeMore();
+  });
+
+  window.addEventListener("resize", function () {
+    if (window.innerWidth <= 780) closeMore();
+  });
+})();
+
