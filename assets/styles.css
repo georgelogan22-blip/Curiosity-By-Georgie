@@ -114,14 +114,29 @@ a { color: var(--accent); }
   display: flex;
   align-items: center;
   gap: 10px;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.05rem;
-  color: var(--ink);
   text-decoration: none;
   white-space: nowrap;
 }
 .brand svg { width: 30px; height: 30px; flex: none; }
+/* Wordmark set in the same two script faces as the TM logo — a looser
+   brush script for "Curiously", a bolder rounded script (with its own
+   built-in swash) for "Georgie" — each with a black outline so the fill
+   colour reads the same way on either theme's nav background. */
+.brand-word {
+  -webkit-text-stroke: 1.1px #000;
+  paint-order: stroke fill;
+}
+.brand-word-1 {
+  font-family: "Kaushan Script", cursive;
+  font-size: 1.28rem;
+  color: #ffffff;
+  margin-right: 0.22em;
+}
+.brand-word-2 {
+  font-family: "Lobster", cursive;
+  font-size: 1.32rem;
+  color: var(--accent);
+}
 .brand-logo {
   width: 40px;
   height: 40px;
