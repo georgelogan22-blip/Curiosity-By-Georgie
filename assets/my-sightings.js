@@ -68,15 +68,15 @@ document.addEventListener("DOMContentLoaded", function () {
               ? row.review_notes || "Didn't pass review — email us if you think this is a mistake."
               : "On the Leaderboard now.";
           return (
-            "<tr><td>" +
+            '<tr><td data-label="Species">' +
             escapeHtml(row.species) +
-            "</td><td><span class=\"status-pill " +
+            '</td><td data-label="Status"><span class="status-pill ' +
             meta.className +
-            "\">" +
+            '">' +
             escapeHtml(meta.label) +
-            "</span></td><td>" +
+            '</span></td><td data-label="Date seen">' +
             escapeHtml(row.sighting_date || "—") +
-            "</td><td>" +
+            '</td><td data-label="Note">' +
             escapeHtml(note) +
             "</td></tr>"
           );
