@@ -233,7 +233,15 @@ a { color: var(--accent); }
 
 /* ---------- hero ---------- */
 .hero {
-  padding: 72px 0 56px;
+  /* Top/bottom only — left/right padding is meant to come from the
+     shared .wrap class this element also carries (class="hero wrap" in
+     index.html). A shorthand "padding: 72px 0 56px" here would zero out
+     .wrap's side padding instead of adding to it, since both rules have
+     equal specificity and this one is declared later in the file — that
+     was leaving the homepage hero text flush against the screen edges
+     on narrow/mobile widths. */
+  padding-top: 72px;
+  padding-bottom: 56px;
   display: grid;
   grid-template-columns: 1.2fr 0.9fr;
   gap: 40px;
