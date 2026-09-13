@@ -192,6 +192,33 @@ a { color: var(--accent); }
 }
 .hero-art { display: flex; justify-content: center; }
 .hero-art svg { width: 100%; max-width: 340px; height: auto; }
+.eagle-portrait {
+  position: relative;
+  width: 100%;
+  max-width: 340px;
+}
+.eagle-portrait::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1.5px dashed var(--line);
+  pointer-events: none;
+}
+.eagle-soar-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 50%;
+  animation: eagle-soar 9s ease-in-out infinite;
+  transform-origin: 50% 50%;
+}
+@keyframes eagle-soar {
+  0%   { transform: translateY(0) rotate(-1.2deg); }
+  50%  { transform: translateY(-8px) rotate(1.2deg); }
+  100% { transform: translateY(0) rotate(-1.2deg); }
+}
 @media (max-width: 820px) {
   .hero { grid-template-columns: 1fr; padding-top: 40px; }
   .hero-art { order: -1; max-width: 220px; margin: 0 auto; }
