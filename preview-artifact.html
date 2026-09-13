@@ -210,6 +210,55 @@ a { color: var(--accent); }
   color: var(--accent-ink);
 }
 
+/* ---------- mobile nav toggle ---------- */
+.nav-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--paper-raised);
+  cursor: pointer;
+  flex: none;
+}
+.nav-toggle span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--ink);
+  border-radius: 2px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.nav-toggle span + span { margin-top: 5px; }
+.nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+@media (max-width: 780px) {
+  .site-nav .wrap { position: relative; }
+  .nav-toggle { display: inline-flex; }
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2px;
+    margin-top: 1px;
+    padding: 10px 16px 16px;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.12);
+  }
+  .nav-links.nav-open { display: flex; }
+  .nav-links a { width: 100%; text-align: left; padding: 12px 14px; }
+}
+
 /* ---------- buttons ---------- */
 .btn {
   display: inline-flex;
@@ -600,7 +649,10 @@ footer a { color: var(--ink-soft); }
       <span class="brand-logo" aria-hidden="true"></span>
       Curiously Georgie
     </a>
-    <ul class="nav-links">
+    <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="primary-nav" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="primary-nav">
       <li><a href="#index">Home</a></li>
       <li><a href="#rules">Rules</a></li>
       <li><a href="#register">Register</a></li>
@@ -2078,6 +2130,39 @@ document.addEventListener("DOMContentLoaded", function () {
   loadLeaderboard();
   loadHallOfFame();
 });
+
+// Mobile nav: collapsible hamburger menu (mirrors assets/nav.js).
+(function () {
+  var toggle = document.querySelector(".nav-toggle");
+  var links = document.querySelector(".nav-links");
+  if (!toggle || !links) return;
+  function closeMenu() {
+    links.classList.remove("nav-open");
+    toggle.setAttribute("aria-expanded", "false");
+  }
+  function openMenu() {
+    links.classList.add("nav-open");
+    toggle.setAttribute("aria-expanded", "true");
+  }
+  toggle.addEventListener("click", function () {
+    if (links.classList.contains("nav-open")) closeMenu();
+    else openMenu();
+  });
+  links.addEventListener("click", function (e) {
+    if (e.target.closest("a")) closeMenu();
+  });
+  document.addEventListener("click", function (e) {
+    if (!links.classList.contains("nav-open")) return;
+    if (links.contains(e.target) || toggle.contains(e.target)) return;
+    closeMenu();
+  });
+  window.addEventListener("resize", function () {
+    if (window.innerWidth > 780) closeMenu();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeMenu();
+  });
+})();
 
 // Simple hash router so this single preview page can stand in for the
 // site's six separate pages.
