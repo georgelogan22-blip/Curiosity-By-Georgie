@@ -104,6 +104,11 @@ a { color: var(--accent); }
   border-bottom: 1px solid var(--line);
 }
 .site-nav .wrap {
+  /* The nav needs more room than the page's own 1080px content column —
+     with 8 top-level items (more once further disciplines are added, but
+     mostly nested inside the existing dropdowns from here on) the bar
+     needs its own, wider budget rather than reusing .wrap's content cap. */
+  max-width: 1600px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -187,14 +192,17 @@ a { color: var(--accent); }
   color: var(--accent-ink);
 }
 
-/* ---------- "More" dropdown (desktop) ----------
-   Keeps the top-level nav bar to a handful of pill links (Home, Rules,
-   Leaderboard, Hall of Fame) and tucks the rest (Register, Log a Sighting,
-   My Sightings, Species Checklist) behind a small "More" button, so the
-   bar doesn't get more crowded every time a new challenge variant (Land 50,
-   Water 50, etc.) adds another page down the line. Below the mobile
-   breakpoint this group is flattened back into the ordinary hamburger
-   list — see the @media block below. */
+/* ---------- nav dropdowns (desktop) ----------
+   The nav bar is built from several small dropdown groups (.nav-more),
+   not just one: "The Brisbane 250" (the parent brand for every challenge
+   discipline — Air 50 today, Land/Water/Botanical/Macro 50 to follow),
+   "Sightings" (Log a Sighting, My Sightings), "Species Checklist" (one
+   entry per discipline, Air 50 today), and "More" (Chat, Merchandise).
+   Each is independent markup but shares this one set of rules — assets/
+   nav.js opens/closes them generically by class, not by a specific id, so
+   adding another dropdown group later never needs a script change. Below
+   the mobile breakpoint every group is flattened back into the ordinary
+   hamburger list — see the @media block below. */
 .nav-more { position: relative; }
 .nav-more-toggle {
   display: inline-flex;
@@ -260,6 +268,39 @@ a { color: var(--accent); }
   background: var(--accent);
   color: var(--accent-ink);
 }
+/* A discipline/feature that's on the map but not live yet (Land 50, Water
+   50, Chat, Merchandise...) — shown so visitors get used to the eventual
+   layout, but deliberately inert: no link, no explanation, just a quiet
+   "Coming soon" tag under the name. */
+.nav-more-menu .nav-soon {
+  display: block;
+  padding: 7px 12px;
+  border-radius: 8px;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+  font-weight: 600;
+  opacity: 0.55;
+  cursor: default;
+  white-space: nowrap;
+  user-select: none;
+}
+.nav-more-menu .nav-soon small {
+  display: block;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-top: 1px;
+}
+/* On desktop the dropdown's own toggle button already names the group
+   ("Sightings", "Species Checklist"...), so this label stays hidden there.
+   Once every group flattens into one plain list on mobile (see the
+   @media block below), the grouping context would otherwise be lost —
+   most noticeably, "Air 50" appears under two different groups (The
+   Brisbane 250, and Species Checklist) with two different destinations,
+   so a plain flattened list alone would show it twice with nothing to
+   tell them apart. */
+.nav-group-label { display: none; }
 
 /* ---------- mobile nav toggle ---------- */
 .nav-toggle {
@@ -297,7 +338,13 @@ a { color: var(--accent); }
 .nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
 .nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-@media (max-width: 780px) {
+/* Collapses to the hamburger menu below 1200px, not the site's usual
+   780px mobile breakpoint — with 8 top-level items (The Brisbane 250,
+   Rules, Register, Sightings, Leaderboard, Hall of Fame, Species
+   Checklist, More) the bar needs real desktop width to lay out on one
+   row; below that it reads better as the same collapsed menu tablets and
+   phones already get, rather than wrapping onto a ragged second line. */
+@media (max-width: 1200px) {
   .site-nav .wrap { position: relative; }
   .nav-toggle { display: inline-flex; }
   .nav-links {
@@ -332,6 +379,16 @@ a { color: var(--accent); }
     border: none;
     box-shadow: none;
     min-width: 0;
+  }
+  .nav-group-label {
+    display: block;
+    padding: 10px 14px 0;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    opacity: 0.7;
   }
 }
 
