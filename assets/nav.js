@@ -39,7 +39,7 @@
   // rotating a tablet, or a desktop browser being resized), don't leave
   // the menu stuck open with the wrong layout underneath it.
   window.addEventListener("resize", function () {
-    if (window.innerWidth > 780) closeMenu();
+    if (window.innerWidth > 1200) closeMenu();
   });
 
   document.addEventListener("keydown", function (e) {
@@ -47,52 +47,65 @@
   });
 })();
 
-// Desktop "More" dropdown: on wide screens, secondary nav links (Register,
-// Log a Sighting, My Sightings, Species Checklist) live behind a small
-// "More" button instead of being spelled out in the bar, so the bar stays
-// tidy as more challenge variants add more pages down the line. Below the
-// mobile breakpoint this group is flattened back into the plain hamburger
-// list by CSS, and the toggle button is hidden, so this script is a no-op
-// there.
+// Desktop nav dropdowns: on wide screens, related links group behind a
+// small toggle button instead of being spelled out in the bar — "The
+// Brisbane 250" (Air 50, plus each discipline still to come), "Sightings"
+// (Log a Sighting, My Sightings), "Species Checklist" (one entry per
+// discipline), and "More" (Chat, Merchandise) — so the bar stays tidy as
+// more challenge variants add more pages down the line. Works generically
+// over every ".nav-more" group on the page, so adding another dropdown
+// later needs no script change. Below the mobile breakpoint every group is
+// flattened back into the plain hamburger list by CSS, and the toggle
+// buttons are hidden, so this script is a no-op there.
 (function () {
-  var more = document.querySelector(".nav-more");
-  var moreToggle = document.querySelector(".nav-more-toggle");
-  if (!more || !moreToggle) return;
+  var groups = Array.prototype.slice.call(document.querySelectorAll(".nav-more"));
+  if (!groups.length) return;
 
-  function closeMore() {
-    more.classList.remove("open");
-    moreToggle.setAttribute("aria-expanded", "false");
+  function closeGroup(group) {
+    var toggle = group.querySelector(".nav-more-toggle");
+    group.classList.remove("open");
+    if (toggle) toggle.setAttribute("aria-expanded", "false");
   }
-  function openMore() {
-    more.classList.add("open");
-    moreToggle.setAttribute("aria-expanded", "true");
+  function closeAll(except) {
+    groups.forEach(function (g) {
+      if (g !== except) closeGroup(g);
+    });
   }
 
-  moreToggle.addEventListener("click", function (e) {
-    e.stopPropagation();
-    if (more.classList.contains("open")) closeMore();
-    else openMore();
-  });
+  groups.forEach(function (group) {
+    var toggle = group.querySelector(".nav-more-toggle");
+    if (!toggle) return;
 
-  // Close once a link inside the dropdown is chosen (matters for the
-  // hosted preview's hash-based routing, where a click doesn't unload
-  // the page at all).
-  more.addEventListener("click", function (e) {
-    if (e.target.closest("a")) closeMore();
+    toggle.addEventListener("click", function (e) {
+      e.stopPropagation();
+      var isOpen = group.classList.contains("open");
+      closeAll(group);
+      if (isOpen) closeGroup(group);
+      else {
+        group.classList.add("open");
+        toggle.setAttribute("aria-expanded", "true");
+      }
+    });
+
+    // Close once a link inside the dropdown is chosen (matters for the
+    // hosted preview's hash-based routing, where a click doesn't unload
+    // the page at all).
+    group.addEventListener("click", function (e) {
+      if (e.target.closest("a")) closeGroup(group);
+    });
   });
 
   document.addEventListener("click", function (e) {
-    if (!more.classList.contains("open")) return;
-    if (more.contains(e.target)) return;
-    closeMore();
+    groups.forEach(function (group) {
+      if (group.classList.contains("open") && !group.contains(e.target)) closeGroup(group);
+    });
   });
 
   document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape") closeMore();
+    if (e.key === "Escape") closeAll(null);
   });
 
   window.addEventListener("resize", function () {
-    if (window.innerWidth <= 780) closeMore();
+    if (window.innerWidth <= 1200) closeAll(null);
   });
 })();
-
