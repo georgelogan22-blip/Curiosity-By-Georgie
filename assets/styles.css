@@ -812,6 +812,87 @@ tr:last-child td { border-bottom: none; }
 }
 .species-row .sci { color: var(--ink-soft); font-style: italic; font-size: 0.82rem; }
 
+/* ---------- community board (chat.html) ---------- */
+.board-layout { max-width: 680px; }
+
+.board-identity {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  margin-bottom: 20px;
+}
+.board-identity .hint { margin-top: 10px; }
+
+#board-composer { margin-bottom: 28px; }
+#board-composer textarea { min-height: 64px; }
+
+.board-feed { display: flex; flex-direction: column; gap: 16px; }
+
+.board-post {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+}
+.board-post-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.board-post-name { font-weight: 700; }
+.board-post-time { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-soft); white-space: nowrap; }
+.board-post-caption { margin: 0 0 12px; white-space: pre-wrap; }
+.board-post-photo {
+  display: block;
+  width: 100%;
+  max-height: 420px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  margin-bottom: 12px;
+}
+
+.board-comments {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.board-comments:empty { display: none; }
+.board-comment {
+  padding: 8px 10px;
+  background: var(--paper);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+}
+.board-comment-name { font-weight: 700; margin-right: 6px; }
+.board-comment-body { color: var(--ink); }
+
+.board-comment-form {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin-top: 10px;
+  background: none;
+  border: none;
+  padding: 0;
+}
+.board-comment-form textarea {
+  min-height: 38px;
+  padding: 8px 10px;
+  font-size: 0.9rem;
+}
+.board-comment-form .btn { flex: none; padding: 10px 16px; }
+
+@media (max-width: 480px) {
+  .board-comment-form { flex-direction: column; }
+  .board-comment-form .btn { width: 100%; }
+}
+
 /* ---------- footer ---------- */
 footer {
   border-top: 1px solid var(--line);
