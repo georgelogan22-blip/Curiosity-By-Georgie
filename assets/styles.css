@@ -893,6 +893,20 @@ tr:last-child td { border-bottom: none; }
   margin-bottom: 20px;
 }
 .board-identity .hint { margin-top: 10px; }
+#board-check-replies { margin-top: 12px; }
+#board-replies-status { margin-top: 8px; }
+#board-replies-results:empty { display: none; }
+.board-reply-item {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: var(--paper);
+  border-left: 3px solid var(--accent-warm);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+}
+.board-reply-context { display: block; color: var(--ink-soft); font-size: 0.78rem; margin-bottom: 4px; }
+.board-reply-name { font-weight: 700; margin-right: 6px; }
+.board-reply-body { color: var(--ink); }
 
 #board-composer { margin-bottom: 28px; }
 #board-composer textarea { min-height: 64px; }
