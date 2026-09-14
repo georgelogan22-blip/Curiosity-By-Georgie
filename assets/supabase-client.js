@@ -186,8 +186,8 @@ function participantStatus(name) {
 // supabase/points-migration.sql and supabase/air50-hall-of-fame-migration.sql
 // — the leaderboard view sums each participant's confirmed distinct
 // species' tier points, where an off-list species is worth 0 points.
-// George’s decision, 2026-09-13: species logging itself stays open — no
-// restriction to the official 50, since that’s core to the spirit of the
+// George's decision, 2026-09-13: species logging itself stays open — no
+// restriction to the official 50, since that's core to the spirit of the
 // game — but the "Species" column shown on the Leaderboard uses
 // air50_species_count (official-50-only), not the raw species_count (which
 // includes off-list species), so the leaderboard reads as clean progress
@@ -264,6 +264,123 @@ function fetchMySightings(name, pinHash) {
   if (!supabaseClient) return Promise.reject(new Error("offline-demo"));
   return supabaseClient
     .rpc("participant_sightings", { p_name: name, p_pin_hash: pinHash })
+    .then(function (res) {
+      if (res.error) throw res.error;
+      return res.data || [];
+    });
+}
+
+// ---------------------------------------------------------------------
+// Community Board ("Chat") — see supabase/community-board-migration.sql.
+// Anyone can browse the board (fetchBoardPosts/fetchBoardComments need
+// no credentials); posting and commenting are gated by name + PIN, the
+// same pattern as logging a sighting.
+// ---------------------------------------------------------------------
+
+// Uploads a post's photo to the public "board-photos" Storage bucket
+// ahead of the actual createBoardPost() call, and resolves with the
+// storage path to pass in as record.photoPath. Same random-filename
+// approach as uploadSightingPhoto() — the original filename is never
+// used or stored.
+function uploadBoardPhoto(file) {
+  if (!supabaseClient) {
+    return Promise.reject(new Error("offline-demo"));
+  }
+  var ext = (file.name && file.name.indexOf(".") !== -1)
+    ? file.name.slice(file.name.lastIndexOf(".") + 1).toLowerCase().replace(/[^a-z0-9]/g, "")
+    : "jpg";
+  var id = (typeof crypto !== "undefined" && crypto.randomUUID)
+    ? crypto.randomUUID()
+    : Date.now().toString(36) + Math.random().toString(36).slice(2);
+  var path = id + "." + (ext || "jpg");
+  return supabaseClient.storage
+    .from("board-photos")
+    .upload(path, file, { contentType: file.type || "image/jpeg", upsert: false })
+    .then(function (res) {
+      if (res.error) throw res.error;
+      return res.data.path;
+    });
+}
+
+// Creates a new board post via create_board_post() (security definer —
+// checks registration/active/PIN, same as submit_sighting()). record:
+// { name, pinHash, caption, photoPath } — photoPath may be null/undefined
+// for a text-only post. Resolves with the saved row. Rejects with an
+// error whose .message is "not_registered" / "not_active" / "invalid_pin"
+// / "caption_required".
+function createBoardPost(record) {
+  if (!supabaseClient) {
+    return Promise.reject(new Error("offline-demo"));
+  }
+  return supabaseClient
+    .rpc("create_board_post", {
+      p_name: record.name,
+      p_pin_hash: record.pinHash,
+      p_caption: record.caption,
+      p_photo_path: record.photoPath || null,
+    })
+    .then(function (res) {
+      if (res.error) throw res.error;
+      return Array.isArray(res.data) ? res.data[0] : res.data;
+    });
+}
+
+// Creates a new comment on a post via create_board_comment(). record:
+// { postId, name, pinHash, body }. Rejects with an error whose .message
+// is "not_registered" / "not_active" / "invalid_pin" / "body_required" /
+// "post_not_found".
+function createBoardComment(record) {
+  if (!supabaseClient) {
+    return Promise.reject(new Error("offline-demo"));
+  }
+  return supabaseClient
+    .rpc("create_board_comment", {
+      p_post_id: record.postId,
+      p_name: record.name,
+      p_pin_hash: record.pinHash,
+      p_body: record.body,
+    })
+    .then(function (res) {
+      if (res.error) throw res.error;
+      return Array.isArray(res.data) ? res.data[0] : res.data;
+    });
+}
+
+// Fetches the board feed, newest first. Resolves with [] if the backend
+// isn't configured (rather than rejecting), so the page can fall back to
+// example posts — see assets/chat.js.
+function fetchBoardPosts(limit) {
+  if (!supabaseClient) return Promise.resolve([]);
+  return supabaseClient
+    .from("board_posts")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(limit || 100)
+    .then(function (res) {
+      if (res.error) throw res.error;
+      return res.data || [];
+    });
+}
+
+// Builds the public URL for a photo already uploaded to the board-photos
+// bucket (photo_path as stored on a board_posts row) — mirrors how
+// pending_sightings_review builds sighting photo URLs server-side, just
+// done client-side here since board posts are public to begin with.
+function boardPhotoUrl(path) {
+  if (!path) return null;
+  return SUPABASE_URL + "/storage/v1/object/public/board-photos/" + path;
+}
+
+// Fetches every comment across the whole board (oldest first within
+// each post), for the client to group by post_id — mirrors the
+// "client-side walk is simple and cheap at this scale" approach used by
+// fetchHallOfFame() above, rather than a per-post round trip.
+function fetchBoardComments() {
+  if (!supabaseClient) return Promise.resolve([]);
+  return supabaseClient
+    .from("board_comments")
+    .select("*")
+    .order("created_at", { ascending: true })
     .then(function (res) {
       if (res.error) throw res.error;
       return res.data || [];
