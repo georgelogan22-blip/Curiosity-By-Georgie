@@ -1,0 +1,1197 @@
+/* ==========================================================================
+   Curiously Georgie — The Brisbane Air 50
+   Design tokens: field-journal explorer aesthetic, tuned to the
+   Curiously Georgie logo — leaf green, bucket-hat gold, shirt coral.
+   Fraunces display / Public Sans body / IBM Plex Mono data.
+   ========================================================================== */
+
+:root {
+  /* --- palette (light) --- */
+  --ink: #172621;
+  --ink-soft: #45564f;
+  --paper: #f5f4ea;
+  --paper-raised: #ffffff;
+  --line: #d8d5c4;
+  --accent: #1f7a4d;
+  --accent-ink: #ffffff;
+  --accent-mint: #8bdeb7;
+  --accent-warm: #e8ac5e;
+  --accent-coral: #b7383a;
+  --medal-silver: #b7c0c4;
+  --medal-bronze: #c67c3e;
+  --shadow: 0 1px 2px rgba(23, 38, 33, 0.06), 0 8px 24px rgba(23, 38, 33, 0.06);
+  --map-water: #c3dde4;
+
+  /* --- Air Points tier colours (Brisbane Air 50 Master Reference) --- */
+  --tier-blue: #4a7fb5;
+  --tier-orange: #c9762e;
+  --tier-rose: #a83368;
+  --tier-purple: #7c4fd1;
+  --tier-amber: #a1720a;
+
+  /* --- type --- */
+  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --font-body: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #eef2ea;
+    --ink-soft: #b7c4bb;
+    --paper: #101c18;
+    --paper-raised: #16241f;
+    --line: #2a3c34;
+    --accent: #5fd39a;
+    --accent-ink: #0a1512;
+    --accent-mint: #2c4a3c;
+    --accent-warm: #f0bd72;
+    --accent-coral: #e8797c;
+    --medal-silver: #ccd3d6;
+    --medal-bronze: #dd9a5e;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+    --map-water: #0c1e26;
+
+    --tier-blue: #8db6e0;
+    --tier-orange: #eaa563;
+    --tier-rose: #e269a0;
+    --tier-purple: #b79af0;
+    --tier-amber: #d9ad4e;
+  }
+}
+
+* { box-sizing: border-box; }
+html { color-scheme: light dark; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; }
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.12;
+  text-wrap: balance;
+  margin: 0 0 0.5em;
+}
+
+h1 { font-size: clamp(2.3rem, 4vw + 1rem, 3.6rem); font-weight: 700; }
+h2 { font-size: clamp(1.5rem, 1.6vw + 1rem, 2.1rem); }
+h3 { font-size: 1.25rem; }
+
+p { margin: 0 0 1em; max-width: 65ch; }
+p.lede { font-size: 1.15rem; color: var(--ink-soft); }
+
+a { color: var(--accent); }
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ---------- nav ---------- */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+.site-nav .wrap {
+  /* The nav needs more room than the page's own 1080px content column —
+     with 8 top-level items (more once further disciplines are added, but
+     mostly nested inside the existing dropdowns from here on) the bar
+     needs its own, wider budget rather than reusing .wrap's content cap. */
+  max-width: 1600px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 68px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.brand svg { width: 30px; height: 30px; flex: none; }
+/* Wordmark set in the same two script faces as the TM logo — a looser
+   brush script for "Curiously", a bolder rounded script (with its own
+   built-in swash) for "Georgie" — each with a black outline so the fill
+   colour reads the same way on either theme's nav background. */
+.brand-word {
+  -webkit-text-stroke: 1.1px #000;
+  paint-order: stroke fill;
+}
+.brand-word-1 {
+  font-family: "Lobster", cursive;
+  font-size: 1.32rem;
+  color: var(--accent);
+  margin-right: 0.05em;
+}
+.brand-word-2 {
+  font-family: "Lobster", cursive;
+  font-size: 1.32rem;
+  color: var(--accent);
+}
+.brand-logo {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 10px;
+  /* A fixed warm-cream chip, not one of the --paper theme tokens: the
+     logo's navy line-work needs a light backdrop to stay legible, and
+     --paper flips to a near-black tone in dark mode, which would defeat
+     that purpose. This chip intentionally stays the same in both themes. */
+  background: #f5f4ea;
+  border: 1px solid rgba(23, 38, 33, 0.12);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.brand-logo::before {
+  content: "";
+  display: block;
+  width: 30px;
+  height: 31px;
+  background-image: url("logo-cg.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.nav-links {
+  display: flex;
+  gap: 2px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.nav-links a {
+  display: inline-block;
+  padding: 8px 9px;
+  border-radius: 999px;
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-size: 0.87rem;
+  font-weight: 600;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.nav-links a:hover { background: var(--paper-raised); color: var(--ink); }
+.nav-links a[aria-current="page"] {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* ---------- nav dropdowns (desktop) ----------
+   The nav bar is built from several small dropdown groups (.nav-more),
+   not just one: "The Brisbane 250" (the parent brand for every challenge
+   discipline — Air 50 today, Land/Water/Botanical/Macro 50 to follow),
+   "Sightings" (Log a Sighting, My Sightings), "Species Checklist" (one
+   entry per discipline, Air 50 today), and "More" (Chat, Merchandise).
+   Each is independent markup but shares this one set of rules — assets/
+   nav.js opens/closes them generically by class, not by a specific id, so
+   adding another dropdown group later never needs a script change. Below
+   the mobile breakpoint every group is flattened back into the ordinary
+   hamburger list — see the @media block below. */
+.nav-more { position: relative; }
+.nav-more-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 9px;
+  border: none;
+  border-radius: 999px;
+  background: none;
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: 0.87rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.nav-more-toggle::after {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg) translateY(-2px);
+  transition: transform 0.15s ease;
+}
+.nav-more-toggle:hover { background: var(--paper-raised); color: var(--ink); }
+.nav-more.open .nav-more-toggle { background: var(--paper-raised); color: var(--ink); }
+.nav-more.open .nav-more-toggle::after { transform: rotate(225deg) translateY(2px); }
+.nav-more:has(.nav-more-menu a[aria-current="page"]) .nav-more-toggle {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.nav-more-menu {
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 180px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.12);
+  z-index: 30;
+}
+.nav-more.open .nav-more-menu { display: flex; }
+.nav-more-menu a {
+  display: block;
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 600;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.nav-more-menu a:hover { background: var(--paper-raised); color: var(--ink); }
+.nav-more-menu a[aria-current="page"] {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+/* A discipline/feature that's on the map but not live yet (Land 50, Water
+   50, Chat, Merchandise...) — shown so visitors get used to the eventual
+   layout, but deliberately inert: no link, no explanation, just a quiet
+   "Coming soon" tag under the name. */
+.nav-more-menu .nav-soon {
+  display: block;
+  padding: 7px 12px;
+  border-radius: 8px;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+  font-weight: 600;
+  opacity: 0.55;
+  cursor: default;
+  white-space: nowrap;
+  user-select: none;
+}
+.nav-more-menu .nav-soon small {
+  display: block;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-top: 1px;
+}
+/* On desktop the dropdown's own toggle button already names the group
+   ("Sightings", "Species Checklist"...), so this label stays hidden there.
+   Once every group flattens into one plain list on mobile (see the
+   @media block below), the grouping context would otherwise be lost —
+   most noticeably, "Air 50" appears under two different groups (The
+   Brisbane 250, and Species Checklist) with two different destinations,
+   so a plain flattened list alone would show it twice with nothing to
+   tell them apart. */
+.nav-group-label { display: none; }
+
+/* ---------- mobile nav toggle ---------- */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--paper-raised);
+  cursor: pointer;
+  flex: none;
+}
+/* Back to the three-bar hamburger. Root cause of both this and the
+   three-dot version looking "wonky": .nav-toggle is a flex container,
+   but was missing flex-direction: column — so its three <span> children
+   laid out side by side in a row instead of stacking, with the
+   margin-top meant to space them vertically just shoving each one
+   further down, producing a crooked staircase instead of a clean stack.
+   Fixed by adding flex-direction: column above; the bars/dots now
+   actually stack as intended. */
+.nav-toggle span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--ink);
+  border-radius: 2px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.nav-toggle span + span { margin-top: 5px; }
+.nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Collapses to the hamburger menu below 1200px, not the site's usual
+   780px mobile breakpoint — with 8 top-level items (The Brisbane 250,
+   Rules, Register, Sightings, Leaderboard, Hall of Fame, Species
+   Checklist, More) the bar needs real desktop width to lay out on one
+   row; below that it reads better as the same collapsed menu tablets and
+   phones already get, rather than wrapping onto a ragged second line. */
+@media (max-width: 1200px) {
+  .site-nav .wrap { position: relative; }
+  .nav-toggle { display: inline-flex; }
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    /* The base desktop rule sets flex-wrap: wrap (so the pill links can
+       wrap onto a second row at in-between widths) — left un-reset here,
+       a flex-direction:column container that runs out of vertical space
+       wraps into new *columns* instead of scrolling, silently pushing
+       everything past "Hall of Fame" off-screen to the right with no way
+       to reach it. This is the actual bug behind the "can't scroll past
+       Hall of Fame" report — nowrap forces a single column so the
+       max-height/overflow-y fix below can actually do its job. */
+    flex-wrap: nowrap;
+    /* The base rule also sets justify-content: flex-end (right-aligns the
+       desktop row) — left in place here, it bottom-anchors the column, so
+       overflowing content spills off the *top* instead of the bottom.
+       Browsers don't reliably let you scroll up into that kind of
+       before-the-origin overflow, which is what made the list look
+       simply cut off rather than scrollable. flex-start makes the list
+       stack from the top and overflow downward instead, the normal,
+       always-scrollable direction. */
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 2px;
+    margin-top: 1px;
+    padding: 10px 16px 16px;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.12);
+    /* The panel is absolutely positioned off the sticky nav, so it never
+       adds to page height and normal page-scroll can't reach anything
+       below the viewport edge — on a short phone screen the flattened
+       list (8 top-level links plus the "More"/"Sightings"/"Checklist"
+       groups' contents, all un-nested here) easily runs taller than
+       that. Cap it to the remaining viewport height below the 68px nav
+       bar and let the panel scroll internally instead. */
+    max-height: calc(100vh - 68px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .nav-links.nav-open { display: flex; }
+  .nav-links a { width: 100%; text-align: left; padding: 12px 14px; }
+  /* Flex items shrink by default — without this, the browser squeezes
+     every row down to fit inside max-height instead of actually
+     overflowing, which silently defeats the scroll fix above (the
+     panel never grows taller than its cap, so overflow-y never
+     triggers and the bottom rows just get crushed/inaccessible). Also
+     applied to the nested .nav-more-menu rows for the same reason —
+     they're flex items too, one level down. */
+  .nav-links > li,
+  .nav-more-menu > li { flex-shrink: 0; }
+  /* Flatten the desktop "More" grouping back into one plain list — on a
+     phone there's no crowding problem to solve, and nesting a dropdown
+     inside the hamburger menu would just cost an extra tap for no reason. */
+  .nav-more { position: static; }
+  .nav-more-toggle { display: none; }
+  .nav-more-menu {
+    display: flex;
+    position: static;
+    flex-direction: column;
+    padding: 0;
+    margin: 0;
+    background: none;
+    border: none;
+    box-shadow: none;
+    min-width: 0;
+  }
+  .nav-group-label {
+    display: block;
+    padding: 10px 14px 0;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    opacity: 0.7;
+  }
+}
+
+/* ---------- buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-family: var(--font-body);
+}
+.btn-primary { background: var(--accent); color: var(--accent-ink); }
+.btn-primary:hover { background: color-mix(in srgb, var(--accent) 88%, black); }
+.btn-ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--line);
+}
+.btn-ghost:hover { background: var(--paper-raised); }
+.btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 1.6em; }
+
+/* ---------- hero ---------- */
+.hero {
+  /* Top/bottom only — left/right padding is meant to come from the
+     shared .wrap class this element also carries (class="hero wrap" in
+     index.html). A shorthand "padding: 72px 0 56px" here would zero out
+     .wrap's side padding instead of adding to it, since both rules have
+     equal specificity and this one is declared later in the file — that
+     was leaving the homepage hero text flush against the screen edges
+     on narrow/mobile widths. */
+  padding-top: 72px;
+  padding-bottom: 56px;
+  display: grid;
+  grid-template-columns: 1.2fr 0.9fr;
+  gap: 40px;
+  align-items: center;
+}
+.hero-art { display: flex; justify-content: center; }
+.hero-art svg { width: 100%; max-width: 340px; height: auto; }
+.eagle-portrait {
+  position: relative;
+  width: 100%;
+  max-width: 340px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.eagle-soar-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  object-position: 50% 91%;
+  border-radius: 50%;
+}
+.viewfinder-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  pointer-events: none;
+}
+@media (max-width: 820px) {
+  .hero { grid-template-columns: 1fr; padding-top: 40px; }
+  .hero-art { order: -1; max-width: 220px; margin: 0 auto; }
+}
+
+/* ---------- sections / cards ---------- */
+section { padding: 40px 0; }
+/* Top/bottom only — same reasoning as .hero/.page-head below: this class
+   is often combined with .wrap (class="wrap section-tight"), and a
+   padding shorthand here would zero out .wrap's side padding instead of
+   adding to it, since both are single classes of equal specificity. */
+.section-tight { padding-top: 16px; padding-bottom: 40px; }
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+}
+.card {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 22px;
+}
+.card h3 { margin-bottom: 0.35em; }
+.card .step-num {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+}
+
+.stat-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.stat-tile {
+  background: var(--paper-raised);
+  padding: 22px 20px;
+}
+.stat-tile .num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 2.1rem;
+  font-weight: 600;
+  color: var(--accent);
+  display: block;
+}
+.stat-tile .label { color: var(--ink-soft); font-size: 0.88rem; }
+
+/* Below this width, .stat-strip's auto-fit grid only has room for 2 of
+   the 3 tiles per row, leaving an odd empty cell next to the last one
+   (as seen with "Hall of Famers" on a phone) — stack to one full-width
+   column instead so every tile reads cleanly. */
+@media (max-width: 560px) {
+  .stat-strip { grid-template-columns: 1fr; }
+}
+
+.sample-note {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--ink-soft);
+  letter-spacing: 0.03em;
+  margin-top: 10px;
+}
+.sample-note .dot {
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent-warm);
+  margin-right: 6px;
+}
+
+/* ---------- page header ---------- */
+/* Top/bottom only — every non-homepage page uses class="page-head wrap"
+   together, so a padding shorthand here would zero out .wrap's side
+   padding instead of adding to it (same bug as .hero on the homepage,
+   fixed above), leaving every page's title flush against the screen
+   edges on narrow/mobile widths. */
+.page-head { padding-top: 48px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+.page-head .eyebrow { margin-bottom: 0.6em; }
+.version-tag {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--ink-soft);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 2px 10px;
+  margin-left: 10px;
+}
+
+/* ---------- rules page ---------- */
+.rules-block { padding: 30px 0; border-bottom: 1px dashed var(--line); }
+.rules-block:last-of-type { border-bottom: none; }
+.rules-block ul { padding-left: 1.2em; margin: 0.6em 0 1em; }
+.rules-block li { margin-bottom: 0.5em; max-width: 65ch; }
+.rules-grid {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 28px;
+}
+@media (max-width: 700px) { .rules-grid { grid-template-columns: 1fr; } }
+.rules-grid h3 {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* Boundary map (The Boundary section) — a hand-illustrated schematic, not a
+   survey-accurate GIS boundary: Greater Brisbane (Brisbane City, Moreton
+   Bay, Redlands, Logan, Ipswich, out to the D'Aguilar Range) shaded green,
+   the surrounding excluded councils shaded coral, using the site's own
+   --accent/--accent-coral tokens so it reads consistently in both themes. */
+.boundary-map { margin: 18px 0 4px; max-width: 460px; }
+.boundary-map-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+.boundary-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+}
+.boundary-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.boundary-legend i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.boundary-legend .in i { background: color-mix(in srgb, var(--accent) 30%, var(--paper-raised)); border: 1.5px solid var(--accent); }
+.boundary-legend .out i { background: color-mix(in srgb, var(--accent-coral) 28%, var(--paper-raised)); border: 1.5px solid var(--accent-coral); }
+.boundary-map figcaption { margin-top: 8px; font-size: 0.82rem; color: var(--ink-soft); }
+
+.safety-block {
+  background: color-mix(in srgb, var(--accent-warm) 12%, var(--paper-raised));
+  border: 1px solid var(--accent-warm);
+  border-left: 4px solid var(--accent-warm);
+  border-radius: var(--radius-md);
+  padding: 26px 28px;
+  margin-bottom: 8px;
+}
+.safety-block h3 { color: var(--accent-warm); }
+.safety-block .rule-tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--accent-warm);
+  color: #2a1400;
+  border-radius: 999px;
+  padding: 2px 10px;
+  margin-bottom: 0.5em;
+}
+
+.consent-block {
+  background: color-mix(in srgb, var(--accent-coral) 10%, var(--paper-raised));
+  border: 1px solid var(--accent-coral);
+  border-left: 4px solid var(--accent-coral);
+  border-radius: var(--radius-md);
+  padding: 26px 28px;
+  margin-bottom: 8px;
+}
+.consent-block h3 { color: var(--accent-coral); }
+.consent-block .rule-tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--accent-coral);
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 2px 10px;
+  margin-bottom: 0.5em;
+}
+
+.privacy-block {
+  background: color-mix(in srgb, var(--accent-mint) 16%, var(--paper-raised));
+  border: 1px solid var(--accent);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius-md);
+  padding: 26px 28px;
+  margin-bottom: 8px;
+}
+.privacy-block h3 { color: var(--accent); }
+.privacy-block .rule-tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: 999px;
+  padding: 2px 10px;
+  margin-bottom: 0.5em;
+}
+
+/* ---------- forms ---------- */
+.log-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px;
+  align-items: start;
+}
+@media (max-width: 860px) { .log-layout { grid-template-columns: 1fr; } }
+
+.field { margin-bottom: 18px; }
+.field label {
+  display: block;
+  font-weight: 700;
+  font-size: 0.88rem;
+  margin-bottom: 6px;
+}
+.hint, .field .hint { color: var(--ink-soft); font-size: 0.82rem; margin-top: 4px; }
+.status-warn { color: var(--accent-warm); font-weight: 600; }
+
+/* Multi-field rows within a form (e.g. suburb/state/postcode, PIN/confirm
+   PIN) — stack into a single column on narrow screens instead of
+   squeezing several inputs into one cramped row. */
+.field-grid-3 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; }
+.field-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 480px) {
+  .field-grid-3, .field-grid-2 { grid-template-columns: 1fr; }
+}
+
+/* ---------- My Sightings status pills ---------- */
+.status-pill {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 2px 10px; border-radius: 999px;
+  font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.02em; white-space: nowrap;
+}
+.status-pill-pending { background: color-mix(in srgb, var(--accent-warm) 20%, var(--paper-raised)); color: var(--accent-warm); }
+.status-pill-confirmed { background: color-mix(in srgb, var(--accent) 16%, var(--paper-raised)); color: var(--accent); }
+.status-pill-rejected { background: color-mix(in srgb, var(--accent-coral) 14%, var(--paper-raised)); color: var(--accent-coral); }
+.status-word-pending { color: var(--accent-warm); }
+.status-word-confirmed { color: var(--accent); }
+.status-word-rejected { color: var(--accent-coral); }
+input, select, textarea {
+  width: 100%;
+  font: inherit;
+  padding: 11px 13px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--paper-raised);
+  color: var(--ink);
+}
+input:focus, select:focus, textarea:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+textarea { resize: vertical; min-height: 80px; }
+form { background: var(--paper-raised); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 26px; }
+
+.log-feed { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.log-entry {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+}
+.log-entry .meta { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-soft); }
+.log-empty { color: var(--ink-soft); font-size: 0.92rem; padding: 18px 0; }
+
+/* ---------- tables ---------- */
+.table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius-md); }
+table { border-collapse: collapse; width: 100%; min-width: 560px; background: var(--paper-raised); }
+th, td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+th {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+td.num, th.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; text-align: right; }
+tr:last-child td { border-bottom: none; }
+.rank-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; border-radius: 50%;
+  font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700;
+  background: var(--paper); border: 1px solid var(--line);
+}
+.rank-badge.top1 { background: var(--accent-warm); color: #2a1400; border-color: transparent; }
+.rank-badge.top2 { background: var(--medal-silver); color: #262b2d; border-color: transparent; }
+.rank-badge.top3 { background: var(--medal-bronze); color: #2a1400; border-color: transparent; }
+
+/* Below this width, a table reflows into a stack of cards (one per row)
+   instead of forcing a horizontal scroll — each cell shows its own column
+   header as a small label above the value, via the data-label attribute
+   set on each <td> (see leaderboard.html and assets/my-sightings.js). */
+@media (max-width: 640px) {
+  .table-scroll { overflow-x: visible; border: none; border-radius: 0; }
+  table { min-width: 0; }
+  thead { display: none; }
+  table, tbody, tr, td { display: block; width: 100%; }
+  tbody tr {
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    margin-bottom: 12px;
+  }
+  tbody tr:last-child { margin-bottom: 0; }
+  td {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+    padding: 10px 16px;
+    border-bottom: 1px dashed var(--line);
+    text-align: left;
+  }
+  td:last-child { border-bottom: none; }
+  td::before {
+    content: attr(data-label);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-soft);
+    font-weight: 600;
+  }
+}
+
+/* ---------- Air Points tier badges ---------- */
+.tier-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.6em;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+.tier-badge.tier-a { background: var(--tier-blue); }
+.tier-badge.tier-c { background: var(--accent); }
+.tier-badge.tier-u { background: var(--accent-warm); color: #2a1400; }
+.tier-badge.tier-r { background: var(--tier-rose); }
+.tier-badge.tier-s { background: var(--accent-coral); }
+.tier-badge.tier-ss { background: var(--tier-purple); }
+.tier-badge.tier-ssplus { background: var(--tier-amber); color: #2a1400; }
+
+.tier-points {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+/* ---------- species autocomplete ---------- */
+.species-autocomplete { position: relative; }
+.species-suggestions {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  max-height: 280px;
+  overflow-y: auto;
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+  padding: 4px;
+}
+.species-suggestions[hidden] { display: none; }
+.species-suggestion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.92rem;
+}
+.species-suggestion:hover,
+.species-suggestion.active { background: var(--paper); }
+.species-suggestion .sp-name { font-weight: 600; }
+.species-suggestion .sp-sci { color: var(--ink-soft); font-style: italic; font-size: 0.8rem; margin-left: 6px; }
+.species-suggestion .sp-meta { display: flex; align-items: center; gap: 8px; flex: none; }
+.species-suggestions .no-match { padding: 8px 10px; color: var(--ink-soft); font-size: 0.86rem; }
+
+.address-autocomplete { position: relative; }
+.address-suggestions {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  max-height: 280px;
+  overflow-y: auto;
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+  padding: 4px;
+}
+.address-suggestions[hidden] { display: none; }
+.address-suggestion {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.92rem;
+}
+.address-suggestion:hover,
+.address-suggestion.active { background: var(--paper); }
+.address-suggestion .addr-main { font-weight: 600; }
+.address-suggestion .addr-sub { color: var(--ink-soft); font-size: 0.8rem; }
+.address-suggestions .no-match { padding: 8px 10px; color: var(--ink-soft); font-size: 0.86rem; }
+
+/* ---------- hall of fame ---------- */
+.fame-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; }
+.fame-card {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--accent-warm);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+.fame-card .name { font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; }
+.fame-card .badge-row { display: flex; align-items: center; gap: 6px; margin: 8px 0; }
+.fame-card .count {
+  font-family: var(--font-mono);
+  color: var(--accent-warm);
+  font-weight: 700;
+}
+.fame-card .date { color: var(--ink-soft); font-size: 0.82rem; }
+.badge-air50 { flex: none; display: block; }
+
+/* ---------- checklist ---------- */
+.checklist-group { margin-bottom: 34px; }
+.checklist-group h3 { color: var(--accent); margin-bottom: 0.15em; display: flex; align-items: center; gap: 10px; }
+.checklist-group .tier-desc { color: var(--ink-soft); font-size: 0.88rem; margin: 0 0 0.9em; }
+.checklist-group.tier-a h3 { color: var(--tier-blue); }
+.checklist-group.tier-c h3 { color: var(--accent); }
+.checklist-group.tier-u h3 { color: var(--accent-warm); }
+.checklist-group.tier-r h3 { color: var(--tier-rose); }
+.checklist-group.tier-s h3 { color: var(--accent-coral); }
+.checklist-group.tier-ss h3 { color: var(--tier-purple); }
+.checklist-group.tier-ssplus h3 { color: var(--tier-amber); }
+.species-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.species-row {
+  background: var(--paper-raised);
+  padding: 10px 14px;
+  font-size: 0.92rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.species-row .sp-left { min-width: 0; }
+.species-row .sp-name { display: block; }
+.species-row .sci { color: var(--ink-soft); font-style: italic; font-size: 0.82rem; }
+.species-row .sp-right { display: flex; align-items: center; gap: 6px; flex: none; }
+
+/* ---------- community board (chat.html) ---------- */
+.board-layout { max-width: 680px; margin: 0 auto; }
+
+.board-identity {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  margin-bottom: 20px;
+}
+.board-identity .hint { margin-top: 10px; }
+#board-check-replies { margin-top: 12px; }
+#board-replies-status { margin-top: 8px; }
+#board-replies-results:empty { display: none; }
+.board-reply-item {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: var(--paper);
+  border-left: 3px solid var(--accent-warm);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+}
+.board-reply-context { display: block; color: var(--ink-soft); font-size: 0.78rem; margin-bottom: 4px; }
+.board-reply-name { font-weight: 700; margin-right: 6px; }
+.board-reply-body { color: var(--ink); }
+
+#board-composer { margin-bottom: 28px; }
+#board-composer textarea { min-height: 64px; }
+
+.board-feed { display: flex; flex-direction: column; gap: 16px; }
+
+.board-post {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+}
+.board-post-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.board-post-name { font-weight: 700; }
+.board-post-time { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-soft); white-space: nowrap; }
+.board-post-caption { margin: 0 0 12px; white-space: pre-wrap; }
+/* Board photos are sorted into one of three Instagram-style frames —
+   square, portrait (4:5) or landscape (1.91:1) — chosen by chat.js after
+   the photo actually loads, based on its own natural width/height (see
+   classifyBoardPhoto()). object-fit: cover then only trims the small
+   excess on one axis instead of forcing every photo into one fixed shape,
+   which is what was cropping subjects out of tall portrait shots before.
+   Portrait defaults to the 4:5 frame until JS classifies it, since most
+   phone photos of a single bird come in taller than wide. Capped at
+   380px (rather than stretching to the full ~640px card width) so a
+   post doesn't get dominated by one giant image and phone photos aren't
+   upscaled past their comfortable resolution, which is what was reading
+   as grainy. */
+.board-post-photo {
+  display: block;
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto 12px;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+}
+.board-post-photo.shape-square { aspect-ratio: 1 / 1; }
+.board-post-photo.shape-portrait { aspect-ratio: 4 / 5; }
+.board-post-photo.shape-landscape { aspect-ratio: 191 / 100; }
+
+/* "Beauty!" reaction button — George's Instagram/Facebook-style "like",
+   themed to the site: a magnifying glass instead of a heart/thumbs-up,
+   labelled "Beauty!" instead of "Like". Sits below the photo/comments,
+   at the bottom of the post, just above the comment box. Gated by
+   name + PIN (see supabase/board-curious-migration.sql), same as
+   posting/commenting, so one participant only ever counts once per post. */
+.board-post-actions { display: flex; gap: 8px; margin: 4px 0 12px; }
+.board-curious-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.board-curious-btn:hover { border-color: var(--accent-warm); color: var(--accent-warm); }
+.board-curious-btn.is-curious {
+  background: color-mix(in srgb, var(--accent-warm) 16%, var(--paper));
+  border-color: var(--accent-warm);
+  color: var(--accent-warm);
+}
+.board-curious-icon { flex: none; font-size: 1rem; line-height: 1; }
+.board-curious-count { font-family: var(--font-mono); }
+
+.board-comments {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.board-comments:empty { display: none; }
+.board-comment {
+  padding: 8px 10px;
+  background: var(--paper);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+}
+.board-comment-name { font-weight: 700; margin-right: 6px; }
+.board-comment-body { color: var(--ink); }
+
+.board-comment-form { margin-top: 10px; background: none; border: none; padding: 0; }
+.board-comment-input-row { display: flex; gap: 8px; align-items: flex-start; }
+.board-comment-input-row textarea {
+  min-height: 38px;
+  padding: 8px 10px;
+  font-size: 0.9rem;
+}
+.board-comment-form-btns { display: flex; gap: 6px; flex: none; }
+.board-comment-form-btns .btn { flex: none; padding: 10px 16px; }
+
+/* Emoji picker for comments — a small curated set (birding/nature first,
+   general reactions after), inserted at the textarea's cursor position by
+   assets/chat.js. Text-only, no images/uploads — keeps the comment box a
+   plain string, same as everywhere else on the board. */
+.board-emoji-toggle {
+  flex: none;
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  font-size: 1.05rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.board-emoji-toggle:hover { border-color: var(--accent-warm); }
+.board-emoji-picker {
+  display: none;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 4px;
+  margin-top: 8px;
+  padding: 8px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+.board-emoji-picker.is-open { display: grid; }
+.board-emoji-option {
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 1.1rem;
+  line-height: 1.4;
+  padding: 6px 0;
+  cursor: pointer;
+}
+.board-emoji-option:hover { background: var(--paper-raised); }
+
+@media (max-width: 480px) {
+  .board-comment-input-row { flex-direction: column; }
+  .board-comment-form-btns { width: 100%; }
+  .board-comment-form-btns .btn { flex: 1; }
+  .board-emoji-picker { grid-template-columns: repeat(6, 1fr); }
+}
+
+/* ---------- footer ---------- */
+footer {
+  border-top: 1px solid var(--line);
+  margin-top: 40px;
+  padding: 28px 0 40px;
+  color: var(--ink-soft);
+  font-size: 0.86rem;
+}
+footer a { color: var(--ink-soft); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
