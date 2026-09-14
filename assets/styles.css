@@ -17,6 +17,8 @@
   --accent-mint: #8bdeb7;
   --accent-warm: #e8ac5e;
   --accent-coral: #b7383a;
+  --medal-silver: #b7c0c4;
+  --medal-bronze: #c67c3e;
   --shadow: 0 1px 2px rgba(23, 38, 33, 0.06), 0 8px 24px rgba(23, 38, 33, 0.06);
 
   /* --- type --- */
@@ -41,6 +43,8 @@
     --accent-mint: #2c4a3c;
     --accent-warm: #f0bd72;
     --accent-coral: #e8797c;
+    --medal-silver: #ccd3d6;
+    --medal-bronze: #dd9a5e;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
   }
 }
@@ -726,7 +730,8 @@ tr:last-child td { border-bottom: none; }
   background: var(--paper); border: 1px solid var(--line);
 }
 .rank-badge.top1 { background: var(--accent-warm); color: #2a1400; border-color: transparent; }
-.rank-badge.top2, .rank-badge.top3 { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+.rank-badge.top2 { background: var(--medal-silver); color: #262b2d; border-color: transparent; }
+.rank-badge.top3 { background: var(--medal-bronze); color: #2a1400; border-color: transparent; }
 
 /* Below this width, a table reflows into a stack of cards (one per row)
    instead of forcing a horizontal scroll — each cell shows its own column
