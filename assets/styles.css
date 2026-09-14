@@ -849,8 +849,9 @@ tr:last-child td { border-bottom: none; }
 .board-post-photo {
   display: block;
   width: 100%;
-  height: 280px;
+  height: 320px;
   object-fit: cover;
+  object-position: center 22%;
   border-radius: var(--radius-sm);
   border: 1px solid var(--line);
   margin-bottom: 12px;
