@@ -846,16 +846,26 @@ tr:last-child td { border-bottom: none; }
 .board-post-name { font-weight: 700; }
 .board-post-time { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-soft); white-space: nowrap; }
 .board-post-caption { margin: 0 0 12px; white-space: pre-wrap; }
+/* Board photos are sorted into one of three Instagram-style frames —
+   square, portrait (4:5) or landscape (1.91:1) — chosen by chat.js after
+   the photo actually loads, based on its own natural width/height (see
+   classifyBoardPhoto()). object-fit: cover then only trims the small
+   excess on one axis instead of forcing every photo into one fixed shape,
+   which is what was cropping subjects out of tall portrait shots before.
+   Portrait defaults to the 4:5 frame until JS classifies it, since most
+   phone photos of a single bird come in taller than wide. */
 .board-post-photo {
   display: block;
   width: 100%;
-  height: 320px;
+  aspect-ratio: 4 / 5;
   object-fit: cover;
-  object-position: center 22%;
   border-radius: var(--radius-sm);
   border: 1px solid var(--line);
   margin-bottom: 12px;
 }
+.board-post-photo.shape-square { aspect-ratio: 1 / 1; }
+.board-post-photo.shape-portrait { aspect-ratio: 4 / 5; }
+.board-post-photo.shape-landscape { aspect-ratio: 191 / 100; }
 
 .board-comments {
   display: flex;
