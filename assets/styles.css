@@ -360,6 +360,24 @@ a { color: var(--accent); }
     left: 0;
     right: 0;
     flex-direction: column;
+    /* The base desktop rule sets flex-wrap: wrap (so the pill links can
+       wrap onto a second row at in-between widths) — left un-reset here,
+       a flex-direction:column container that runs out of vertical space
+       wraps into new *columns* instead of scrolling, silently pushing
+       everything past "Hall of Fame" off-screen to the right with no way
+       to reach it. This is the actual bug behind the "can't scroll past
+       Hall of Fame" report — nowrap forces a single column so the
+       max-height/overflow-y fix below can actually do its job. */
+    flex-wrap: nowrap;
+    /* The base rule also sets justify-content: flex-end (right-aligns the
+       desktop row) — left in place here, it bottom-anchors the column, so
+       overflowing content spills off the *top* instead of the bottom.
+       Browsers don't reliably let you scroll up into that kind of
+       before-the-origin overflow, which is what made the list look
+       simply cut off rather than scrollable. flex-start makes the list
+       stack from the top and overflow downward instead, the normal,
+       always-scrollable direction. */
+    justify-content: flex-start;
     align-items: stretch;
     gap: 2px;
     margin-top: 1px;
@@ -367,9 +385,28 @@ a { color: var(--accent); }
     background: var(--paper);
     border-bottom: 1px solid var(--line);
     box-shadow: 0 12px 20px rgba(0, 0, 0, 0.12);
+    /* The panel is absolutely positioned off the sticky nav, so it never
+       adds to page height and normal page-scroll can't reach anything
+       below the viewport edge — on a short phone screen the flattened
+       list (8 top-level links plus the "More"/"Sightings"/"Checklist"
+       groups' contents, all un-nested here) easily runs taller than
+       that. Cap it to the remaining viewport height below the 68px nav
+       bar and let the panel scroll internally instead. */
+    max-height: calc(100vh - 68px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
   .nav-links.nav-open { display: flex; }
   .nav-links a { width: 100%; text-align: left; padding: 12px 14px; }
+  /* Flex items shrink by default — without this, the browser squeezes
+     every row down to fit inside max-height instead of actually
+     overflowing, which silently defeats the scroll fix above (the
+     panel never grows taller than its cap, so overflow-y never
+     triggers and the bottom rows just get crushed/inaccessible). Also
+     applied to the nested .nav-more-menu rows for the same reason —
+     they're flex items too, one level down. */
+  .nav-links > li,
+  .nav-more-menu > li { flex-shrink: 0; }
   /* Flatten the desktop "More" grouping back into one plain list — on a
      phone there's no crowding problem to solve, and nesting a dropdown
      inside the hamburger menu would just cost an extra tap for no reason. */
