@@ -22,6 +22,13 @@
   --shadow: 0 1px 2px rgba(23, 38, 33, 0.06), 0 8px 24px rgba(23, 38, 33, 0.06);
   --map-water: #c3dde4;
 
+  /* --- Air Points tier colours (Brisbane Air 50 Master Reference) --- */
+  --tier-blue: #4a7fb5;
+  --tier-orange: #c9762e;
+  --tier-rose: #a83368;
+  --tier-purple: #7c4fd1;
+  --tier-amber: #a1720a;
+
   /* --- type --- */
   --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
   --font-body: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -48,6 +55,12 @@
     --medal-bronze: #dd9a5e;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
     --map-water: #0c1e26;
+
+    --tier-blue: #8db6e0;
+    --tier-orange: #eaa563;
+    --tier-rose: #e269a0;
+    --tier-purple: #b79af0;
+    --tier-amber: #d9ad4e;
   }
 }
 
@@ -329,8 +342,8 @@ a { color: var(--accent); }
    laid out side by side in a row instead of stacking, with the
    margin-top meant to space them vertically just shoving each one
    further down, producing a crooked staircase instead of a clean stack.
-   Fixed by adding flex-direction: column above; the bars now actually
-   stack as intended. */
+   Fixed by adding flex-direction: column above; the bars/dots now
+   actually stack as intended. */
 .nav-toggle span {
   display: block;
   width: 20px;
@@ -740,6 +753,8 @@ section { padding: 40px 0; }
 @media (max-width: 480px) {
   .field-grid-3, .field-grid-2 { grid-template-columns: 1fr; }
 }
+
+/* ---------- My Sightings status pills ---------- */
 .status-pill {
   display: inline-flex; align-items: center; justify-content: center;
   padding: 2px 10px; border-radius: 999px;
@@ -840,254 +855,6 @@ tr:last-child td { border-bottom: none; }
   }
 }
 
-/* ---------- hall of fame ---------- */
-.fame-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; }
-.fame-card {
-  background: var(--paper-raised);
-  border: 1px solid var(--line);
-  border-top: 4px solid var(--accent-warm);
-  border-radius: var(--radius-md);
-  padding: 20px;
-}
-.fame-card .name { font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; }
-.fame-card .badge-row { display: flex; align-items: center; gap: 6px; margin: 8px 0; }
-.fame-card .count {
-  font-family: var(--font-mono);
-  color: var(--accent-warm);
-  font-weight: 700;
-}
-.fame-card .date { color: var(--ink-soft); font-size: 0.82rem; }
-.badge-air50 { flex: none; display: block; }
-
-/* ---------- checklist ---------- */
-.checklist-group { margin-bottom: 34px; }
-.checklist-group h3 { color: var(--accent); margin-bottom: 0.7em; }
-.species-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 0;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-md);
-  overflow: hidden;
-}
-.species-row {
-  background: var(--paper-raised);
-  padding: 10px 14px;
-  font-size: 0.92rem;
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  border-right: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-}
-.species-row .sci { color: var(--ink-soft); font-style: italic; font-size: 0.82rem; }
-
-/* ---------- community board (chat.html) ---------- */
-.board-layout { max-width: 680px; margin: 0 auto; }
-
-.board-identity {
-  background: var(--paper-raised);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-md);
-  padding: 16px 18px;
-  margin-bottom: 20px;
-}
-.board-identity .hint { margin-top: 10px; }
-#board-check-replies { margin-top: 12px; }
-#board-replies-status { margin-top: 8px; }
-#board-replies-results:empty { display: none; }
-.board-reply-item {
-  margin-top: 10px;
-  padding: 10px 12px;
-  background: var(--paper);
-  border-left: 3px solid var(--accent-warm);
-  border-radius: var(--radius-sm);
-  font-size: 0.9rem;
-}
-.board-reply-context { display: block; color: var(--ink-soft); font-size: 0.78rem; margin-bottom: 4px; }
-.board-reply-name { font-weight: 700; margin-right: 6px; }
-.board-reply-body { color: var(--ink); }
-
-#board-composer { margin-bottom: 28px; }
-#board-composer textarea { min-height: 64px; }
-
-.board-feed { display: flex; flex-direction: column; gap: 16px; }
-
-.board-post {
-  background: var(--paper-raised);
-  border: 1px solid var(--line);
-  border-left: 3px solid var(--accent);
-  border-radius: var(--radius-md);
-  padding: 16px 18px;
-}
-.board-post-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 6px;
-}
-.board-post-name { font-weight: 700; }
-.board-post-time { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-soft); white-space: nowrap; }
-.board-post-caption { margin: 0 0 12px; white-space: pre-wrap; }
-/* Board photos are sorted into one of three Instagram-style frames —
-   square, portrait (4:5) or landscape (1.91:1) — chosen by chat.js after
-   the photo actually loads, based on its own natural width/height (see
-   classifyBoardPhoto()). object-fit: cover then only trims the small
-   excess on one axis instead of forcing every photo into one fixed shape,
-   which is what was cropping subjects out of tall portrait shots before.
-   Portrait defaults to the 4:5 frame until JS classifies it, since most
-   phone photos of a single bird come in taller than wide. */
-.board-post-photo {
-  display: block;
-  width: 100%;
-  max-width: 380px;
-  margin: 0 auto 12px;
-  aspect-ratio: 4 / 5;
-  object-fit: cover;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--line);
-}
-.board-post-photo.shape-square { aspect-ratio: 1 / 1; }
-.board-post-photo.shape-portrait { aspect-ratio: 4 / 5; }
-.board-post-photo.shape-landscape { aspect-ratio: 191 / 100; }
-
-/* "Curious" reaction button — George's Instagram/Facebook-style "like",
-   themed to the site: a magnifying glass instead of a heart/thumbs-up,
-   and "Curious" instead of "Like". Gated by name + PIN (see
-   supabase/board-curious-migration.sql), same as posting/commenting, so
-   one participant only ever counts once per post. */
-.board-post-actions { display: flex; gap: 8px; margin: 4px 0 12px; }
-.board-curious-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  color: var(--ink-soft);
-  font: inherit;
-  font-size: 0.84rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
-}
-.board-curious-btn:hover { border-color: var(--accent-warm); color: var(--accent-warm); }
-.board-curious-btn.is-curious {
-  background: color-mix(in srgb, var(--accent-warm) 16%, var(--paper));
-  border-color: var(--accent-warm);
-  color: var(--accent-warm);
-}
-.board-curious-icon { flex: none; }
-.board-curious-count { font-family: var(--font-mono); }
-
-.board-comments {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 4px;
-}
-.board-comments:empty { display: none; }
-.board-comment {
-  padding: 8px 10px;
-  background: var(--paper);
-  border-radius: var(--radius-sm);
-  font-size: 0.9rem;
-}
-.board-comment-name { font-weight: 700; margin-right: 6px; }
-.board-comment-body { color: var(--ink); }
-
-.board-comment-form { margin-top: 10px; background: none; border: none; padding: 0; }
-.board-comment-input-row { display: flex; gap: 8px; align-items: flex-start; }
-.board-comment-input-row textarea {
-  min-height: 38px;
-  padding: 8px 10px;
-  font-size: 0.9rem;
-}
-.board-comment-form-btns { display: flex; gap: 6px; flex: none; }
-.board-comment-form-btns .btn { flex: none; padding: 10px 16px; }
-
-/* Emoji picker for comments — a small curated set (birding/nature first,
-   general reactions after), inserted at the textarea's cursor position by
-   assets/chat.js. Text-only, no images/uploads — keeps the comment box a
-   plain string, same as everywhere else on the board. */
-.board-emoji-toggle {
-  flex: none;
-  width: 38px;
-  height: 38px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  font-size: 1.05rem;
-  line-height: 1;
-  cursor: pointer;
-}
-.board-emoji-toggle:hover { border-color: var(--accent-warm); }
-.board-emoji-picker {
-  display: none;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 4px;
-  margin-top: 8px;
-  padding: 8px;
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-}
-.board-emoji-picker.is-open { display: grid; }
-.board-emoji-option {
-  background: none;
-  border: none;
-  border-radius: var(--radius-sm);
-  font-size: 1.1rem;
-  line-height: 1.4;
-  padding: 6px 0;
-  cursor: pointer;
-}
-.board-emoji-option:hover { background: var(--paper-raised); }
-
-@media (max-width: 480px) {
-  .board-comment-input-row { flex-direction: column; }
-  .board-comment-form-btns { width: 100%; }
-  .board-comment-form-btns .btn { flex: 1; }
-  .board-emoji-picker { grid-template-columns: repeat(6, 1fr); }
-}
-
-/* ---------- footer ---------- */
-footer {
-  border-top: 1px solid var(--line);
-  margin-top: 40px;
-  padding: 28px 0 40px;
-  color: var(--ink-soft);
-  font-size: 0.86rem;
-}
-footer a { color: var(--ink-soft); }
-
-@media (prefers-reduced-motion: reduce) {
-  * { transition: none !important; animation: none !important; }
-}
-
-/* ---------- Air Points tier colours (added by points-system update) ---------- */
-:root {
-  --tier-blue: #4a7fb5;
-  --tier-orange: #c9762e;
-  --tier-rose: #a83368;
-  --tier-purple: #7c4fd1;
-  --tier-amber: #a1720a;
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --tier-blue: #8db6e0;
-    --tier-orange: #eaa563;
-    --tier-rose: #e269a0;
-    --tier-purple: #b79af0;
-    --tier-amber: #d9ad4e;
-  }
-}
-
 /* ---------- Air Points tier badges ---------- */
 .tier-badge {
   display: inline-flex;
@@ -1182,7 +949,29 @@ footer a { color: var(--ink-soft); }
 .address-suggestion .addr-sub { color: var(--ink-soft); font-size: 0.8rem; }
 .address-suggestions .no-match { padding: 8px 10px; color: var(--ink-soft); font-size: 0.86rem; }
 
-/* ---------- checklist tier heading colours ---------- */
+/* ---------- hall of fame ---------- */
+.fame-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; }
+.fame-card {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--accent-warm);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+.fame-card .name { font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; }
+.fame-card .badge-row { display: flex; align-items: center; gap: 6px; margin: 8px 0; }
+.fame-card .count {
+  font-family: var(--font-mono);
+  color: var(--accent-warm);
+  font-weight: 700;
+}
+.fame-card .date { color: var(--ink-soft); font-size: 0.82rem; }
+.badge-air50 { flex: none; display: block; }
+
+/* ---------- checklist ---------- */
+.checklist-group { margin-bottom: 34px; }
+.checklist-group h3 { color: var(--accent); margin-bottom: 0.15em; display: flex; align-items: center; gap: 10px; }
+.checklist-group .tier-desc { color: var(--ink-soft); font-size: 0.88rem; margin: 0 0 0.9em; }
 .checklist-group.tier-a h3 { color: var(--tier-blue); }
 .checklist-group.tier-c h3 { color: var(--accent); }
 .checklist-group.tier-u h3 { color: var(--accent-warm); }
@@ -1190,5 +979,219 @@ footer a { color: var(--ink-soft); }
 .checklist-group.tier-s h3 { color: var(--accent-coral); }
 .checklist-group.tier-ss h3 { color: var(--tier-purple); }
 .checklist-group.tier-ssplus h3 { color: var(--tier-amber); }
-
+.species-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.species-row {
+  background: var(--paper-raised);
+  padding: 10px 14px;
+  font-size: 0.92rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.species-row .sp-left { min-width: 0; }
+.species-row .sp-name { display: block; }
+.species-row .sci { color: var(--ink-soft); font-style: italic; font-size: 0.82rem; }
 .species-row .sp-right { display: flex; align-items: center; gap: 6px; flex: none; }
+
+/* ---------- community board (chat.html) ---------- */
+.board-layout { max-width: 680px; margin: 0 auto; }
+
+.board-identity {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  margin-bottom: 20px;
+}
+.board-identity .hint { margin-top: 10px; }
+#board-check-replies { margin-top: 12px; }
+#board-replies-status { margin-top: 8px; }
+#board-replies-results:empty { display: none; }
+.board-reply-item {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: var(--paper);
+  border-left: 3px solid var(--accent-warm);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+}
+.board-reply-context { display: block; color: var(--ink-soft); font-size: 0.78rem; margin-bottom: 4px; }
+.board-reply-name { font-weight: 700; margin-right: 6px; }
+.board-reply-body { color: var(--ink); }
+
+#board-composer { margin-bottom: 28px; }
+#board-composer textarea { min-height: 64px; }
+
+.board-feed { display: flex; flex-direction: column; gap: 16px; }
+
+.board-post {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+}
+.board-post-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.board-post-name { font-weight: 700; }
+.board-post-time { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-soft); white-space: nowrap; }
+.board-post-caption { margin: 0 0 12px; white-space: pre-wrap; }
+/* Board photos are sorted into one of three Instagram-style frames —
+   square, portrait (4:5) or landscape (1.91:1) — chosen by chat.js after
+   the photo actually loads, based on its own natural width/height (see
+   classifyBoardPhoto()). object-fit: cover then only trims the small
+   excess on one axis instead of forcing every photo into one fixed shape,
+   which is what was cropping subjects out of tall portrait shots before.
+   Portrait defaults to the 4:5 frame until JS classifies it, since most
+   phone photos of a single bird come in taller than wide. Capped at
+   380px (rather than stretching to the full ~640px card width) so a
+   post doesn't get dominated by one giant image and phone photos aren't
+   upscaled past their comfortable resolution, which is what was reading
+   as grainy. */
+.board-post-photo {
+  display: block;
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto 12px;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+}
+.board-post-photo.shape-square { aspect-ratio: 1 / 1; }
+.board-post-photo.shape-portrait { aspect-ratio: 4 / 5; }
+.board-post-photo.shape-landscape { aspect-ratio: 191 / 100; }
+
+/* "Beauty!" reaction button — George's Instagram/Facebook-style "like",
+   themed to the site: a magnifying glass instead of a heart/thumbs-up,
+   labelled "Beauty!" instead of "Like". Sits below the photo/comments,
+   at the bottom of the post, just above the comment box. Gated by
+   name + PIN (see supabase/board-curious-migration.sql), same as
+   posting/commenting, so one participant only ever counts once per post. */
+.board-post-actions { display: flex; gap: 8px; margin: 4px 0 12px; }
+.board-curious-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.board-curious-btn:hover { border-color: var(--accent-warm); color: var(--accent-warm); }
+.board-curious-btn.is-curious {
+  background: color-mix(in srgb, var(--accent-warm) 16%, var(--paper));
+  border-color: var(--accent-warm);
+  color: var(--accent-warm);
+}
+.board-curious-icon { flex: none; font-size: 1rem; line-height: 1; }
+.board-curious-count { font-family: var(--font-mono); }
+
+.board-comments {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.board-comments:empty { display: none; }
+.board-comment {
+  padding: 8px 10px;
+  background: var(--paper);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+}
+.board-comment-name { font-weight: 700; margin-right: 6px; }
+.board-comment-body { color: var(--ink); }
+
+.board-comment-form { margin-top: 10px; background: none; border: none; padding: 0; }
+.board-comment-input-row { display: flex; gap: 8px; align-items: flex-start; }
+.board-comment-input-row textarea {
+  min-height: 38px;
+  padding: 8px 10px;
+  font-size: 0.9rem;
+}
+.board-comment-form-btns { display: flex; gap: 6px; flex: none; }
+.board-comment-form-btns .btn { flex: none; padding: 10px 16px; }
+
+/* Emoji picker for comments — a small curated set (birding/nature first,
+   general reactions after), inserted at the textarea's cursor position by
+   assets/chat.js. Text-only, no images/uploads — keeps the comment box a
+   plain string, same as everywhere else on the board. */
+.board-emoji-toggle {
+  flex: none;
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  font-size: 1.05rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.board-emoji-toggle:hover { border-color: var(--accent-warm); }
+.board-emoji-picker {
+  display: none;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 4px;
+  margin-top: 8px;
+  padding: 8px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+.board-emoji-picker.is-open { display: grid; }
+.board-emoji-option {
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 1.1rem;
+  line-height: 1.4;
+  padding: 6px 0;
+  cursor: pointer;
+}
+.board-emoji-option:hover { background: var(--paper-raised); }
+
+@media (max-width: 480px) {
+  .board-comment-input-row { flex-direction: column; }
+  .board-comment-form-btns { width: 100%; }
+  .board-comment-form-btns .btn { flex: 1; }
+  .board-emoji-picker { grid-template-columns: repeat(6, 1fr); }
+}
+
+/* ---------- footer ---------- */
+footer {
+  border-top: 1px solid var(--line);
+  margin-top: 40px;
+  padding: 28px 0 40px;
+  color: var(--ink-soft);
+  font-size: 0.86rem;
+}
+footer a { color: var(--ink-soft); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
