@@ -813,7 +813,7 @@ tr:last-child td { border-bottom: none; }
 .species-row .sci { color: var(--ink-soft); font-style: italic; font-size: 0.82rem; }
 
 /* ---------- community board (chat.html) ---------- */
-.board-layout { max-width: 680px; }
+.board-layout { max-width: 680px; margin: 0 auto; }
 
 .board-identity {
   background: var(--paper-raised);
