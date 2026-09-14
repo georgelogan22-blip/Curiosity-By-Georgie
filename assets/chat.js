@@ -380,4 +380,92 @@ document.addEventListener("DOMContentLoaded", function () {
       // localStorage unavailable — fine, just means no prefill.
     }
   }
+
+  // ---- "Check my replies" (self-service, no email/push notifications) -
+  // The board has no notification system — see
+  // supabase/board-replies-check-migration.sql for why — so a
+  // participant checks in with the same name + PIN they already use to
+  // post and comment, reusing the fields above rather than a separate
+  // form.
+  var checkRepliesBtn = document.getElementById("board-check-replies");
+  var repliesStatusEl = document.getElementById("board-replies-status");
+  var repliesResults = document.getElementById("board-replies-results");
+
+  function setRepliesStatus(html) {
+    if (!repliesStatusEl) return;
+    repliesStatusEl.hidden = !html;
+    repliesStatusEl.innerHTML = html || "";
+  }
+
+  function renderReplies(rows) {
+    if (!repliesResults) return;
+    if (!rows.length) {
+      repliesResults.innerHTML = '<p class="hint">No new replies since last time you checked.</p>';
+      return;
+    }
+    repliesResults.innerHTML = rows
+      .map(function (row) {
+        var captionSnippet = (row.post_caption || "").trim();
+        if (captionSnippet.length > 60) captionSnippet = captionSnippet.slice(0, 60).trim() + "…";
+        return (
+          '<div class="board-reply-item">' +
+          '<span class="board-reply-context">On your post: “' + escapeHtml(captionSnippet) + '”</span>' +
+          '<span class="board-reply-name">' + escapeHtml(row.commenter_name) + "</span>" +
+          '<span class="board-reply-body">' + escapeHtml(row.comment_body) + "</span>" +
+          "</div>"
+        );
+      })
+      .join("");
+  }
+
+  if (checkRepliesBtn) {
+    checkRepliesBtn.addEventListener("click", function () {
+      var name = (nameField.value || "").trim();
+      var pin = (pinField.value || "").trim();
+
+      if (!name) {
+        setRepliesStatus("Enter your name above first.");
+        return;
+      }
+      if (!/^[0-9]{4}$/.test(pin)) {
+        setRepliesStatus("Enter your 4-digit PIN above first.");
+        return;
+      }
+
+      if (repliesResults) repliesResults.innerHTML = "";
+      checkRepliesBtn.disabled = true;
+      setRepliesStatus("Checking…");
+
+      if (typeof checkBoardReplies !== "function" || typeof hashPin !== "function") {
+        setRepliesStatus("This isn't connected right now — please try again shortly.");
+        checkRepliesBtn.disabled = false;
+        return;
+      }
+
+      hashPin(pin)
+        .then(function (pinHash) {
+          return checkBoardReplies(name, pinHash);
+        })
+        .then(function (rows) {
+          setRepliesStatus("");
+          renderReplies(rows || []);
+          try { window.localStorage.setItem("cg_participant_name", name); } catch (e) {}
+        })
+        .catch(function (err) {
+          var msg = err && err.message;
+          if (msg === "offline-demo") {
+            setRepliesStatus("This isn't connected right now — please try again shortly.");
+          } else if (msg === "not_registered") {
+            setRepliesStatus('That name isn\'t registered yet — <a href="register.html">register here</a> first.');
+          } else if (msg === "invalid_pin") {
+            setRepliesStatus('<span class="status-warn">That PIN doesn\'t match this name — check it and try again.</span>');
+          } else {
+            setRepliesStatus("Couldn't check right now — please try again.");
+          }
+        })
+        .then(function () {
+          checkRepliesBtn.disabled = false;
+        });
+    });
+  }
 });
