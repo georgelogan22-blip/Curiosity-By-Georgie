@@ -779,8 +779,8 @@ tr:last-child td { border-bottom: none; }
   border-radius: var(--radius-md);
   padding: 20px;
 }
-.fame-card .name-row { display: flex; align-items: center; gap: 8px; }
 .fame-card .name { font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; }
+.fame-card .badge-row { display: flex; align-items: center; gap: 6px; margin: 8px 0; }
 .fame-card .count {
   font-family: var(--font-mono);
   color: var(--accent-warm);
