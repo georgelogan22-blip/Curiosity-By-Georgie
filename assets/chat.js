@@ -50,6 +50,8 @@ document.addEventListener("DOMContentLoaded", function () {
       time: new Date("2026-09-03T07:42:00+10:00"),
       caption: "Finally caught a Powerful Owl roosting near the Mt Coot-tha lookout track this morning — anyone else seen one this month?",
       photoUrl: null,
+      curiousCount: 5,
+      iAmCurious: false,
       comments: [
         { id: "c1", name: "Chen W.", body: "Yes! Same patch of fig trees, about a week ago. They seem to like it there." },
       ],
@@ -60,6 +62,8 @@ document.addEventListener("DOMContentLoaded", function () {
       time: new Date("2026-09-01T18:15:00+10:00"),
       caption: "Anyone found a lightweight scope that doesn't break the bank? Looking to upgrade from binoculars before the next challenge variant drops.",
       photoUrl: null,
+      curiousCount: 1,
+      iAmCurious: false,
       comments: [],
     },
     {
@@ -68,8 +72,30 @@ document.addEventListener("DOMContentLoaded", function () {
       time: new Date("2026-08-30T09:03:00+10:00"),
       caption: "Keen for a group walk through New Farm Park this Saturday morning if a few of us want to compare notes — reply here if you're in!",
       photoUrl: null,
+      curiousCount: 3,
+      iAmCurious: false,
       comments: [],
     },
+  ];
+
+  // A small magnifying-glass icon for the "Curious" reaction button —
+  // George's ask was specifically a magnifying glass rather than a heart/
+  // thumbs-up, echoing the site's own explorer framing. Drawn as inline
+  // SVG (not an emoji glyph) so its colour follows the button's own CSS
+  // (currentColor) instead of the OS's emoji rendering.
+  var CURIOUS_ICON_SVG =
+    '<svg class="board-curious-icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">' +
+    '<circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"></circle>' +
+    '<line x1="15.3" y1="15.3" x2="20.5" y2="20.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>' +
+    "</svg>";
+
+  // A small, birding-themed emoji set for the comment box's emoji picker —
+  // nature/gear emoji first (things people actually post about here),
+  // general reactions after.
+  var COMMENT_EMOJI = [
+    "🦅", "🦜", "🦉", "🦆", "🐦", "🦢", "🐣", "🌿",
+    "🌳", "🌤️", "🔭", "📸", "😄", "😲", "🤩", "👍",
+    "🙌", "👏", "❤️", "🔥", "🎉", "🤔", "😂", "🙏",
   ];
 
   function escapeHtml(str) {
@@ -92,6 +118,30 @@ document.addEventListener("DOMContentLoaded", function () {
     );
   }
 
+  function renderCuriousButton(post) {
+    var activeClass = post.iAmCurious ? " is-curious" : "";
+    var countBit = post.curiousCount > 0
+      ? '<span class="board-curious-count">' + post.curiousCount + "</span>"
+      : "";
+    return (
+      '<button type="button" class="board-curious-btn' + activeClass + '" data-post-id="' + escapeHtml(post.id) + '" aria-pressed="' + (post.iAmCurious ? "true" : "false") + '">' +
+      CURIOUS_ICON_SVG +
+      '<span class="board-curious-label">Curious</span>' +
+      countBit +
+      "</button>"
+    );
+  }
+
+  function renderEmojiPicker() {
+    return (
+      '<div class="board-emoji-picker">' +
+      COMMENT_EMOJI.map(function (e) {
+        return '<button type="button" class="board-emoji-option" data-emoji="' + e + '">' + e + "</button>";
+      }).join("") +
+      "</div>"
+    );
+  }
+
   function renderPost(post) {
     var photoBit = post.photoUrl
       ? '<img class="board-post-photo" src="' + escapeHtml(post.photoUrl) + '" alt="" loading="lazy" onload="window.classifyBoardPhoto(this)">'
@@ -104,10 +154,17 @@ document.addEventListener("DOMContentLoaded", function () {
       "</div>" +
       '<p class="board-post-caption">' + escapeHtml(post.caption) + "</p>" +
       photoBit +
+      '<div class="board-post-actions">' + renderCuriousButton(post) + "</div>" +
       '<div class="board-comments">' + post.comments.map(renderComment).join("") + "</div>" +
       '<form class="board-comment-form" data-post-id="' + escapeHtml(post.id) + '">' +
+      '<div class="board-comment-input-row">' +
       '<textarea name="body" maxlength="300" placeholder="Add a comment…" required></textarea>' +
+      '<div class="board-comment-form-btns">' +
+      '<button type="button" class="board-emoji-toggle" aria-label="Add an emoji" aria-haspopup="true" aria-expanded="false">🙂</button>' +
       '<button type="submit" class="btn btn-ghost">Comment</button>' +
+      "</div>" +
+      "</div>" +
+      renderEmojiPicker() +
       "</form>" +
       "</article>"
     );
@@ -130,15 +187,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // ---- load the real feed, if any -------------------------------------
   if (typeof fetchBoardPosts === "function" && typeof fetchBoardComments === "function") {
-    Promise.all([fetchBoardPosts(100), fetchBoardComments()])
+    var curiousFetch = typeof fetchBoardCuriousCounts === "function"
+      ? fetchBoardCuriousCounts()
+      : Promise.resolve([]);
+    Promise.all([fetchBoardPosts(100), fetchBoardComments(), curiousFetch])
       .then(function (results) {
         var rows = results[0];
         var commentRows = results[1];
+        var curiousRows = results[2];
         if (!rows || !rows.length) return; // keep example posts until real ones exist
         var commentsByPost = {};
         (commentRows || []).forEach(function (c) {
           if (!commentsByPost[c.post_id]) commentsByPost[c.post_id] = [];
           commentsByPost[c.post_id].push({ id: c.id, name: c.participant_name, body: c.body });
+        });
+        var curiousByPost = {};
+        (curiousRows || []).forEach(function (c) {
+          curiousByPost[c.post_id] = c.curious_count;
         });
         posts = rows.map(function (r) {
           return {
@@ -147,6 +212,8 @@ document.addEventListener("DOMContentLoaded", function () {
             time: new Date(r.created_at),
             caption: r.caption,
             photoUrl: typeof boardPhotoUrl === "function" ? boardPhotoUrl(r.photo_path) : null,
+            curiousCount: curiousByPost[r.id] || 0,
+            iAmCurious: false,
             comments: commentsByPost[r.id] || [],
           };
         });
@@ -234,6 +301,8 @@ document.addEventListener("DOMContentLoaded", function () {
               time: new Date(row.created_at),
               caption: row.caption,
               photoUrl: typeof boardPhotoUrl === "function" ? boardPhotoUrl(row.photo_path) : null,
+              curiousCount: 0,
+              iAmCurious: false,
               comments: [],
             });
             setNote("Live — showing everyone's posts.");
@@ -257,6 +326,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 time: new Date(),
                 caption: caption,
                 photoUrl: localPhotoUrl,
+                curiousCount: 0,
+                iAmCurious: false,
                 comments: [],
               });
               renderFeed();
@@ -368,6 +439,151 @@ document.addEventListener("DOMContentLoaded", function () {
             if (submitBtn) submitBtn.disabled = false;
           });
       });
+  });
+
+  // ---- "Curious" reactions + comment emoji picker (event delegation —
+  // the feed is re-rendered on every post/comment, same reason the
+  // comment-form submit listener above is delegated too) -----------------
+  function insertAtCursor(textarea, text) {
+    var start = textarea.selectionStart != null ? textarea.selectionStart : textarea.value.length;
+    var end = textarea.selectionEnd != null ? textarea.selectionEnd : textarea.value.length;
+    var value = textarea.value;
+    textarea.value = value.slice(0, start) + text + value.slice(end);
+    var newPos = start + text.length;
+    textarea.selectionStart = textarea.selectionEnd = newPos;
+  }
+
+  function closeEmojiPicker(picker) {
+    if (!picker) return;
+    picker.classList.remove("is-open");
+    var form = picker.closest("form");
+    var toggleBtn = form && form.querySelector(".board-emoji-toggle");
+    if (toggleBtn) toggleBtn.setAttribute("aria-expanded", "false");
+  }
+
+  feed.addEventListener("click", function (evt) {
+    // Emoji-picker toggle button.
+    var emojiToggle = evt.target.closest(".board-emoji-toggle");
+    if (emojiToggle) {
+      var picker = emojiToggle.closest("form").querySelector(".board-emoji-picker");
+      if (picker) {
+        var willOpen = !picker.classList.contains("is-open");
+        // Close any other open picker first (only one at a time).
+        feed.querySelectorAll(".board-emoji-picker.is-open").forEach(closeEmojiPicker);
+        if (willOpen) {
+          picker.classList.add("is-open");
+          emojiToggle.setAttribute("aria-expanded", "true");
+        }
+      }
+      return;
+    }
+
+    // A specific emoji, chosen from an open picker.
+    var emojiOption = evt.target.closest(".board-emoji-option");
+    if (emojiOption) {
+      var optForm = emojiOption.closest("form");
+      var textarea = optForm && optForm.querySelector('textarea[name="body"]');
+      if (textarea) {
+        insertAtCursor(textarea, emojiOption.getAttribute("data-emoji") || "");
+        textarea.focus();
+      }
+      closeEmojiPicker(optForm && optForm.querySelector(".board-emoji-picker"));
+      return;
+    }
+
+    // The "Curious" reaction button.
+    var curiousBtn = evt.target.closest(".board-curious-btn");
+    if (curiousBtn) {
+      var postId = curiousBtn.getAttribute("data-post-id");
+      var name = (nameField.value || "").trim();
+      var pin = (pinField.value || "").trim();
+
+      if (!name) {
+        setStatus("Enter your name above to mark something Curious.");
+        return;
+      }
+      if (!/^[0-9]{4}$/.test(pin)) {
+        setStatus("Enter your 4-digit PIN above to mark something Curious.");
+        return;
+      }
+
+      curiousBtn.disabled = true;
+
+      var checkStatus = typeof participantStatus === "function"
+        ? participantStatus(name)
+        : Promise.resolve(null);
+
+      checkStatus
+        .catch(function () {
+          return "unknown";
+        })
+        .then(function (status) {
+          if (status === null) {
+            setStatus('You\'ll need to <a href="register.html">register</a> first — it only takes a minute, then come back and mark posts Curious under the same name.');
+            curiousBtn.disabled = false;
+            return;
+          }
+          if (status === "banned") {
+            setStatus('This name isn\'t able to react here. If you think this is a mistake, email <a href="mailto:contactcuriouslygeorgie@gmail.com">contactcuriouslygeorgie@gmail.com</a>.');
+            curiousBtn.disabled = false;
+            return;
+          }
+
+          var doToggle = typeof hashPin === "function"
+            ? hashPin(pin).then(function (pinHash) {
+                return typeof toggleBoardCurious === "function"
+                  ? toggleBoardCurious(postId, name, pinHash)
+                  : Promise.reject(new Error("offline-demo"));
+              })
+            : Promise.reject(new Error("offline-demo"));
+
+          return doToggle
+            .then(function (result) {
+              var post = findPost(postId);
+              if (post) {
+                post.iAmCurious = !!result.is_curious;
+                post.curiousCount = result.curious_count || 0;
+                renderFeed();
+              }
+              try { window.localStorage.setItem("cg_participant_name", name); } catch (e) {}
+            })
+            .catch(function (err) {
+              var msg = err && err.message;
+              if (msg === "offline-demo") {
+                // Backend not configured — still toggle locally so the
+                // board feels responsive, same graceful-degradation
+                // posture as posting/commenting in demo mode.
+                var post = findPost(postId);
+                if (post) {
+                  post.iAmCurious = !post.iAmCurious;
+                  post.curiousCount = Math.max(0, (post.curiousCount || 0) + (post.iAmCurious ? 1 : -1));
+                  renderFeed();
+                  setNote("Demo mode — this board isn't connected right now, so Curious taps here aren't saved anywhere.");
+                }
+              } else if (msg === "not_registered") {
+                setStatus('That name isn\'t registered yet — <a href="register.html">register here</a> first.');
+              } else if (msg === "not_active") {
+                setStatus('This name isn\'t able to react here. If you think this is a mistake, email <a href="mailto:contactcuriouslygeorgie@gmail.com">contactcuriouslygeorgie@gmail.com</a>.');
+              } else if (msg === "invalid_pin") {
+                setStatus('<span class="status-warn">That PIN doesn\'t match this name — check it and try again.</span>');
+              } else if (msg === "post_not_found") {
+                setStatus("That post isn't there anymore.");
+              } else {
+                setStatus("Couldn't reach the board right now — please try again.");
+              }
+            })
+            .then(function () {
+              curiousBtn.disabled = false;
+            });
+        });
+    }
+  });
+
+  // Close any open emoji picker on an outside click — same "click away to
+  // close" convention as assets/nav.js's dropdowns.
+  document.addEventListener("click", function (evt) {
+    if (evt.target.closest(".board-comment-form")) return;
+    feed.querySelectorAll(".board-emoji-picker.is-open").forEach(closeEmojiPicker);
   });
 
   // Pre-fill the name field if this browser has posted/registered
