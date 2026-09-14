@@ -849,7 +849,7 @@ tr:last-child td { border-bottom: none; }
 .board-post-photo {
   display: block;
   width: 100%;
-  aspect-ratio: 4 / 3;
+  height: 280px;
   object-fit: cover;
   border-radius: var(--radius-sm);
   border: 1px solid var(--line);
