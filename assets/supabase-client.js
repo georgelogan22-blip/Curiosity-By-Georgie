@@ -404,3 +404,36 @@ function checkBoardReplies(name, pinHash) {
       return res.data || [];
     });
 }
+
+// "Curious" reactions on board posts — see
+// supabase/board-curious-migration.sql. Fetches the current Curious count
+// for every post (from the public board_curious_counts view, which never
+// exposes who reacted, only how many) so the feed can show a number
+// without anyone signing in. Resolves with [] if the backend isn't
+// configured.
+function fetchBoardCuriousCounts() {
+  if (!supabaseClient) return Promise.resolve([]);
+  return supabaseClient
+    .from("board_curious_counts")
+    .select("*")
+    .then(function (res) {
+      if (res.error) throw res.error;
+      return res.data || [];
+    });
+}
+
+// Toggles this participant's Curious reaction on a post via
+// toggle_post_curious() — same registration/active/PIN gating as posting
+// or commenting. Resolves with { is_curious, curious_count } in one round
+// trip. Rejects with an error whose .message is "not_registered" /
+// "not_active" / "invalid_pin" / "post_not_found".
+function toggleBoardCurious(postId, name, pinHash) {
+  if (!supabaseClient) return Promise.reject(new Error("offline-demo"));
+  return supabaseClient
+    .rpc("toggle_post_curious", { p_post_id: postId, p_name: name, p_pin_hash: pinHash })
+    .then(function (res) {
+      if (res.error) throw res.error;
+      var row = Array.isArray(res.data) ? res.data[0] : res.data;
+      return row || { is_curious: false, curious_count: 0 };
+    });
+}
