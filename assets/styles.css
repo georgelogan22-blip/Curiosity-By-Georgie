@@ -857,11 +857,12 @@ tr:last-child td { border-bottom: none; }
 .board-post-photo {
   display: block;
   width: 100%;
+  max-width: 380px;
+  margin: 0 auto 12px;
   aspect-ratio: 4 / 5;
   object-fit: cover;
   border-radius: var(--radius-sm);
   border: 1px solid var(--line);
-  margin-bottom: 12px;
 }
 .board-post-photo.shape-square { aspect-ratio: 1 / 1; }
 .board-post-photo.shape-portrait { aspect-ratio: 4 / 5; }
