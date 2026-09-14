@@ -20,6 +20,7 @@
   --medal-silver: #b7c0c4;
   --medal-bronze: #c67c3e;
   --shadow: 0 1px 2px rgba(23, 38, 33, 0.06), 0 8px 24px rgba(23, 38, 33, 0.06);
+  --map-water: #c3dde4;
 
   /* --- type --- */
   --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
@@ -46,6 +47,7 @@
     --medal-silver: #ccd3d6;
     --medal-bronze: #dd9a5e;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+    --map-water: #0c1e26;
   }
 }
 
@@ -576,6 +578,37 @@ section { padding: 40px 0; }
   color: var(--accent);
   font-weight: 700;
 }
+
+/* Boundary map (The Boundary section) — a hand-illustrated schematic, not a
+   survey-accurate GIS boundary: Greater Brisbane (Brisbane City, Moreton
+   Bay, Redlands, Logan, Ipswich, out to the D'Aguilar Range) shaded green,
+   the surrounding excluded councils shaded coral, using the site's own
+   --accent/--accent-coral tokens so it reads consistently in both themes. */
+.boundary-map { margin: 18px 0 4px; max-width: 460px; }
+.boundary-map-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+.boundary-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+}
+.boundary-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.boundary-legend i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.boundary-legend .in i { background: color-mix(in srgb, var(--accent) 30%, var(--paper-raised)); border: 1.5px solid var(--accent); }
+.boundary-legend .out i { background: color-mix(in srgb, var(--accent-coral) 28%, var(--paper-raised)); border: 1.5px solid var(--accent-coral); }
+.boundary-map figcaption { margin-top: 8px; font-size: 0.82rem; color: var(--ink-soft); }
 
 .safety-block {
   background: color-mix(in srgb, var(--accent-warm) 12%, var(--paper-raised));
