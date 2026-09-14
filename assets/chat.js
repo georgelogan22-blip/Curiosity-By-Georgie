@@ -78,24 +78,27 @@ document.addEventListener("DOMContentLoaded", function () {
     },
   ];
 
-  // A small magnifying-glass icon for the "Curious" reaction button —
-  // George's ask was specifically a magnifying glass rather than a heart/
-  // thumbs-up, echoing the site's own explorer framing. Drawn as inline
-  // SVG (not an emoji glyph) so its colour follows the button's own CSS
-  // (currentColor) instead of the OS's emoji rendering.
-  var CURIOUS_ICON_SVG =
-    '<svg class="board-curious-icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">' +
-    '<circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"></circle>' +
-    '<line x1="15.3" y1="15.3" x2="20.5" y2="20.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>' +
-    "</svg>";
+  // The "Beauty!" reaction button's icon — originally a magnifying glass
+  // (echoing the site's explorer framing), swapped for the 🤙 "shaka"
+  // emoji at George's request: it's technically the "call me" gesture,
+  // but reads as a "hang loose"/rad-bro hand — matching the button's
+  // dated, dad-joke charm.
+  var CURIOUS_ICON_SVG = '<span class="board-curious-icon" aria-hidden="true">🤙</span>';
 
-  // A small, birding-themed emoji set for the comment box's emoji picker —
+  // A wide, birding-themed emoji set for the comment box's emoji picker —
   // nature/gear emoji first (things people actually post about here),
-  // general reactions after.
+  // then faces, hands/hearts, and general reactions.
   var COMMENT_EMOJI = [
-    "🦅", "🦜", "🦉", "🦆", "🐦", "🦢", "🐣", "🌿",
-    "🌳", "🌤️", "🔭", "📸", "😄", "😲", "🤩", "👍",
-    "🙌", "👏", "❤️", "🔥", "🎉", "🤔", "😂", "🙏",
+    "🦅", "🦜", "🦉", "🦆", "🐦", "🦢", "🐣", "🦋",
+    "🐝", "🌿", "🌳", "🌸", "🍃", "🌤️", "🌅", "🌊",
+    "🔭", "📸", "😄", "😂", "🤩", "😍", "🥹", "🥰",
+    "😲", "🙃", "😅", "🤯", "😎", "🥶", "🙄", "😴",
+    "😬", "😇", "👍", "👎", "🙌", "👏", "🤝", "✌️",
+    "🤙", "💪", "❤️", "🔥", "🎉", "✨", "⭐", "💯",
+    "✅", "❓", "❗", "🤔", "🙏", "☕", "🍻", "👀",
+    "🐧", "🦩", "🦚", "🦃", "🕊️", "☀️", "🌙", "🌈",
+    "🌧️", "🍂", "🌾", "😆", "🤣", "🥳", "😊", "🤗",
+    "😱", "🫡",
   ];
 
   function escapeHtml(str) {
@@ -126,7 +129,7 @@ document.addEventListener("DOMContentLoaded", function () {
     return (
       '<button type="button" class="board-curious-btn' + activeClass + '" data-post-id="' + escapeHtml(post.id) + '" aria-pressed="' + (post.iAmCurious ? "true" : "false") + '">' +
       CURIOUS_ICON_SVG +
-      '<span class="board-curious-label">Curious</span>' +
+      '<span class="board-curious-label">Beauty!</span>' +
       countBit +
       "</button>"
     );
@@ -154,13 +157,13 @@ document.addEventListener("DOMContentLoaded", function () {
       "</div>" +
       '<p class="board-post-caption">' + escapeHtml(post.caption) + "</p>" +
       photoBit +
-      '<div class="board-post-actions">' + renderCuriousButton(post) + "</div>" +
       '<div class="board-comments">' + post.comments.map(renderComment).join("") + "</div>" +
+      '<div class="board-post-actions">' + renderCuriousButton(post) + "</div>" +
       '<form class="board-comment-form" data-post-id="' + escapeHtml(post.id) + '">' +
       '<div class="board-comment-input-row">' +
       '<textarea name="body" maxlength="300" placeholder="Add a comment…" required></textarea>' +
       '<div class="board-comment-form-btns">' +
-      '<button type="button" class="board-emoji-toggle" aria-label="Add an emoji" aria-haspopup="true" aria-expanded="false">🙂</button>' +
+      '<button type="button" class="board-emoji-toggle" aria-label="Add an emoji" aria-haspopup="true" aria-expanded="false">🤓</button>' +
       '<button type="submit" class="btn btn-ghost">Comment</button>' +
       "</div>" +
       "</div>" +
@@ -441,7 +444,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   });
 
-  // ---- "Curious" reactions + comment emoji picker (event delegation —
+  // ---- "Beauty!" reactions + comment emoji picker (event delegation —
   // the feed is re-rendered on every post/comment, same reason the
   // comment-form submit listener above is delegated too) -----------------
   function insertAtCursor(textarea, text) {
@@ -491,7 +494,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    // The "Curious" reaction button.
+    // The "Beauty!" reaction button.
     var curiousBtn = evt.target.closest(".board-curious-btn");
     if (curiousBtn) {
       var postId = curiousBtn.getAttribute("data-post-id");
@@ -499,11 +502,11 @@ document.addEventListener("DOMContentLoaded", function () {
       var pin = (pinField.value || "").trim();
 
       if (!name) {
-        setStatus("Enter your name above to mark something Curious.");
+        setStatus("Enter your name above to give it a Beauty!");
         return;
       }
       if (!/^[0-9]{4}$/.test(pin)) {
-        setStatus("Enter your 4-digit PIN above to mark something Curious.");
+        setStatus("Enter your 4-digit PIN above to give it a Beauty!");
         return;
       }
 
@@ -519,7 +522,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then(function (status) {
           if (status === null) {
-            setStatus('You\'ll need to <a href="register.html">register</a> first — it only takes a minute, then come back and mark posts Curious under the same name.');
+            setStatus('You\'ll need to <a href="register.html">register</a> first — it only takes a minute, then come back and give posts a Beauty! under the same name.');
             curiousBtn.disabled = false;
             return;
           }
@@ -558,7 +561,7 @@ document.addEventListener("DOMContentLoaded", function () {
                   post.iAmCurious = !post.iAmCurious;
                   post.curiousCount = Math.max(0, (post.curiousCount || 0) + (post.iAmCurious ? 1 : -1));
                   renderFeed();
-                  setNote("Demo mode — this board isn't connected right now, so Curious taps here aren't saved anywhere.");
+                  setNote("Demo mode — this board isn't connected right now, so Beauty! taps here aren't saved anywhere.");
                 }
               } else if (msg === "not_registered") {
                 setStatus('That name isn\'t registered yet — <a href="register.html">register here</a> first.');
