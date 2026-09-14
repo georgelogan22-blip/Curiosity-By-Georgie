@@ -10,6 +10,24 @@
 // registration/PIN problem — same graceful-degradation posture as
 // assets/script.js.
 
+// Sorts a loaded board photo into one of three Instagram-style frames —
+// square, portrait (4:5), or landscape (1.91:1) — based on its own actual
+// pixel dimensions, so assets/styles.css's object-fit: cover only ever
+// trims a small excess margin instead of squeezing every photo (most of
+// which are tall phone shots) into one fixed shape and cropping the bird
+// out. Wired up via an inline onload on each <img class="board-post-photo">
+// (see renderPost() below) rather than an addEventListener, since posts
+// are inserted via innerHTML and the image may finish loading before any
+// listener attached after the fact would have a chance to catch it.
+window.classifyBoardPhoto = function (img) {
+  if (!img || !img.naturalWidth || !img.naturalHeight) return;
+  var ratio = img.naturalWidth / img.naturalHeight;
+  img.classList.remove("shape-square", "shape-portrait", "shape-landscape");
+  if (ratio > 1.15) img.classList.add("shape-landscape");
+  else if (ratio < 0.85) img.classList.add("shape-portrait");
+  else img.classList.add("shape-square");
+};
+
 document.addEventListener("DOMContentLoaded", function () {
   var feed = document.getElementById("board-feed");
   var note = document.getElementById("board-note");
@@ -76,7 +94,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function renderPost(post) {
     var photoBit = post.photoUrl
-      ? '<img class="board-post-photo" src="' + escapeHtml(post.photoUrl) + '" alt="" loading="lazy">'
+      ? '<img class="board-post-photo" src="' + escapeHtml(post.photoUrl) + '" alt="" loading="lazy" onload="window.classifyBoardPhoto(this)">'
       : "";
     return (
       '<article class="board-post" data-post-id="' + escapeHtml(post.id) + '">' +
