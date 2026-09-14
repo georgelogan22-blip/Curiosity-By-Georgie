@@ -24,6 +24,7 @@
   --medal-silver: #b7c0c4;
   --medal-bronze: #c67c3e;
   --shadow: 0 1px 2px rgba(23, 38, 33, 0.06), 0 8px 24px rgba(23, 38, 33, 0.06);
+  --map-water: #c3dde4;
   --tier-blue: #4a7fb5;
   --tier-orange: #c9762e;
   --tier-purple: #7c4fd1;
@@ -54,6 +55,7 @@
     --medal-silver: #ccd3d6;
     --medal-bronze: #dd9a5e;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+    --map-water: #0c1e26;
     --tier-blue: #8db6e0;
     --tier-orange: #eaa563;
     --tier-purple: #b79af0;
@@ -74,6 +76,7 @@
   --medal-silver: #ccd3d6;
   --medal-bronze: #dd9a5e;
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+  --map-water: #0c1e26;
   --tier-blue: #8db6e0;
   --tier-orange: #eaa563;
   --tier-purple: #b79af0;
@@ -595,6 +598,32 @@ section { padding: 40px 0; }
   color: var(--accent);
   font-weight: 700;
 }
+
+.boundary-map { margin: 18px 0 4px; max-width: 460px; }
+.boundary-map-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+.boundary-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+}
+.boundary-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.boundary-legend i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.boundary-legend .in i { background: color-mix(in srgb, var(--accent) 30%, var(--paper-raised)); border: 1.5px solid var(--accent); }
+.boundary-legend .out i { background: color-mix(in srgb, var(--accent-coral) 28%, var(--paper-raised)); border: 1.5px solid var(--accent-coral); }
+.boundary-map figcaption { margin-top: 8px; font-size: 0.82rem; color: var(--ink-soft); }
 
 .safety-block {
   background: color-mix(in srgb, var(--accent-warm) 12%, var(--paper-raised));
@@ -1185,6 +1214,116 @@ footer a { color: var(--ink-soft); }
     <h3>The Boundary</h3>
     <div>
       <p>"Greater Brisbane" covers the Brisbane City Council area plus the surrounding region — Moreton Bay, Redlands, Logan, Ipswich, and out to the D'Aguilar Range. A sighting anywhere inside that boundary counts.</p>
+      <figure class="boundary-map">
+        <div class="boundary-legend">
+          <span class="in"><i></i> Inside — counts</span>
+          <span class="out"><i></i> Outside — doesn't count</span>
+        </div>
+        <svg viewBox="0 0 460 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="boundaryMapTitle boundaryMapDesc" class="boundary-map-svg">
+          <title id="boundaryMapTitle">Map of the Greater Brisbane Air 50 boundary</title>
+          <desc id="boundaryMapDesc">A schematic map showing Brisbane City, Moreton Bay, Redlands, Logan and Ipswich council areas, plus Moreton Island and North Stradbroke Island, shaded green as inside the boundary. The surrounding Sunshine Coast, Lockyer Valley/Somerset, and Scenic Rim/Gold Coast areas are shaded red as outside the boundary.</desc>
+          <rect x="0" y="0" width="460" height="520" fill="var(--map-water)" />
+          <path id="outerLand" d="M 200 14
+            C 250 12, 300 16, 322 26
+            C 348 40, 366 56, 374 74
+            C 386 100, 392 130, 396 166
+            C 400 206, 398 246, 390 286
+            C 384 316, 378 342, 364 368
+            C 354 386, 344 402, 328 420
+            C 316 436, 306 452, 290 470
+            C 270 492, 244 506, 214 514
+            C 184 520, 150 518, 122 506
+            C 96 494, 74 476, 58 452
+            C 40 426, 28 396, 22 362
+            C 16 328, 16 292, 20 256
+            C 24 216, 32 178, 48 142
+            C 62 110, 82 82, 108 60
+            C 134 38, 166 22, 200 14 Z"
+            fill="var(--paper-raised)" stroke="var(--line)" stroke-width="1.5" />
+          <path d="M 410 118 C 422 130, 429 152, 427 176 C 425 200, 416 220, 404 228 C 397 216, 394 192, 396 168 C 398 144, 403 128, 410 118 Z"
+            fill="var(--paper-raised)" stroke="var(--line)" stroke-width="1.2" />
+          <path d="M 396 258 C 410 263, 420 277, 420 293 C 420 309, 411 322, 398 327 C 389 316, 386 298, 388 282 C 390 270, 392 263, 396 258 Z"
+            fill="var(--paper-raised)" stroke="var(--line)" stroke-width="1.2" />
+          <path d="M 200 14
+            C 250 12, 300 16, 322 26
+            C 348 40, 366 56, 374 74
+            C 386 100, 392 130, 396 166
+            C 400 206, 398 246, 390 286
+            C 384 316, 378 342, 364 368
+            C 354 386, 344 402, 328 420
+            C 316 436, 306 452, 290 470
+            C 270 492, 244 506, 214 514
+            C 184 520, 150 518, 122 506
+            C 96 494, 74 476, 58 452
+            C 40 426, 28 396, 22 362
+            C 16 328, 16 292, 20 256
+            C 24 216, 32 178, 48 142
+            C 62 110, 82 82, 108 60
+            C 134 38, 166 22, 200 14 Z
+            M 232 76
+            C 278 78, 322 88, 350 108
+            C 368 122, 376 148, 380 180
+            C 384 212, 382 246, 374 276
+            C 368 298, 356 316, 338 332
+            C 320 358, 290 378, 226 390
+            C 188 394, 158 388, 132 372
+            C 108 358, 90 338, 80 314
+            C 70 290, 66 264, 68 238
+            C 70 208, 80 180, 98 156
+            C 114 134, 136 116, 162 102
+            C 184 90, 208 80, 232 76 Z"
+            fill="var(--accent-coral)" fill-opacity="0.24" fill-rule="evenodd" />
+          <path id="boundaryPath" d="M 232 76
+            C 278 78, 322 88, 350 108
+            C 368 122, 376 148, 380 180
+            C 384 212, 382 246, 374 276
+            C 368 298, 356 316, 338 332
+            C 320 358, 290 378, 226 390
+            C 188 394, 158 388, 132 372
+            C 108 358, 90 338, 80 314
+            C 70 290, 66 264, 68 238
+            C 70 208, 80 180, 98 156
+            C 114 134, 136 116, 162 102
+            C 184 90, 208 80, 232 76 Z"
+            fill="var(--accent)" fill-opacity="0.26" stroke="var(--accent)" stroke-width="2.5" stroke-dasharray="7 5" />
+          <path d="M 410 118 C 422 130, 429 152, 427 176 C 425 200, 416 220, 404 228 C 397 216, 394 192, 396 168 C 398 144, 403 128, 410 118 Z"
+            fill="var(--accent)" fill-opacity="0.26" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 4" />
+          <path d="M 396 258 C 410 263, 420 277, 420 293 C 420 309, 411 322, 398 327 C 389 316, 386 298, 388 282 C 390 270, 392 263, 396 258 Z"
+            fill="var(--accent)" fill-opacity="0.26" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 4" />
+          <g transform="translate(40,36)" fill="var(--ink-soft)">
+            <line x1="0" y1="14" x2="0" y2="-14" stroke="var(--ink-soft)" stroke-width="1.5" />
+            <path d="M 0 -14 L -4 -6 L 0 -9 L 4 -6 Z" />
+            <text x="0" y="-18" text-anchor="middle" font-family="var(--font-mono)" font-size="10" font-weight="700">N</text>
+          </g>
+          <g font-family="var(--font-mono)" font-size="11" fill="var(--ink)">
+            <circle cx="208" cy="228" r="5" fill="var(--ink)" />
+            <text x="217" y="225" font-weight="700">Brisbane CBD</text>
+            <circle cx="120" cy="168" r="3.5" fill="var(--ink)" />
+            <text x="92" y="156" text-anchor="middle">D'Aguilar</text>
+            <text x="92" y="168" text-anchor="middle">Range</text>
+            <circle cx="104" cy="300" r="3.5" fill="var(--ink)" />
+            <text x="100" y="318" text-anchor="middle">Ipswich</text>
+            <circle cx="222" cy="366" r="3.5" fill="var(--ink)" />
+            <text x="222" y="384" text-anchor="middle">Logan</text>
+            <circle cx="330" cy="256" r="3.5" fill="var(--ink)" />
+            <text x="332" y="274" text-anchor="middle">Redlands</text>
+            <circle cx="292" cy="100" r="3.5" fill="var(--ink)" />
+            <text x="256" y="90" text-anchor="middle">Moreton Bay</text>
+            <text x="256" y="101" text-anchor="middle">Region</text>
+            <text x="404" y="166" text-anchor="middle" font-size="9.5">Moreton</text>
+            <text x="404" y="177" text-anchor="middle" font-size="9.5">Island</text>
+            <text x="404" y="304" text-anchor="middle" font-size="9.5">Nth Stradbroke</text>
+            <text x="404" y="315" text-anchor="middle" font-size="9.5">Island</text>
+          </g>
+          <g font-family="var(--font-mono)" font-size="10.5" fill="var(--ink-soft)" font-style="italic">
+            <text x="212" y="38" text-anchor="middle">Sunshine Coast</text>
+            <text x="46" y="430" text-anchor="middle">Lockyer Valley</text>
+            <text x="46" y="442" text-anchor="middle">&amp; Somerset</text>
+            <text x="212" y="500" text-anchor="middle">Scenic Rim / Gold Coast</text>
+          </g>
+        </svg>
+        <figcaption>Illustrated guide, not a survey-accurate boundary. If you're near the edge and unsure, log it anyway — reviews sort out the details.</figcaption>
+      </figure>
     </div>
   </div>
 
