@@ -675,6 +675,9 @@ section { padding: 40px 0; }
 .status-pill-pending { background: color-mix(in srgb, var(--accent-warm) 20%, var(--paper-raised)); color: var(--accent-warm); }
 .status-pill-confirmed { background: color-mix(in srgb, var(--accent) 16%, var(--paper-raised)); color: var(--accent); }
 .status-pill-rejected { background: color-mix(in srgb, var(--accent-coral) 14%, var(--paper-raised)); color: var(--accent-coral); }
+.status-word-pending { color: var(--accent-warm); }
+.status-word-confirmed { color: var(--accent); }
+.status-word-rejected { color: var(--accent-coral); }
 input, select, textarea {
   width: 100%;
   font: inherit;
