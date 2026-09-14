@@ -1031,6 +1031,37 @@ footer a { color: var(--ink-soft); }
 .species-suggestion .sp-meta { display: flex; align-items: center; gap: 8px; flex: none; }
 .species-suggestions .no-match { padding: 8px 10px; color: var(--ink-soft); font-size: 0.86rem; }
 
+.address-autocomplete { position: relative; }
+.address-suggestions {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  max-height: 280px;
+  overflow-y: auto;
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+  padding: 4px;
+}
+.address-suggestions[hidden] { display: none; }
+.address-suggestion {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.92rem;
+}
+.address-suggestion:hover,
+.address-suggestion.active { background: var(--paper); }
+.address-suggestion .addr-main { font-weight: 600; }
+.address-suggestion .addr-sub { color: var(--ink-soft); font-size: 0.8rem; }
+.address-suggestions .no-match { padding: 8px 10px; color: var(--ink-soft); font-size: 0.86rem; }
+
 /* ---------- checklist tier heading colours ---------- */
 .checklist-group.tier-a h3 { color: var(--tier-blue); }
 .checklist-group.tier-c h3 { color: var(--accent); }
