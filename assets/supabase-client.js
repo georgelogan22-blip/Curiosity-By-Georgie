@@ -386,3 +386,21 @@ function fetchBoardComments() {
       return res.data || [];
     });
 }
+
+// "Check my replies" — the board has no email/push notifications (see
+// supabase/board-replies-check-migration.sql for why), so a participant
+// self-checks with the same name + PIN they post/comment with. Calls the
+// PIN-gated check_board_replies() database function, which also marks
+// this moment as "checked" server-side, so calling this twice in a row
+// correctly returns [] the second time. Resolves with an array of rows
+// (newest first), or rejects with an error whose .message is
+// "not_registered" / "invalid_pin".
+function checkBoardReplies(name, pinHash) {
+  if (!supabaseClient) return Promise.reject(new Error("offline-demo"));
+  return supabaseClient
+    .rpc("check_board_replies", { p_name: name, p_pin_hash: pinHash })
+    .then(function (res) {
+      if (res.error) throw res.error;
+      return res.data || [];
+    });
+}
