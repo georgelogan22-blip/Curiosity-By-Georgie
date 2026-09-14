@@ -952,6 +952,36 @@ tr:last-child td { border-bottom: none; }
 .board-post-photo.shape-portrait { aspect-ratio: 4 / 5; }
 .board-post-photo.shape-landscape { aspect-ratio: 191 / 100; }
 
+/* "Curious" reaction button — George's Instagram/Facebook-style "like",
+   themed to the site: a magnifying glass instead of a heart/thumbs-up,
+   and "Curious" instead of "Like". Gated by name + PIN (see
+   supabase/board-curious-migration.sql), same as posting/commenting, so
+   one participant only ever counts once per post. */
+.board-post-actions { display: flex; gap: 8px; margin: 4px 0 12px; }
+.board-curious-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.board-curious-btn:hover { border-color: var(--accent-warm); color: var(--accent-warm); }
+.board-curious-btn.is-curious {
+  background: color-mix(in srgb, var(--accent-warm) 16%, var(--paper));
+  border-color: var(--accent-warm);
+  color: var(--accent-warm);
+}
+.board-curious-icon { flex: none; }
+.board-curious-count { font-family: var(--font-mono); }
+
 .board-comments {
   display: flex;
   flex-direction: column;
@@ -968,25 +998,62 @@ tr:last-child td { border-bottom: none; }
 .board-comment-name { font-weight: 700; margin-right: 6px; }
 .board-comment-body { color: var(--ink); }
 
-.board-comment-form {
-  display: flex;
-  gap: 8px;
-  align-items: flex-start;
-  margin-top: 10px;
-  background: none;
-  border: none;
-  padding: 0;
-}
-.board-comment-form textarea {
+.board-comment-form { margin-top: 10px; background: none; border: none; padding: 0; }
+.board-comment-input-row { display: flex; gap: 8px; align-items: flex-start; }
+.board-comment-input-row textarea {
   min-height: 38px;
   padding: 8px 10px;
   font-size: 0.9rem;
 }
-.board-comment-form .btn { flex: none; padding: 10px 16px; }
+.board-comment-form-btns { display: flex; gap: 6px; flex: none; }
+.board-comment-form-btns .btn { flex: none; padding: 10px 16px; }
+
+/* Emoji picker for comments — a small curated set (birding/nature first,
+   general reactions after), inserted at the textarea's cursor position by
+   assets/chat.js. Text-only, no images/uploads — keeps the comment box a
+   plain string, same as everywhere else on the board. */
+.board-emoji-toggle {
+  flex: none;
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  font-size: 1.05rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.board-emoji-toggle:hover { border-color: var(--accent-warm); }
+.board-emoji-picker {
+  display: none;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 4px;
+  margin-top: 8px;
+  padding: 8px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+.board-emoji-picker.is-open { display: grid; }
+.board-emoji-option {
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 1.1rem;
+  line-height: 1.4;
+  padding: 6px 0;
+  cursor: pointer;
+}
+.board-emoji-option:hover { background: var(--paper-raised); }
 
 @media (max-width: 480px) {
-  .board-comment-form { flex-direction: column; }
-  .board-comment-form .btn { width: 100%; }
+  .board-comment-input-row { flex-direction: column; }
+  .board-comment-form-btns { width: 100%; }
+  .board-comment-form-btns .btn { flex: 1; }
+  .board-emoji-picker { grid-template-columns: repeat(6, 1fr); }
 }
 
 /* ---------- footer ---------- */
