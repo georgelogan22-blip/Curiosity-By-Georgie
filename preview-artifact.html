@@ -958,6 +958,20 @@ tr:last-child td { border-bottom: none; }
   margin-bottom: 20px;
 }
 .board-identity .hint { margin-top: 10px; }
+#board-check-replies { margin-top: 12px; }
+#board-replies-status { margin-top: 8px; }
+#board-replies-results:empty { display: none; }
+.board-reply-item {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: var(--paper);
+  border-left: 3px solid var(--accent-warm);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+}
+.board-reply-context { display: block; color: var(--ink-soft); font-size: 0.78rem; margin-bottom: 4px; }
+.board-reply-name { font-weight: 700; margin-right: 6px; }
+.board-reply-body { color: var(--ink); }
 
 #board-composer { margin-bottom: 28px; }
 #board-composer textarea { min-height: 64px; }
@@ -1801,6 +1815,9 @@ footer a { color: var(--ink-soft); }
         </div>
       </div>
       <p class="hint">Used to post and comment below. Not registered yet? <a href="#register">Register here</a> first — it only takes a minute.</p>
+      <button type="button" class="btn btn-ghost" id="board-check-replies">Check my replies</button>
+      <p class="hint" id="board-replies-status" hidden></p>
+      <div id="board-replies-results"></div>
     </div>
 
     <form id="board-composer">
@@ -2236,6 +2253,24 @@ function fetchBoardComments() {
     .from("board_comments")
     .select("*")
     .order("created_at", { ascending: true })
+    .then(function (res) {
+      if (res.error) throw res.error;
+      return res.data || [];
+    });
+}
+
+// "Check my replies" — the board has no email/push notifications (see
+// supabase/board-replies-check-migration.sql for why), so a participant
+// self-checks with the same name + PIN they post/comment with. Calls the
+// PIN-gated check_board_replies() database function, which also marks
+// this moment as "checked" server-side, so calling this twice in a row
+// correctly returns [] the second time. Resolves with an array of rows
+// (newest first), or rejects with an error whose .message is
+// "not_registered" / "invalid_pin".
+function checkBoardReplies(name, pinHash) {
+  if (!supabaseClient) return Promise.reject(new Error("offline-demo"));
+  return supabaseClient
+    .rpc("check_board_replies", { p_name: name, p_pin_hash: pinHash })
     .then(function (res) {
       if (res.error) throw res.error;
       return res.data || [];
@@ -3502,6 +3537,94 @@ document.addEventListener("DOMContentLoaded", function () {
     } catch (e) {
       // localStorage unavailable — fine, just means no prefill.
     }
+  }
+
+  // ---- "Check my replies" (self-service, no email/push notifications) -
+  // The board has no notification system — see
+  // supabase/board-replies-check-migration.sql for why — so a
+  // participant checks in with the same name + PIN they already use to
+  // post and comment, reusing the fields above rather than a separate
+  // form.
+  var checkRepliesBtn = document.getElementById("board-check-replies");
+  var repliesStatusEl = document.getElementById("board-replies-status");
+  var repliesResults = document.getElementById("board-replies-results");
+
+  function setRepliesStatus(html) {
+    if (!repliesStatusEl) return;
+    repliesStatusEl.hidden = !html;
+    repliesStatusEl.innerHTML = html || "";
+  }
+
+  function renderReplies(rows) {
+    if (!repliesResults) return;
+    if (!rows.length) {
+      repliesResults.innerHTML = '<p class="hint">No new replies since last time you checked.</p>';
+      return;
+    }
+    repliesResults.innerHTML = rows
+      .map(function (row) {
+        var captionSnippet = (row.post_caption || "").trim();
+        if (captionSnippet.length > 60) captionSnippet = captionSnippet.slice(0, 60).trim() + "…";
+        return (
+          '<div class="board-reply-item">' +
+          '<span class="board-reply-context">On your post: “' + escapeHtml(captionSnippet) + '”</span>' +
+          '<span class="board-reply-name">' + escapeHtml(row.commenter_name) + "</span>" +
+          '<span class="board-reply-body">' + escapeHtml(row.comment_body) + "</span>" +
+          "</div>"
+        );
+      })
+      .join("");
+  }
+
+  if (checkRepliesBtn) {
+    checkRepliesBtn.addEventListener("click", function () {
+      var name = (nameField.value || "").trim();
+      var pin = (pinField.value || "").trim();
+
+      if (!name) {
+        setRepliesStatus("Enter your name above first.");
+        return;
+      }
+      if (!/^[0-9]{4}$/.test(pin)) {
+        setRepliesStatus("Enter your 4-digit PIN above first.");
+        return;
+      }
+
+      if (repliesResults) repliesResults.innerHTML = "";
+      checkRepliesBtn.disabled = true;
+      setRepliesStatus("Checking…");
+
+      if (typeof checkBoardReplies !== "function" || typeof hashPin !== "function") {
+        setRepliesStatus("This isn't connected right now — please try again shortly.");
+        checkRepliesBtn.disabled = false;
+        return;
+      }
+
+      hashPin(pin)
+        .then(function (pinHash) {
+          return checkBoardReplies(name, pinHash);
+        })
+        .then(function (rows) {
+          setRepliesStatus("");
+          renderReplies(rows || []);
+          try { window.localStorage.setItem("cg_participant_name", name); } catch (e) {}
+        })
+        .catch(function (err) {
+          var msg = err && err.message;
+          if (msg === "offline-demo") {
+            setRepliesStatus("This isn't connected right now — please try again shortly.");
+          } else if (msg === "not_registered") {
+            setRepliesStatus('That name isn\'t registered yet — <a href="register.html">register here</a> first.');
+          } else if (msg === "invalid_pin") {
+            setRepliesStatus('<span class="status-warn">That PIN doesn\'t match this name — check it and try again.</span>');
+          } else {
+            setRepliesStatus("Couldn't check right now — please try again.");
+          }
+        })
+        .then(function () {
+          checkRepliesBtn.disabled = false;
+        });
+    });
   }
 });
 
