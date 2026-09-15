@@ -69,30 +69,101 @@ function submitSighting(record) {
     });
 }
 
+// Shrinks an image file to at most `maxDim` px on its longest edge before
+// upload, by drawing it to a canvas and re-encoding as JPEG. Modern phone
+// cameras routinely produce multi-MB, 3000px+ photos — uploading those
+// as-is is the most likely thing to fail or stall for someone submitting
+// from a park on patchy mobile signal, which is exactly this site's real
+// use case. Deliberately independent of readPhotoTakenDate() below: that
+// function always reads EXIF from the *original* File the user picked
+// (never from the resized copy this function returns), because a canvas
+// re-encode strips EXIF entirely — so capture-date verification keeps
+// working exactly as before, unaffected by this. Never rejects: if the
+// browser can't decode the file (unsupported format, corrupt image) or
+// canvas isn't available, it resolves with the original, untouched file
+// so the upload can still proceed rather than being blocked by this
+// optimization. Modern browsers already auto-apply EXIF orientation when
+// decoding for <img>/canvas, so no separate rotation handling is needed.
+function resizeImageForUpload(file, maxDim, quality) {
+  maxDim = maxDim || 1600;
+  quality = quality || 0.82;
+  if (!file || !/^image\//.test(file.type || "") || typeof document === "undefined") {
+    return Promise.resolve(file);
+  }
+  return new Promise(function (resolve) {
+    var settled = false;
+    var url = URL.createObjectURL(file);
+    function finish(result) {
+      if (settled) return;
+      settled = true;
+      URL.revokeObjectURL(url);
+      resolve(result);
+    }
+    var img = new Image();
+    img.onload = function () {
+      var w = img.naturalWidth;
+      var h = img.naturalHeight;
+      if (!w || !h || Math.max(w, h) <= maxDim) {
+        finish(file); // Already small enough — skip the re-encode.
+        return;
+      }
+      var scale = maxDim / Math.max(w, h);
+      var canvas = document.createElement("canvas");
+      canvas.width = Math.round(w * scale);
+      canvas.height = Math.round(h * scale);
+      var ctx = canvas.getContext("2d");
+      if (!ctx) {
+        finish(file);
+        return;
+      }
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(
+        function (blob) {
+          if (!blob) {
+            finish(file);
+            return;
+          }
+          finish(new File([blob], file.name || "photo.jpg", { type: "image/jpeg" }));
+        },
+        "image/jpeg",
+        quality
+      );
+    };
+    img.onerror = function () {
+      finish(file); // Couldn't decode — fall back to the original file.
+    };
+    img.src = url;
+  });
+}
+
 // Uploads the evidence photo to the public "sighting-photos" Storage
 // bucket (see photo-verification-migration.sql) ahead of the actual
 // submit_sighting() call, and resolves with the storage path to pass in
 // as record.photoPath. Each photo gets a random, collision-proof name —
 // the original filename is never used or stored, so it can't leak
-// anything about the participant's device or photo library.
+// anything about the participant's device or photo library. Resized via
+// resizeImageForUpload() first — see that function's comment for why
+// this doesn't affect EXIF-based capture-date verification.
 function uploadSightingPhoto(file) {
   if (!supabaseClient) {
     return Promise.reject(new Error("offline-demo"));
   }
-  var ext = (file.name && file.name.indexOf(".") !== -1)
-    ? file.name.slice(file.name.lastIndexOf(".") + 1).toLowerCase().replace(/[^a-z0-9]/g, "")
-    : "jpg";
-  var id = (typeof crypto !== "undefined" && crypto.randomUUID)
-    ? crypto.randomUUID()
-    : Date.now().toString(36) + Math.random().toString(36).slice(2);
-  var path = id + "." + (ext || "jpg");
-  return supabaseClient.storage
-    .from("sighting-photos")
-    .upload(path, file, { contentType: file.type || "image/jpeg", upsert: false })
-    .then(function (res) {
-      if (res.error) throw res.error;
-      return res.data.path;
-    });
+  return resizeImageForUpload(file).then(function (uploadFile) {
+    var ext = (uploadFile.name && uploadFile.name.indexOf(".") !== -1)
+      ? uploadFile.name.slice(uploadFile.name.lastIndexOf(".") + 1).toLowerCase().replace(/[^a-z0-9]/g, "")
+      : "jpg";
+    var id = (typeof crypto !== "undefined" && crypto.randomUUID)
+      ? crypto.randomUUID()
+      : Date.now().toString(36) + Math.random().toString(36).slice(2);
+    var path = id + "." + (ext || "jpg");
+    return supabaseClient.storage
+      .from("sighting-photos")
+      .upload(path, uploadFile, { contentType: uploadFile.type || "image/jpeg", upsert: false })
+      .then(function (res) {
+        if (res.error) throw res.error;
+        return res.data.path;
+      });
+  });
 }
 
 // Reads a photo's original capture date (EXIF "DateTimeOriginal") using
@@ -179,6 +250,34 @@ function participantStatus(name) {
     .then(function (res) {
       if (res.error) throw res.error;
       return res.data || null;
+    });
+}
+
+// Calls request_pin_reset() (see supabase/pin-reset-migration.sql) — if
+// this display name is registered and active, it queues a reset email;
+// either way this always resolves, never revealing whether the name
+// exists, so the caller can show the same "if that name is registered…"
+// message regardless. See forgot-pin.html.
+function requestPinReset(name) {
+  if (!supabaseClient) return Promise.reject(new Error("offline-demo"));
+  return supabaseClient.rpc("request_pin_reset", { p_display_name: name }).then(function (res) {
+    if (res.error) throw res.error;
+  });
+}
+
+// Calls redeem_pin_reset() (see supabase/pin-reset-migration.sql) to set
+// a new PIN once someone's followed their emailed link. newPinHash is the
+// SHA-256 digest from hashPin(), same as everywhere else on the site —
+// the raw new PIN is never sent here. Rejects with an error whose
+// .message is one of "invalid_token", "token_used", or "token_expired"
+// (raised by the database function) so reset-pin.html can show a
+// specific message for each case. See that page.
+function redeemPinReset(token, newPinHash) {
+  if (!supabaseClient) return Promise.reject(new Error("offline-demo"));
+  return supabaseClient
+    .rpc("redeem_pin_reset", { p_token: token, p_new_pin_hash: newPinHash })
+    .then(function (res) {
+      if (res.error) throw res.error;
     });
 }
 
@@ -281,25 +380,29 @@ function fetchMySightings(name, pinHash) {
 // ahead of the actual createBoardPost() call, and resolves with the
 // storage path to pass in as record.photoPath. Same random-filename
 // approach as uploadSightingPhoto() — the original filename is never
-// used or stored.
+// used or stored. Resized via resizeImageForUpload() first, same as
+// sighting photos — the board has no EXIF/date verification depending on
+// the original file, so there's nothing else to keep in sync here.
 function uploadBoardPhoto(file) {
   if (!supabaseClient) {
     return Promise.reject(new Error("offline-demo"));
   }
-  var ext = (file.name && file.name.indexOf(".") !== -1)
-    ? file.name.slice(file.name.lastIndexOf(".") + 1).toLowerCase().replace(/[^a-z0-9]/g, "")
-    : "jpg";
-  var id = (typeof crypto !== "undefined" && crypto.randomUUID)
-    ? crypto.randomUUID()
-    : Date.now().toString(36) + Math.random().toString(36).slice(2);
-  var path = id + "." + (ext || "jpg");
-  return supabaseClient.storage
-    .from("board-photos")
-    .upload(path, file, { contentType: file.type || "image/jpeg", upsert: false })
-    .then(function (res) {
-      if (res.error) throw res.error;
-      return res.data.path;
-    });
+  return resizeImageForUpload(file).then(function (uploadFile) {
+    var ext = (uploadFile.name && uploadFile.name.indexOf(".") !== -1)
+      ? uploadFile.name.slice(uploadFile.name.lastIndexOf(".") + 1).toLowerCase().replace(/[^a-z0-9]/g, "")
+      : "jpg";
+    var id = (typeof crypto !== "undefined" && crypto.randomUUID)
+      ? crypto.randomUUID()
+      : Date.now().toString(36) + Math.random().toString(36).slice(2);
+    var path = id + "." + (ext || "jpg");
+    return supabaseClient.storage
+      .from("board-photos")
+      .upload(path, uploadFile, { contentType: uploadFile.type || "image/jpeg", upsert: false })
+      .then(function (res) {
+        if (res.error) throw res.error;
+        return res.data.path;
+      });
+  });
 }
 
 // Creates a new board post via create_board_post() (security definer —
