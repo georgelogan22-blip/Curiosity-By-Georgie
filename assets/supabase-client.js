@@ -344,6 +344,8 @@ function fetchHallOfFame() {
               count: lb.species_count,
               points: lb.total_points,
               inductedAt: ind.inducted_at,
+              avatarKey: lb.avatar_key || null,
+              avatarPhotoUrl: avatarPhotoUrl(lb.avatar_photo_path),
             };
           });
         });
@@ -396,6 +398,82 @@ function updateParticipantAvatar(name, pinHash, avatarKey) {
     .then(function (res) {
       if (res.error) throw res.error;
       return true;
+    });
+}
+
+// ---------------------------------------------------------------------
+// Avatar photo uploads — see supabase/avatar-photo-migration.sql.
+// George's call: a photo goes live the moment it's uploaded (no review
+// queue, same posture as Community Board photos), and it's shown
+// wherever that participant's name appears — Leaderboard, Hall of Fame,
+// the Community Board, and My Sightings — not just the dashboard. A
+// photo always wins over the chosen icon when both are set.
+// ---------------------------------------------------------------------
+
+// Uploads a new avatar photo to the public "avatar-photos" Storage
+// bucket and resolves with its storage path, to pass into
+// updateParticipantAvatarPhoto(). Same resize-then-random-filename
+// approach as every other photo upload on the site.
+function uploadAvatarPhoto(file) {
+  if (!supabaseClient) {
+    return Promise.reject(new Error("offline-demo"));
+  }
+  return resizeImageForUpload(file).then(function (uploadFile) {
+    var ext = (uploadFile.name && uploadFile.name.indexOf(".") !== -1)
+      ? uploadFile.name.slice(uploadFile.name.lastIndexOf(".") + 1).toLowerCase().replace(/[^a-z0-9]/g, "")
+      : "jpg";
+    var id = (typeof crypto !== "undefined" && crypto.randomUUID)
+      ? crypto.randomUUID()
+      : Date.now().toString(36) + Math.random().toString(36).slice(2);
+    var path = id + "." + (ext || "jpg");
+    return supabaseClient.storage
+      .from("avatar-photos")
+      .upload(path, uploadFile, { contentType: uploadFile.type || "image/jpeg", upsert: false })
+      .then(function (res) {
+        if (res.error) throw res.error;
+        return res.data.path;
+      });
+  });
+}
+
+// Saves (or, passing null, removes) the participant's uploaded avatar
+// photo via update_participant_avatar_photo() — same PIN-gated pattern
+// as updateParticipantAvatar(). Removing reverts the front end to
+// whichever icon they last chose (or the neutral placeholder).
+function updateParticipantAvatarPhoto(name, pinHash, photoPath) {
+  if (!supabaseClient) return Promise.reject(new Error("offline-demo"));
+  return supabaseClient
+    .rpc("update_participant_avatar_photo", { p_name: name, p_pin_hash: pinHash, p_photo_path: photoPath })
+    .then(function (res) {
+      if (res.error) throw res.error;
+      return true;
+    });
+}
+
+// Builds the public URL for a photo already uploaded to the
+// avatar-photos bucket (avatar_photo_path as stored on a participants
+// row) — same pattern as boardPhotoUrl() below.
+function avatarPhotoUrl(path) {
+  if (!path) return null;
+  return SUPABASE_URL + "/storage/v1/object/public/avatar-photos/" + path;
+}
+
+// The narrow public lookup behind Community Board avatars — see
+// public.participant_avatars in supabase/avatar-photo-migration.sql.
+// Resolves with every participant's { participant_key, avatar_key,
+// avatar_photo_path }, for the client to match against board post/
+// comment author names (which are stored denormalised, with no foreign
+// key to participants) — see assets/chat.js. Leaderboard rows and Hall
+// of Fame cards don't need this: they get their avatar columns directly
+// from the leaderboard view instead.
+function fetchParticipantAvatars() {
+  if (!supabaseClient) return Promise.resolve([]);
+  return supabaseClient
+    .from("participant_avatars")
+    .select("*")
+    .then(function (res) {
+      if (res.error) throw res.error;
+      return res.data || [];
     });
 }
 

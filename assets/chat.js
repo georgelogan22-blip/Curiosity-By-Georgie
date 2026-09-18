@@ -112,11 +112,32 @@ document.addEventListener("DOMContentLoaded", function () {
     return date.toLocaleString("en-AU", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" });
   }
 
+  // Board posts/comments store the author's name denormalised, with no
+  // foreign key to participants (see community-board-migration.sql), so
+  // an author's avatar is looked up here by name rather than joined in
+  // the query — see the fetchParticipantAvatars() call below, which
+  // fills this in whenever the real feed loads.
+  var avatarsByKey = {};
+
+  function avatarInfoFor(name) {
+    var key = (name || "").trim().toLowerCase();
+    return avatarsByKey[key] || { avatarKey: null, avatarPhotoUrl: null };
+  }
+
+  function renderAuthorAvatar(name) {
+    if (typeof renderAvatarBadge !== "function") return "";
+    var info = avatarInfoFor(name);
+    return renderAvatarBadge(info.avatarKey, info.avatarPhotoUrl, 26, name);
+  }
+
   function renderComment(c) {
     return (
       '<div class="board-comment">' +
+      renderAuthorAvatar(c.name) +
+      '<div class="board-comment-content">' +
       '<span class="board-comment-name">' + escapeHtml(c.name) + "</span>" +
       '<span class="board-comment-body">' + escapeHtml(c.body) + "</span>" +
+      "</div>" +
       "</div>"
     );
   }
@@ -152,7 +173,10 @@ document.addEventListener("DOMContentLoaded", function () {
     return (
       '<article class="board-post" data-post-id="' + escapeHtml(post.id) + '">' +
       '<div class="board-post-head">' +
+      '<span class="board-post-author">' +
+      renderAuthorAvatar(post.name) +
       '<span class="board-post-name">' + escapeHtml(post.name) + "</span>" +
+      "</span>" +
       '<span class="board-post-time">' + escapeHtml(formatTime(post.time)) + "</span>" +
       "</div>" +
       '<p class="board-post-caption">' + escapeHtml(post.caption) + "</p>" +
@@ -193,11 +217,21 @@ document.addEventListener("DOMContentLoaded", function () {
     var curiousFetch = typeof fetchBoardCuriousCounts === "function"
       ? fetchBoardCuriousCounts()
       : Promise.resolve([]);
-    Promise.all([fetchBoardPosts(100), fetchBoardComments(), curiousFetch])
+    var avatarsFetch = typeof fetchParticipantAvatars === "function"
+      ? fetchParticipantAvatars()
+      : Promise.resolve([]);
+    Promise.all([fetchBoardPosts(100), fetchBoardComments(), curiousFetch, avatarsFetch])
       .then(function (results) {
         var rows = results[0];
         var commentRows = results[1];
         var curiousRows = results[2];
+        var avatarRows = results[3];
+        (avatarRows || []).forEach(function (a) {
+          avatarsByKey[a.participant_key] = {
+            avatarKey: a.avatar_key || null,
+            avatarPhotoUrl: typeof avatarPhotoUrl === "function" ? avatarPhotoUrl(a.avatar_photo_path) : null,
+          };
+        });
         if (!rows || !rows.length) return; // keep example posts until real ones exist
         var commentsByPost = {};
         (commentRows || []).forEach(function (c) {

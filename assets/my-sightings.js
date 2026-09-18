@@ -93,6 +93,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var points = profile.total_points || 0;
     var lvl = levelFor(speciesCount);
     var pct = Math.max(0, Math.min(100, Math.round((speciesCount / LEVEL_MAX) * 100)));
+    var photoUrl = (typeof avatarPhotoUrl === "function") ? avatarPhotoUrl(profile.avatar_photo_path) : null;
 
     var nextLine;
     if (lvl.next) {
@@ -117,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function () {
       '<div class="dashboard-profile">' +
       '<div class="dashboard-avatar">' +
       '<button type="button" class="dashboard-avatar-btn" id="avatar-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="avatar-picker" aria-label="Change your character">' +
-      avatarSvg(profile.avatar_key, 84) +
+      renderAvatarBadge(profile.avatar_key, photoUrl, 84, profile.display_name) +
       '<span class="dashboard-avatar-edit">Change</span>' +
       "</button>" +
       '<div class="avatar-picker" id="avatar-picker" hidden>' +
@@ -132,6 +133,11 @@ document.addEventListener("DOMContentLoaded", function () {
           "</button>"
         );
       }).join("") +
+      "</div>" +
+      '<div class="avatar-picker-photo">' +
+      '<input type="file" accept="image/*" id="avatar-photo-input" class="avatar-photo-input">' +
+      '<label class="avatar-photo-upload-btn" for="avatar-photo-input">Or upload your own photo</label>' +
+      '<button type="button" class="avatar-photo-remove-btn" id="avatar-photo-remove"' + (profile.avatar_photo_path ? "" : " hidden") + ">Remove photo</button>" +
       "</div>" +
       '<p class="hint" id="avatar-picker-status" style="margin:10px 0 0;"></p>' +
       "</div>" +
@@ -223,6 +229,8 @@ document.addEventListener("DOMContentLoaded", function () {
     var toggle = document.getElementById("avatar-toggle");
     var panel = document.getElementById("avatar-picker");
     var pickerStatus = document.getElementById("avatar-picker-status");
+    var photoInput = document.getElementById("avatar-photo-input");
+    var removePhotoBtn = document.getElementById("avatar-photo-remove");
     if (!toggle || !panel) return;
 
     toggle.addEventListener("click", function () {
@@ -238,39 +246,143 @@ document.addEventListener("DOMContentLoaded", function () {
       toggle.setAttribute("aria-expanded", "false");
     });
 
+    // Redraws the toggle button's badge from the current profile state —
+    // shared by the icon picker, photo upload and photo removal so all
+    // three leave the button showing exactly what's now saved.
+    function refreshToggleBadge() {
+      var url = (typeof avatarPhotoUrl === "function") ? avatarPhotoUrl(profile.avatar_photo_path) : null;
+      toggle.innerHTML = renderAvatarBadge(profile.avatar_key, url, 84, profile.display_name) + '<span class="dashboard-avatar-edit">Change</span>';
+    }
+
+    function setPickerBusy(busy) {
+      panel.querySelectorAll(".avatar-option").forEach(function (b) { b.disabled = busy; });
+      if (photoInput) photoInput.disabled = busy;
+      if (removePhotoBtn) removePhotoBtn.disabled = busy;
+    }
+
     panel.querySelectorAll(".avatar-option").forEach(function (btn) {
       btn.addEventListener("click", function () {
         var key = btn.getAttribute("data-avatar-key");
-        if (key === profile.avatar_key) return;
+        if (key === profile.avatar_key && !profile.avatar_photo_path) return;
 
         if (typeof updateParticipantAvatar !== "function" || !session.name || !session.pinHash) {
           if (pickerStatus) pickerStatus.textContent = "Couldn't save right now — please try again.";
           return;
         }
 
-        panel.querySelectorAll(".avatar-option").forEach(function (b) { b.disabled = true; });
+        setPickerBusy(true);
         if (pickerStatus) pickerStatus.textContent = "Saving…";
 
         updateParticipantAvatar(session.name, session.pinHash, key)
           .then(function () {
             profile.avatar_key = key;
+            profile.avatar_photo_path = null; // picking an icon clears any stored photo, same as the database does
             panel.querySelectorAll(".avatar-option").forEach(function (b) {
               b.classList.toggle("selected", b === btn);
               b.setAttribute("aria-pressed", String(b === btn));
-              b.disabled = false;
             });
-            toggle.innerHTML = avatarSvg(key, 84) + '<span class="dashboard-avatar-edit">Change</span>';
+            if (removePhotoBtn) removePhotoBtn.hidden = true;
+            setPickerBusy(false);
+            refreshToggleBadge();
             if (pickerStatus) pickerStatus.textContent = "Saved!";
             window.setTimeout(function () {
               if (pickerStatus) pickerStatus.textContent = "";
             }, 2000);
           })
           .catch(function () {
-            panel.querySelectorAll(".avatar-option").forEach(function (b) { b.disabled = false; });
+            setPickerBusy(false);
             if (pickerStatus) pickerStatus.textContent = "Couldn't save that — please try again.";
           });
       });
     });
+
+    if (photoInput) {
+      photoInput.addEventListener("change", function () {
+        var file = photoInput.files && photoInput.files[0];
+        if (!file) return;
+
+        if (
+          typeof uploadAvatarPhoto !== "function" ||
+          typeof updateParticipantAvatarPhoto !== "function" ||
+          !session.name ||
+          !session.pinHash
+        ) {
+          if (pickerStatus) pickerStatus.textContent = "Couldn't upload right now — please try again.";
+          photoInput.value = "";
+          return;
+        }
+
+        if (file.type.indexOf("image/") !== 0) {
+          if (pickerStatus) pickerStatus.textContent = "Please choose an image file.";
+          photoInput.value = "";
+          return;
+        }
+
+        setPickerBusy(true);
+        if (pickerStatus) pickerStatus.textContent = "Uploading…";
+
+        uploadAvatarPhoto(file)
+          .then(function (path) {
+            return updateParticipantAvatarPhoto(session.name, session.pinHash, path).then(function () {
+              return path;
+            });
+          })
+          .then(function (path) {
+            profile.avatar_photo_path = path;
+            panel.querySelectorAll(".avatar-option").forEach(function (b) {
+              b.classList.remove("selected");
+              b.setAttribute("aria-pressed", "false");
+            });
+            if (removePhotoBtn) removePhotoBtn.hidden = false;
+            setPickerBusy(false);
+            refreshToggleBadge();
+            if (pickerStatus) pickerStatus.textContent = "Saved!";
+            photoInput.value = "";
+            window.setTimeout(function () {
+              if (pickerStatus) pickerStatus.textContent = "";
+            }, 2000);
+          })
+          .catch(function () {
+            setPickerBusy(false);
+            photoInput.value = "";
+            if (pickerStatus) pickerStatus.textContent = "Couldn't upload that photo — please try again.";
+          });
+      });
+    }
+
+    if (removePhotoBtn) {
+      removePhotoBtn.addEventListener("click", function () {
+        if (typeof updateParticipantAvatarPhoto !== "function" || !session.name || !session.pinHash) {
+          if (pickerStatus) pickerStatus.textContent = "Couldn't save right now — please try again.";
+          return;
+        }
+
+        setPickerBusy(true);
+        if (pickerStatus) pickerStatus.textContent = "Removing…";
+
+        updateParticipantAvatarPhoto(session.name, session.pinHash, null)
+          .then(function () {
+            profile.avatar_photo_path = null;
+            panel.querySelectorAll(".avatar-option").forEach(function (b) {
+              var key = b.getAttribute("data-avatar-key");
+              var selected = key === profile.avatar_key;
+              b.classList.toggle("selected", selected);
+              b.setAttribute("aria-pressed", String(selected));
+            });
+            removePhotoBtn.hidden = true;
+            setPickerBusy(false);
+            refreshToggleBadge();
+            if (pickerStatus) pickerStatus.textContent = "Saved!";
+            window.setTimeout(function () {
+              if (pickerStatus) pickerStatus.textContent = "";
+            }, 2000);
+          })
+          .catch(function () {
+            setPickerBusy(false);
+            if (pickerStatus) pickerStatus.textContent = "Couldn't remove that — please try again.";
+          });
+      });
+    }
   }
 
   function wireTabs() {

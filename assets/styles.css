@@ -1013,6 +1013,88 @@ section { padding: 40px 0; }
   color: var(--ink-soft);
 }
 
+/* A circular photo badge — the same size/ring treatment as avatarSvg()'s
+   own circle, so a chosen photo slots in wherever an icon badge already
+   appears (dashboard toggle, Leaderboard, Hall of Fame, Community Board)
+   with no layout difference between the two. */
+.avatar-photo-badge {
+  display: block;
+  border-radius: 50%;
+  border: 3px solid var(--accent-warm);
+  object-fit: cover;
+  background: var(--paper-raised);
+}
+
+/* Avatar + name, used wherever a participant's name appears in a row or
+   list (Leaderboard, Community Board) — Hall of Fame cards use their own
+   .fame-card layout instead since the avatar sits above the name there. */
+.participant-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.participant-cell svg,
+.participant-cell .avatar-photo-badge {
+  flex-shrink: 0;
+}
+
+.avatar-picker-photo {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.avatar-photo-upload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--accent);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 7px 12px;
+  cursor: pointer;
+}
+.avatar-photo-upload-btn:hover { background: color-mix(in srgb, var(--accent) 8%, var(--paper)); }
+/* Visually hidden but still keyboard/focus reachable — the label above
+   is the button a mouse user sees and clicks. */
+.avatar-photo-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.avatar-photo-input:focus-visible + .avatar-photo-upload-btn {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.avatar-photo-remove-btn {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--accent-coral);
+  background: none;
+  border: none;
+  padding: 6px 2px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.avatar-photo-remove-btn:disabled,
+.avatar-photo-upload-btn[aria-disabled="true"] { opacity: 0.5; cursor: default; }
+
 .dashboard-headline { grid-area: headline; align-self: center; }
 .dashboard-greeting { margin: 0 0 14px; color: var(--ink-soft); }
 .dashboard-greeting strong { font-family: var(--font-display); font-size: 1.2rem; color: var(--ink); }
@@ -1318,6 +1400,7 @@ tr:last-child td { border-bottom: none; }
   border-radius: var(--radius-md);
   padding: 20px;
 }
+.fame-card-head { display: flex; align-items: center; gap: 10px; }
 .fame-card .name { font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; }
 .fame-card .badge-row { display: flex; align-items: center; gap: 6px; margin: 8px 0; }
 .fame-card .count {
@@ -1403,11 +1486,12 @@ tr:last-child td { border-bottom: none; }
 }
 .board-post-head {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 10px;
   margin-bottom: 6px;
 }
+.board-post-author { display: inline-flex; align-items: center; gap: 8px; min-width: 0; }
 .board-post-name { font-weight: 700; }
 .board-post-time { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-soft); white-space: nowrap; }
 .board-post-caption { margin: 0 0 12px; white-space: pre-wrap; }
@@ -1476,11 +1560,17 @@ tr:last-child td { border-bottom: none; }
 }
 .board-comments:empty { display: none; }
 .board-comment {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
   padding: 8px 10px;
   background: var(--paper);
   border-radius: var(--radius-sm);
   font-size: 0.9rem;
 }
+.board-comment .avatar-photo-badge,
+.board-comment svg { flex-shrink: 0; margin-top: 1px; }
+.board-comment-content { min-width: 0; }
 .board-comment-name { font-weight: 700; margin-right: 6px; }
 .board-comment-body { color: var(--ink); }
 

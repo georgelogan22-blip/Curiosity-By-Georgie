@@ -117,7 +117,7 @@ grant select on public.species_reference to anon;
 --
 -- total_points is listed LAST in the select below, after last_sighting,
 -- not before it. Postgres's `create or replace view` only allows a
--- replacement to append new columns at the end -- it errors
+-- replacement to append new columns at the end — it errors
 -- ("cannot change name of view column ... to ...") if a new column is
 -- inserted before an existing one, since positionally that looks like a
 -- rename. Column order doesn't matter to the site's JS (it reads rows

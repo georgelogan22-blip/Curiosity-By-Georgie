@@ -139,3 +139,32 @@ function avatarSvg(key, size) {
     "</svg>"
   );
 }
+
+// The single shared renderer every page uses to show a participant's
+// avatar — a photo they've uploaded (supabase/avatar-photo-migration.sql)
+// always wins over their chosen icon when both exist, matching the same
+// precedence the database itself enforces (picking an icon clears the
+// stored photo path, so the two can never disagree). photoUrl should
+// already be a resolved URL (e.g. from avatarPhotoUrl() in
+// assets/supabase-client.js) or null/undefined; avatarKey falls back to
+// avatarSvg()'s own placeholder when neither is set. name is optional,
+// used only for the photo's alt text.
+function renderAvatarBadge(avatarKey, photoUrl, size, name) {
+  size = size || 32;
+  if (photoUrl) {
+    return (
+      '<img class="avatar-photo-badge" src="' + photoUrl + '" alt="' +
+      (name ? escapeAvatarLabel(name) + "’s photo" : "Participant photo") +
+      '" loading="lazy" width="' + size + '" height="' + size +
+      '" style="width:' + size + 'px;height:' + size + 'px;">'
+    );
+  }
+  return avatarSvg(avatarKey, size);
+}
+
+function escapeAvatarLabel(str) {
+  var div = (typeof document !== "undefined") ? document.createElement("div") : null;
+  if (!div) return String(str == null ? "" : str);
+  div.textContent = str == null ? "" : str;
+  return div.innerHTML;
+}
