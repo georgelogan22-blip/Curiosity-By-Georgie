@@ -369,6 +369,36 @@ function fetchMySightings(name, pinHash) {
     });
 }
 
+// Same name+PIN gate as fetchMySightings, for the My Sightings
+// dashboard's profile header — display name, chosen avatar, and the
+// same species_count/total_points the public Leaderboard shows (see
+// supabase/avatar-migration.sql's participant_dashboard()). Resolves
+// with a single { display_name, avatar_key, species_count, total_points }
+// object rather than an array, since it's always exactly one row.
+function fetchParticipantDashboard(name, pinHash) {
+  if (!supabaseClient) return Promise.reject(new Error("offline-demo"));
+  return supabaseClient
+    .rpc("participant_dashboard", { p_name: name, p_pin_hash: pinHash })
+    .then(function (res) {
+      if (res.error) throw res.error;
+      return (res.data && res.data[0]) || null;
+    });
+}
+
+// Saves the bird character chosen on the dashboard — avatarKey must be
+// one of the keys in assets/avatars.js (also enforced server-side by
+// update_participant_avatar()'s own check). Pass null to clear back to
+// no avatar chosen.
+function updateParticipantAvatar(name, pinHash, avatarKey) {
+  if (!supabaseClient) return Promise.reject(new Error("offline-demo"));
+  return supabaseClient
+    .rpc("update_participant_avatar", { p_name: name, p_pin_hash: pinHash, p_avatar_key: avatarKey })
+    .then(function (res) {
+      if (res.error) throw res.error;
+      return true;
+    });
+}
+
 // ---------------------------------------------------------------------
 // Community Board ("Chat") — see supabase/community-board-migration.sql.
 // Anyone can browse the board (fetchBoardPosts/fetchBoardComments need

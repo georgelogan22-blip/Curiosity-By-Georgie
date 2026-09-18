@@ -448,6 +448,136 @@ a { color: var(--accent); }
   }
 }
 
+/* ---------- nav: right-hand group (search + mobile toggle + links) ----------
+   Wraps the mobile hamburger toggle, the link list, and the search
+   control in one flex group so `.site-nav .wrap`'s space-between still
+   only has two children (the brand, and this group) — the search icon
+   sits at the group's own trailing edge, which reads as "top right" on
+   every screen size without fighting the existing brand/links layout. */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ---------- site search ---------- */
+.nav-search { position: relative; }
+.nav-search-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--paper-raised);
+  color: var(--ink);
+  cursor: pointer;
+  flex: none;
+  transition: border-color 0.15s ease;
+}
+.nav-search-toggle:hover,
+.nav-search-toggle[aria-expanded="true"] { border-color: var(--accent); }
+.nav-search-icon { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+
+.nav-search-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: min(360px, 92vw);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.16);
+  padding: 10px;
+  z-index: 40;
+}
+.nav-search-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--paper-raised);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.95rem;
+}
+.nav-search-input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.nav-search-results {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  max-height: min(360px, 60vh);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.nav-search-group-label {
+  padding: 8px 8px 4px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  opacity: 0.7;
+}
+.nav-search-results li[role="option"] { border-radius: 8px; }
+.nav-search-results li[role="option"] a {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--ink);
+}
+.nav-search-results li[role="option"]:hover a,
+.nav-search-results li[role="option"][aria-selected="true"] a {
+  background: var(--paper-raised);
+}
+.nav-search-result-title { font-weight: 600; font-size: 0.92rem; }
+.nav-search-result-title mark {
+  background: color-mix(in srgb, var(--accent) 35%, transparent);
+  color: inherit;
+  border-radius: 3px;
+  padding: 0 1px;
+}
+.nav-search-result-group {
+  flex: none;
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+.nav-search-empty {
+  padding: 14px 10px;
+  color: var(--ink-soft);
+  font-size: 0.88rem;
+}
+@media (max-width: 420px) {
+  .nav-search-panel { right: -8px; width: calc(100vw - 32px); }
+}
+
+/* ---------- jump-to-anchor highlight ----------
+   Search results (and any plain #hash link) can land mid-page rather
+   than at the top — this brief flash on the target element is what
+   makes "did it actually jump to the right thing" obvious. */
+.search-target-highlight {
+  /* Nav bar is sticky at 68px tall — without this, scrollIntoView lands
+     the target flush with the viewport top, right under the bar. */
+  scroll-margin-top: 84px;
+  animation: search-target-flash 2.2s ease-out;
+  border-radius: var(--radius-md);
+}
+@keyframes search-target-flash {
+  0% { box-shadow: 0 0 0 3px var(--accent); background-color: color-mix(in srgb, var(--accent) 16%, transparent); }
+  70% { box-shadow: 0 0 0 3px var(--accent); background-color: color-mix(in srgb, var(--accent) 16%, transparent); }
+  100% { box-shadow: 0 0 0 0 transparent; background-color: transparent; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .search-target-highlight { animation: none; box-shadow: 0 0 0 3px var(--accent); }
+}
+
 /* ---------- buttons ---------- */
 .btn {
   display: inline-flex;
@@ -538,12 +668,26 @@ section { padding: 40px 0; }
   padding: 22px;
 }
 .card h3 { margin-bottom: 0.35em; }
+/* "How it works" cards: the green step label leads as the biggest text
+   in the card (matching the same bold mono treatment as the stat
+   numbers below on this page), with the heading and body copy stepping
+   down in size under it — was the other way round (small green kicker
+   above a bigger black heading) until George's sister's review asked
+   for the green text to read as the biggest. */
 .card .step-num {
+  display: block;
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: clamp(1.4rem, 1.3vw + 1rem, 1.9rem);
+  font-weight: 700;
   color: var(--accent);
-  letter-spacing: 0.06em;
+  letter-spacing: 0.02em;
+  line-height: 1.25;
+  margin-bottom: 0.35em;
 }
+/* Scoped to cards that actually have a step label (the "How it works"
+   cards) — checklist.html's research-resources cards reuse .card too,
+   with no step-num sibling, and should keep their normal heading size. */
+.card:has(.step-num) h3 { font-size: 1.05rem; }
 
 .stat-strip {
   display: grid;
@@ -704,23 +848,25 @@ section { padding: 40px 0; }
   margin-bottom: 0.5em;
 }
 
+/* Same yellow/gold as .safety-block ("Registration & Liability" on the
+   Rules page) — matching that box exactly, per George's correction. */
 .privacy-block {
-  background: color-mix(in srgb, var(--accent-mint) 16%, var(--paper-raised));
-  border: 1px solid var(--accent);
-  border-left: 4px solid var(--accent);
+  background: color-mix(in srgb, var(--accent-warm) 12%, var(--paper-raised));
+  border: 1px solid var(--accent-warm);
+  border-left: 4px solid var(--accent-warm);
   border-radius: var(--radius-md);
   padding: 26px 28px;
   margin-bottom: 8px;
 }
-.privacy-block h3 { color: var(--accent); }
+.privacy-block h3 { color: var(--accent-warm); }
 .privacy-block .rule-tag {
   display: inline-block;
   font-family: var(--font-mono);
   font-size: 0.7rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  background: var(--accent);
-  color: var(--accent-ink);
+  background: var(--accent-warm);
+  color: #2a1400;
   border-radius: 999px;
   padding: 2px 10px;
   margin-bottom: 0.5em;
@@ -767,6 +913,220 @@ section { padding: 40px 0; }
 .status-word-pending { color: var(--accent-warm); }
 .status-word-confirmed { color: var(--accent); }
 .status-word-rejected { color: var(--accent-coral); }
+
+/* ---------- My Sightings dashboard (avatar, level meter, tabs) ---------- */
+/* Card wraps the chosen avatar, a greeting + level meter, and the three
+   headline stat tiles. Grid areas so the avatar sits beside the meter on
+   wide screens and stacks above it on narrow ones, with the stat row
+   always spanning full width underneath. */
+.dashboard-profile {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas: "avatar headline" "stats stats";
+  gap: 24px 30px;
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 28px 30px;
+  box-shadow: var(--shadow);
+  margin-bottom: 28px;
+}
+@media (max-width: 640px) {
+  .dashboard-profile {
+    grid-template-columns: 1fr;
+    grid-template-areas: "avatar" "headline" "stats";
+    padding: 24px 20px;
+  }
+  .dashboard-avatar { justify-self: center; }
+}
+
+.dashboard-avatar { grid-area: avatar; position: relative; }
+.dashboard-avatar-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.dashboard-avatar-btn svg { display: block; transition: transform 0.15s ease; }
+.dashboard-avatar-btn:hover svg { transform: scale(1.05); }
+.dashboard-avatar-edit {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.avatar-picker {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  width: 280px;
+  max-width: calc(100vw - 48px);
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow);
+  padding: 16px;
+}
+.avatar-picker-label { font-weight: 700; font-size: 0.85rem; margin: 0 0 10px; }
+.avatar-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+@media (max-width: 420px) {
+  .avatar-picker { width: 240px; }
+  .avatar-picker-grid { grid-template-columns: repeat(3, 1fr); }
+}
+.avatar-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 6px 4px;
+  font: inherit;
+  cursor: pointer;
+}
+.avatar-option:hover { background: var(--paper); }
+.avatar-option.selected {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, var(--paper-raised));
+}
+.avatar-option:disabled { opacity: 0.5; cursor: default; }
+.avatar-option span {
+  font-size: 0.62rem;
+  line-height: 1.15;
+  text-align: center;
+  color: var(--ink-soft);
+}
+
+.dashboard-headline { grid-area: headline; align-self: center; }
+.dashboard-greeting { margin: 0 0 14px; color: var(--ink-soft); }
+.dashboard-greeting strong { font-family: var(--font-display); font-size: 1.2rem; color: var(--ink); }
+
+.level-meter-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.level-name { font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; color: var(--accent); }
+.level-fraction {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+/* Meter: fill is the accent hue, the unfilled track is a lighter step of
+   that same green ramp (--accent-mint) rather than a different colour —
+   ticks mark the 10/20/30/40-species level boundaries. */
+.level-track {
+  position: relative;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--accent-mint);
+}
+.level-fill {
+  position: relative;
+  height: 100%;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: width 0.5s ease;
+  z-index: 1;
+}
+.level-tick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--paper);
+  opacity: 0.6;
+  z-index: 2;
+}
+.level-next { margin: 10px 0 0; font-size: 0.86rem; color: var(--ink-soft); }
+.level-next strong { color: var(--ink); }
+
+.dashboard-stats {
+  grid-area: stats;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.dashboard-stats .stat-tile { padding: 16px 12px; text-align: center; }
+.dashboard-stats .stat-tile .num { font-size: 1.6rem; }
+@media (max-width: 480px) {
+  .dashboard-stats { grid-template-columns: 1fr; }
+}
+
+.sightings-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 22px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 18px;
+}
+.sightings-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  padding: 10px 2px;
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.sightings-tab:hover { color: var(--ink); }
+.sightings-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.sightings-tab-count {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  min-width: 20px;
+  text-align: center;
+  border-radius: 999px;
+  padding: 1px 8px;
+  background: var(--paper);
+  color: var(--ink-soft);
+}
+.sightings-tab.active .sightings-tab-count {
+  background: color-mix(in srgb, var(--accent) 16%, var(--paper-raised));
+  color: var(--accent);
+}
+.sightings-tab-panel { display: none; }
+.sightings-tab-panel.active { display: block; }
+
+.dashboard-avatar-btn:focus-visible,
+.avatar-option:focus-visible,
+.sightings-tab:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 input, select, textarea {
   width: 100%;
   font: inherit;
