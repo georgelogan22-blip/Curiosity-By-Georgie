@@ -1,4 +1,4 @@
-// Curiously Georgie — "Forgot your PIN?" request form
+// Curiosity by Georgie — "Forgot your PIN?" request form
 //
 // Calls requestPinReset() in assets/supabase-client.js, which always
 // resolves regardless of whether the name is actually registered — see
