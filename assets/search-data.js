@@ -1,4 +1,4 @@
-// Curiously Georgie — site search index.
+// Curiosity by Georgie — site search index.
 //
 // Static, hand-curated list of pages and in-page sections the top-right
 // search box can jump to. Deliberately plain data (no build step): add a
@@ -16,7 +16,7 @@ var SITE_SEARCH_INDEX = [
   { title: "My Sightings", url: "my-sightings.html", group: "Participate", keywords: "my sightings status pending approved history" },
   { title: "Leaderboard", url: "leaderboard.html", group: "Community", keywords: "leaderboard ranking rankings points standings who's winning" },
   { title: "Hall of Fame", url: "hall-of-fame.html", group: "Community", keywords: "hall of fame finishers completed fifty and beyond" },
-  { title: "Curiously Chatty", url: "chat.html", group: "Community", keywords: "chat chatty community board posts discussion" },
+  { title: "Curiosity Chat", url: "chat.html", group: "Community", keywords: "chat chatty curiosity community board posts discussion" },
   { title: "Forgot Your PIN", url: "forgot-pin.html", group: "Account", keywords: "forgot pin reset password recover account" },
 
   // Rules & Regulations — sections
