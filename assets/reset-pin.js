@@ -1,4 +1,4 @@
-// Curiously Georgie — "Reset your PIN" landing page
+// Curiosity by Georgie — "Reset your PIN" landing page
 //
 // Reads ?token=... from the URL (the link emailed by send-pin-reset —
 // see supabase/functions/send-pin-reset/index.ts), and on submit hashes
