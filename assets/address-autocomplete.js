@@ -1,4 +1,4 @@
-// Curiously Georgie — address lookup for the Registration form's
+// Curiosity by Georgie — address lookup for the Registration form's
 // residential address fields. Suggests real addresses as the user types,
 // using Photon (photon.komoot.io) — a free, keyless geocoding API built on
 // OpenStreetMap data, queried straight from the visitor's own browser (no
