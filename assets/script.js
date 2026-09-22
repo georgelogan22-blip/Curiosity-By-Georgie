@@ -1,4 +1,4 @@
-// Curiously Georgie — The Brisbane Air 50
+// Curiosity by Georgie — The Brisbane Air 50
 //
 // Wires the sighting form to the shared Supabase backend when
 // assets/supabase-client.js has real project credentials filled in
