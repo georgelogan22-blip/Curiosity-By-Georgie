@@ -1,4 +1,4 @@
-// Curiously Georgie — registration form logic
+// Curiosity by Georgie — registration form logic
 //
 // Handles the parental-consent checkbox (shown only when the entered
 // date of birth is under 18) and submits the form to Supabase via
