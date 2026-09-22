@@ -1,4 +1,4 @@
-// Curiously Georgie — My Sightings dashboard: chosen "character" avatars.
+// Curiosity by Georgie — My Sightings dashboard: chosen "character" avatars.
 //
 // Single source of truth for the 8 bird avatars a participant can pick
 // on their dashboard (assets/my-sightings.js renders the picker and the
