@@ -1,7 +1,7 @@
 /* ==========================================================================
-   Curiously Georgie — The Brisbane Air 50
+   Curiosity by Georgie — The Brisbane Air 50
    Design tokens: field-journal explorer aesthetic, tuned to the
-   Curiously Georgie logo — leaf green, bucket-hat gold, shirt coral.
+   original logo — leaf green, bucket-hat gold, shirt coral.
    Fraunces display / Public Sans body / IBM Plex Mono data.
    ========================================================================== */
 
@@ -21,13 +21,26 @@
   --medal-bronze: #c67c3e;
   --shadow: 0 1px 2px rgba(23, 38, 33, 0.06), 0 8px 24px rgba(23, 38, 33, 0.06);
   --map-water: #c3dde4;
+  /* Sampled directly from the CG magnifying-glass icon's lens (#fed017) —
+     kept identical in light and dark mode, same reasoning as .brand-logo's
+     fixed chip background: it has to match one fixed piece of artwork,
+     not adapt to the theme. */
+  --brand-yellow: #fed017;
 
-  /* --- Air Points tier colours (Brisbane Air 50 Master Reference) --- */
-  --tier-blue: #4a7fb5;
+  /* --- Air Points tier colours (Brisbane Air 50 Master Reference) ---
+     A ROYGBIV rainbow run across the 7 capture-difficulty tiers, each
+     colour chosen to read as the same colour as its matching circle/heart
+     emoji (🔴🟠💚🔵🟣) so a caption emoji can echo the tier of the bird
+     in the photo. Yellow is reserved as "gold" for the top Legendary
+     (SS+) tier and white/silver for Super Special, so the ROYGBIV run for
+     the other five tiers skips yellow and indigo: red, orange, green,
+     blue, purple. */
+  --tier-red: #ae3a29;
   --tier-orange: #c9762e;
-  --tier-rose: #a83368;
+  --tier-blue: #4a7fb5;
   --tier-purple: #7c4fd1;
-  --tier-amber: #a1720a;
+  --tier-silver-text: #5e6d78;
+  --tier-amber: #a17b0a;
 
   /* --- type --- */
   --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
@@ -56,11 +69,12 @@
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
     --map-water: #0c1e26;
 
-    --tier-blue: #8db6e0;
+    --tier-red: #e57c6c;
     --tier-orange: #eaa563;
-    --tier-rose: #e269a0;
+    --tier-blue: #8db6e0;
     --tier-purple: #b79af0;
-    --tier-amber: #d9ad4e;
+    --tier-silver-text: #a8b4bd;
+    --tier-amber: #d9b64e;
   }
 }
 
@@ -142,24 +156,45 @@ a { color: var(--accent); }
   white-space: nowrap;
 }
 .brand svg { width: 30px; height: 30px; flex: none; }
-/* Wordmark set in the same two script faces as the TM logo — a looser
-   brush script for "Curiously", a bolder rounded script (with its own
-   built-in swash) for "Georgie" — each with a black outline so the fill
-   colour reads the same way on either theme's nav background. */
-.brand-word {
+/* Renamed 2026-09-19 from "Curiously Georgie" to "Curiosity by Georgie"
+   (too close to a certain famous monkey's name once said aloud). Updated
+   2026-09-19 again to match George's new logo art: "Curiosity" set in
+   Luckiest Guy (closest Google Font to the logo's chunky sticker
+   lettering), a small script "by" in Caveat, and "Georgie" staying in
+   Lobster — same black-outline sticker treatment as the logo, in the
+   site's existing gold/green tokens rather than the logo's literal
+   white (which would vanish on the light paper nav). Two lines: line 1
+   is "Curiosity" alone, line 2 is "by" + "Georgie" together, same
+   layout as the logo. */
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+.brand-word-1 {
+  font-family: "Luckiest Guy", cursive;
+  font-size: 1.28rem;
+  color: var(--brand-yellow);
   -webkit-text-stroke: 1.1px #000;
   paint-order: stroke fill;
 }
-.brand-word-1 {
-  font-family: "Lobster", cursive;
-  font-size: 1.32rem;
-  color: var(--accent);
-  margin-right: 0.05em;
+.brand-line-2 {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.brand-word-by {
+  font-family: "Caveat", cursive;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
 }
 .brand-word-2 {
   font-family: "Lobster", cursive;
-  font-size: 1.32rem;
+  font-size: 1.1rem;
   color: var(--accent);
+  -webkit-text-stroke: 1px #000;
+  paint-order: stroke fill;
 }
 .brand-logo {
   width: 40px;
@@ -1311,12 +1346,12 @@ tr:last-child td { border-bottom: none; }
   color: #fff;
   letter-spacing: 0.02em;
 }
-.tier-badge.tier-a { background: var(--tier-blue); }
-.tier-badge.tier-c { background: var(--accent); }
-.tier-badge.tier-u { background: var(--accent-warm); color: #2a1400; }
-.tier-badge.tier-r { background: var(--tier-rose); }
-.tier-badge.tier-s { background: var(--accent-coral); }
-.tier-badge.tier-ss { background: var(--tier-purple); }
+.tier-badge.tier-a { background: var(--tier-red); }
+.tier-badge.tier-c { background: var(--tier-orange); color: #2a1400; }
+.tier-badge.tier-u { background: var(--accent); }
+.tier-badge.tier-r { background: var(--tier-blue); }
+.tier-badge.tier-s { background: var(--tier-purple); }
+.tier-badge.tier-ss { background: var(--medal-silver); color: #262b2d; }
 .tier-badge.tier-ssplus { background: var(--tier-amber); color: #2a1400; }
 
 .tier-points {
@@ -1415,12 +1450,12 @@ tr:last-child td { border-bottom: none; }
 .checklist-group { margin-bottom: 34px; }
 .checklist-group h3 { color: var(--accent); margin-bottom: 0.15em; display: flex; align-items: center; gap: 10px; }
 .checklist-group .tier-desc { color: var(--ink-soft); font-size: 0.88rem; margin: 0 0 0.9em; }
-.checklist-group.tier-a h3 { color: var(--tier-blue); }
-.checklist-group.tier-c h3 { color: var(--accent); }
-.checklist-group.tier-u h3 { color: var(--accent-warm); }
-.checklist-group.tier-r h3 { color: var(--tier-rose); }
-.checklist-group.tier-s h3 { color: var(--accent-coral); }
-.checklist-group.tier-ss h3 { color: var(--tier-purple); }
+.checklist-group.tier-a h3 { color: var(--tier-red); }
+.checklist-group.tier-c h3 { color: var(--tier-orange); }
+.checklist-group.tier-u h3 { color: var(--accent); }
+.checklist-group.tier-r h3 { color: var(--tier-blue); }
+.checklist-group.tier-s h3 { color: var(--tier-purple); }
+.checklist-group.tier-ss h3 { color: var(--tier-silver-text); }
 .checklist-group.tier-ssplus h3 { color: var(--tier-amber); }
 .species-grid {
   display: grid;
