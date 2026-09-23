@@ -1,4 +1,4 @@
-// Curiously Georgie — Brisbane Air 50 official species reference (v1.0)
+// Curiosity by Georgie — Brisbane Air 50 official species reference (v1.0)
 //
 // Mirrors supabase/points-migration.sql's species_reference table, so the
 // species autocomplete (log-sighting.html) and the Species Checklist page
