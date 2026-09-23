@@ -1,4 +1,4 @@
-// Curiously Georgie — Supabase client + data helpers
+// Curiosity by Georgie — Supabase client + data helpers
 //
 // Fill in your project's URL and anon (public) key below, from
 // Supabase → Project Settings → API. The anon key is *meant* to be
