@@ -1,4 +1,4 @@
-// Curiously Georgie — My Sightings: personal dashboard
+// Curiosity by Georgie — My Sightings: personal dashboard
 //
 // Enter your registered display name + PIN (same as logging a sighting)
 // to see your own dashboard: a chosen bird avatar, your live level (Air
