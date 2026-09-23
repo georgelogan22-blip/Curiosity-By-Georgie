@@ -1,4 +1,4 @@
-// Curiously Georgie — Community Board ("Chat")
+// Curiosity by Georgie — Community Board ("Chat")
 //
 // Renders the board feed from a single in-memory `posts` array, owned
 // entirely by this script (same approach as log-sighting.html's session
@@ -88,13 +88,29 @@ document.addEventListener("DOMContentLoaded", function () {
   // A wide, birding-themed emoji set for the comment box's emoji picker —
   // nature/gear emoji first (things people actually post about here),
   // then faces, hands/hearts, and general reactions.
+  //
+  // The full run of coloured hearts sits together right after the plain
+  // red one, at George's request — so someone posting a photo can pick
+  // the heart that matches the tier colour of the bird they saw (see the
+  // .tier-badge / .checklist-group rules in styles.css and the tier table
+  // in species-data.js for where these colours are defined and used
+  // elsewhere on the site). The tier system runs a ROYGBIV rainbow, gold
+  // for the top tier and silver for the one below it, and every one of
+  // those has an exact heart match:
+  //   Abundant -> red, Common -> orange, Uncommon -> green, Rare -> blue,
+  //   Special -> purple, Super Special -> white (silver),
+  //   Legendary (SS+) -> yellow (gold).
+  // Black/grey hearts are included too, for everyone else who just wants
+  // a heart that isn't tied to a tier.
   var COMMENT_EMOJI = [
     "🦅", "🦜", "🦉", "🦆", "🐦", "🦢", "🐣", "🦋",
     "🐝", "🌿", "🌳", "🌸", "🍃", "🌤️", "🌅", "🌊",
     "🔭", "📸", "😄", "😂", "🤩", "😍", "🥹", "🥰",
     "😲", "🙃", "😅", "🤯", "😎", "🥶", "🙄", "😴",
     "😬", "😇", "👍", "👎", "🙌", "👏", "🤝", "✌️",
-    "🤙", "💪", "❤️", "🔥", "🎉", "✨", "⭐", "💯",
+    "🤙", "💪",
+    "❤️", "🧡", "💛", "💚", "💙", "💜", "🤎", "🖤", "🤍", "🩷", "🩵", "🩶",
+    "🔥", "🎉", "✨", "⭐", "💯",
     "✅", "❓", "❗", "🤔", "🙏", "☕", "🍻", "👀",
     "🐧", "🦩", "🦚", "🦃", "🕊️", "☀️", "🌙", "🌈",
     "🌧️", "🍂", "🌾", "😆", "🤣", "🥳", "😊", "🤗",
