@@ -1,4 +1,4 @@
-// Curiously Georgie — tier-aware species autocomplete for the
+// Curiosity by Georgie — tier-aware species autocomplete for the
 // Log a Sighting form. Replaces the plain <datalist> so each suggestion
 // can show its Air Points tier and point value (a native <datalist>
 // can't reliably show more than one line of text per option across
