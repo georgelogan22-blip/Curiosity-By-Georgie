@@ -1,4 +1,4 @@
-// Curiously Georgie — site search (top-right of the nav bar) and the
+// Curiosity by Georgie — site search (top-right of the nav bar) and the
 // shared "jump to an anchor and flash it" behaviour that both search
 // results and plain #hash links use when they land on a section instead
 // of the top of a page.
