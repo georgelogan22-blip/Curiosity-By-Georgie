@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
     setStatus("Sending…");
 
     if (typeof requestPinReset !== "function") {
-      setStatus("This isn't connected right now — please try again shortly, or email contactcuriouslygeorgie@gmail.com.");
+      setStatus("This isn't connected right now — please try again shortly, or email curiositybygeorgie@gmail.com.");
       if (submitBtn) submitBtn.disabled = false;
       return;
     }
@@ -38,16 +38,16 @@ document.addEventListener("DOMContentLoaded", function () {
     requestPinReset(name)
       .then(function () {
         setStatus(
-          "If that name is registered, a reset link has just been sent to the email address on file — it works for 30 minutes. Didn't get it? Check spam, or email <a href=\"mailto:contactcuriouslygeorgie@gmail.com\">contactcuriouslygeorgie@gmail.com</a>.",
+          "If that name is registered, a reset link has just been sent to the email address on file — it works for 30 minutes. Didn't get it? Check spam, or email <a href=\"mailto:curiositybygeorgie@gmail.com\">curiositybygeorgie@gmail.com</a>.",
         );
         form.reset();
       })
       .catch(function (err) {
         var msg = err && err.message;
         if (msg === "offline-demo") {
-          setStatus("This isn't connected right now — please try again shortly, or email contactcuriouslygeorgie@gmail.com.");
+          setStatus("This isn't connected right now — please try again shortly, or email curiositybygeorgie@gmail.com.");
         } else {
-          setStatus("Couldn't send that right now — please try again, or email contactcuriouslygeorgie@gmail.com.");
+          setStatus("Couldn't send that right now — please try again, or email curiositybygeorgie@gmail.com.");
         }
       })
       .then(function () {

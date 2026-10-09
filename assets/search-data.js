@@ -17,6 +17,7 @@ var SITE_SEARCH_INDEX = [
   { title: "Leaderboard", url: "leaderboard.html", group: "Community", keywords: "leaderboard ranking rankings points standings who's winning" },
   { title: "Hall of Fame", url: "hall-of-fame.html", group: "Community", keywords: "hall of fame finishers completed fifty and beyond" },
   { title: "Curiosity Chat", url: "chat.html", group: "Community", keywords: "chat chatty curiosity community board posts discussion" },
+  { title: "Finisher Rewards", url: "finisher-rewards.html", group: "More", keywords: "finisher rewards coin finisher's coin medal prize reward merchandise air master reveal limited scarce first 50 fifty" },
   { title: "Forgot Your PIN", url: "forgot-pin.html", group: "Account", keywords: "forgot pin reset password recover account" },
 
   // Rules & Regulations — sections

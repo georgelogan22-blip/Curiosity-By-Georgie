@@ -5,9 +5,10 @@
 -- way; they'd only find out by browsing back to the board. Real email
 -- notifications need a verified custom domain in Resend (the shared
 -- onboarding@resend.dev sender can only deliver to George's own inbox —
--- see supabase/functions/verify-sighting/index.ts), which is blocked on
--- the same still-open curiouslygeorgie.au domain question as the launch
--- date. This migration adds an in-app alternative instead: a participant
+-- see supabase/functions/verify-sighting/index.ts); curiositybygeorgie.au
+-- is registered and active (confirmed 2026-10-09) but not yet verified as
+-- a Resend sending domain. This migration adds an in-app alternative
+-- instead, so that part isn't a blocker either way: a participant
 -- can self-check whether anyone has replied to their own posts since
 -- they last looked, using the same name + PIN they already use to post
 -- and comment — no email, no domain needed.

@@ -25,18 +25,21 @@ const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
 // The site's public URL, used to build the reset link in the email.
-// TODO: George — switch this to https://curiouslygeorgie.au once that
-// domain is live and Pages is pointed at it; curiouslygeorgie.site is the
-// right interim value for now (see site-plan-v0.1.md, "Remaining open
-// questions," item 3).
-const SITE_URL = "https://curiouslygeorgie.site";
+// curiositybygeorgie.au is registered and active at VentraIP (confirmed
+// 2026-10-09) — this still needs GitHub Pages' custom domain pointed at
+// it (and the matching DNS records added at VentraIP) before links built
+// from this URL actually resolve. See site-plan-v0.1.md, "Remaining open
+// questions," item 3.
+const SITE_URL = "https://curiositybygeorgie.au";
 
 // Must match a domain verified in your Resend account (Dashboard →
 // Domains) — the shared onboarding@resend.dev sender verify-sighting uses
 // CANNOT send to an arbitrary participant, only to the Resend account's
-// own address. Once curiouslygeorgie.site (or whichever domain) is
-// verified there, update this to match.
-const FROM_ADDRESS = "Curiously Georgie <noreply@curiouslygeorgie.site>";
+// own address. curiositybygeorgie.au still needs to be added and verified
+// there (see the setup steps at the bottom of this file) before this
+// FROM_ADDRESS will actually work — until then, sends from this function
+// will fail.
+const FROM_ADDRESS = "Curiosity by Georgie <noreply@curiositybygeorgie.au>";
 
 Deno.serve(async (req) => {
   try {
@@ -113,7 +116,7 @@ async function sendResetEmail(details: {
       body: JSON.stringify({
         from: FROM_ADDRESS,
         to: [details.to],
-        subject: "Reset your Curiously Georgie PIN",
+        subject: "Reset your Curiosity by Georgie PIN",
         html:
           `<p>Hi ${escapeHtml(details.displayName)},</p>` +
           `<p>Someone (hopefully you) asked to reset the PIN for your Brisbane Air 50 ` +
@@ -172,14 +175,14 @@ function json(body: unknown) {
 // 2. Verify a sending domain in Resend — this is the step that's new
 //    compared to verify-sighting, and it's yours to do (Claude can't sign
 //    into third-party accounts or add DNS records on your behalf):
-//      a. resend.com → Domains → Add Domain → curiouslygeorgie.site.
+//      a. resend.com → Domains → Add Domain → curiositybygeorgie.au.
 //      b. Resend shows you a handful of DNS records (SPF/DKIM, usually
 //         TXT and CNAME entries) — add each one exactly as shown, at
-//         VentraIP (Domain → DNS management for curiouslygeorgie.site).
+//         VentraIP (Domain → DNS management for curiositybygeorgie.au).
 //      c. Back in Resend, click "Verify" — can take anywhere from a few
 //         minutes to a few hours for DNS to propagate.
 //      d. Once verified, confirm FROM_ADDRESS above uses that domain
-//         (already set to noreply@curiouslygeorgie.site) — change it if
+//         (already set to noreply@curiositybygeorgie.au) — change it if
 //         you verify a different domain instead.
 //
 // 3. Deploy this function:
@@ -194,8 +197,11 @@ function json(body: unknown) {
 //        Table: pin_resets   Events: Insert   Type: Supabase Edge Functions
 //        Edge Function: send-pin-reset
 //
-// 5. Once curiouslygeorgie.au replaces curiouslygeorgie.site as the live
-//    domain, update SITE_URL and FROM_ADDRESS above and redeploy.
+// 5. SITE_URL and FROM_ADDRESS above already point at curiositybygeorgie.au
+//    (confirmed active 2026-10-09) — nothing left to change here. Links
+//    built from SITE_URL won't actually resolve until GitHub Pages' custom
+//    domain is pointed at it, and FROM_ADDRESS won't send until step 2
+//    above is done.
 //
 // To test without a real "forgot PIN" click: SQL Editor →
 //   select request_pin_reset('<a real registered display name>');

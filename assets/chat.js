@@ -182,6 +182,27 @@ document.addEventListener("DOMContentLoaded", function () {
     );
   }
 
+  // A one-tap "Report" link for a post — no backend/moderation queue to
+  // build, just a pre-filled mailto: so a bad post reaches Georgie with
+  // enough context to find it (post ID + author + a caption excerpt)
+  // instead of a blank "something inappropriate" email she has to chase
+  // down herself. Keeps the existing footer line as the fallback for
+  // anyone who'd rather just write in.
+  function renderReportLink(post) {
+    var excerpt = (post.caption || "").slice(0, 120);
+    var subject = "Reporting a Community Board post (" + post.id + ")";
+    var body =
+      "Post ID: " + post.id + "\n" +
+      "Posted by: " + post.name + "\n" +
+      "Caption: " + excerpt + (post.caption && post.caption.length > 120 ? "…" : "") + "\n\n" +
+      "What's wrong with it: ";
+    var href =
+      "mailto:curiositybygeorgie@gmail.com" +
+      "?subject=" + encodeURIComponent(subject) +
+      "&body=" + encodeURIComponent(body);
+    return '<a class="board-report-link" href="' + href + '">Report</a>';
+  }
+
   function renderPost(post) {
     var photoBit = post.photoUrl
       ? '<img class="board-post-photo" src="' + escapeHtml(post.photoUrl) + '" alt="" loading="lazy" onload="window.classifyBoardPhoto(this)">'
@@ -198,7 +219,7 @@ document.addEventListener("DOMContentLoaded", function () {
       '<p class="board-post-caption">' + escapeHtml(post.caption) + "</p>" +
       photoBit +
       '<div class="board-comments">' + post.comments.map(renderComment).join("") + "</div>" +
-      '<div class="board-post-actions">' + renderCuriousButton(post) + "</div>" +
+      '<div class="board-post-actions">' + renderCuriousButton(post) + renderReportLink(post) + "</div>" +
       '<form class="board-comment-form" data-post-id="' + escapeHtml(post.id) + '">' +
       '<div class="board-comment-input-row">' +
       '<textarea name="body" maxlength="300" placeholder="Add a comment…" required></textarea>' +
@@ -323,7 +344,7 @@ document.addEventListener("DOMContentLoaded", function () {
           return;
         }
         if (status === "banned") {
-          setStatus('This name isn\'t able to post here. If you think this is a mistake, email <a href="mailto:contactcuriouslygeorgie@gmail.com">contactcuriouslygeorgie@gmail.com</a>.');
+          setStatus('This name isn\'t able to post here. If you think this is a mistake, email <a href="mailto:curiositybygeorgie@gmail.com">curiositybygeorgie@gmail.com</a>.');
           if (submitBtn) submitBtn.disabled = false;
           return;
         }
@@ -390,7 +411,7 @@ document.addEventListener("DOMContentLoaded", function () {
             } else if (msg === "not_registered" || (err && err.code === "42501")) {
               setStatus('That name isn\'t registered yet — <a href="register.html">register here</a>, then post again.');
             } else if (msg === "not_active") {
-              setStatus('This name isn\'t able to post here. If you think this is a mistake, email <a href="mailto:contactcuriouslygeorgie@gmail.com">contactcuriouslygeorgie@gmail.com</a>.');
+              setStatus('This name isn\'t able to post here. If you think this is a mistake, email <a href="mailto:curiositybygeorgie@gmail.com">curiositybygeorgie@gmail.com</a>.');
             } else if (msg === "invalid_pin") {
               setStatus('<span class="status-warn">That PIN doesn\'t match this name — check it and try again.</span>');
             } else if (msg === "caption_required") {
@@ -445,7 +466,7 @@ document.addEventListener("DOMContentLoaded", function () {
           return;
         }
         if (status === "banned") {
-          setStatus('This name isn\'t able to comment here. If you think this is a mistake, email <a href="mailto:contactcuriouslygeorgie@gmail.com">contactcuriouslygeorgie@gmail.com</a>.');
+          setStatus('This name isn\'t able to comment here. If you think this is a mistake, email <a href="mailto:curiositybygeorgie@gmail.com">curiositybygeorgie@gmail.com</a>.');
           if (submitBtn) submitBtn.disabled = false;
           return;
         }
@@ -479,7 +500,7 @@ document.addEventListener("DOMContentLoaded", function () {
             } else if (msg === "not_registered") {
               setStatus('That name isn\'t registered yet — <a href="register.html">register here</a>, then comment again.');
             } else if (msg === "not_active") {
-              setStatus('This name isn\'t able to comment here. If you think this is a mistake, email <a href="mailto:contactcuriouslygeorgie@gmail.com">contactcuriouslygeorgie@gmail.com</a>.');
+              setStatus('This name isn\'t able to comment here. If you think this is a mistake, email <a href="mailto:curiositybygeorgie@gmail.com">curiositybygeorgie@gmail.com</a>.');
             } else if (msg === "invalid_pin") {
               setStatus('<span class="status-warn">That PIN doesn\'t match this name — check it and try again.</span>');
             } else if (msg === "post_not_found") {
@@ -577,7 +598,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
           }
           if (status === "banned") {
-            setStatus('This name isn\'t able to react here. If you think this is a mistake, email <a href="mailto:contactcuriouslygeorgie@gmail.com">contactcuriouslygeorgie@gmail.com</a>.');
+            setStatus('This name isn\'t able to react here. If you think this is a mistake, email <a href="mailto:curiositybygeorgie@gmail.com">curiositybygeorgie@gmail.com</a>.');
             curiousBtn.disabled = false;
             return;
           }
@@ -616,7 +637,7 @@ document.addEventListener("DOMContentLoaded", function () {
               } else if (msg === "not_registered") {
                 setStatus('That name isn\'t registered yet — <a href="register.html">register here</a> first.');
               } else if (msg === "not_active") {
-                setStatus('This name isn\'t able to react here. If you think this is a mistake, email <a href="mailto:contactcuriouslygeorgie@gmail.com">contactcuriouslygeorgie@gmail.com</a>.');
+                setStatus('This name isn\'t able to react here. If you think this is a mistake, email <a href="mailto:curiositybygeorgie@gmail.com">curiositybygeorgie@gmail.com</a>.');
               } else if (msg === "invalid_pin") {
                 setStatus('<span class="status-warn">That PIN doesn\'t match this name — check it and try again.</span>');
               } else if (msg === "post_not_found") {

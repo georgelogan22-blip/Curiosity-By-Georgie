@@ -149,8 +149,13 @@ grant execute on function public.update_participant_avatar_photo(text, text, tex
 -- Function: participant_dashboard (REPLACES the version in
 -- avatar-migration.sql) — same as before, now also returns
 -- avatar_photo_path so My Sightings knows whether to show the photo or
--- the icon.
+-- the icon. Postgres won't let `create or replace function` change a
+-- function's OUT-parameter row type (unlike a view, which allows
+-- appending columns) — so the old 4-column version has to be dropped
+-- first before the 5-column version below can be created.
 -- ---------------------------------------------------------------------
+drop function if exists public.participant_dashboard(text, text);
+
 create or replace function public.participant_dashboard(
   p_name text,
   p_pin_hash text

@@ -30,7 +30,7 @@
 // (one more row in Georgie's queue).
 //
 // George's decision, 2026-09-13: whenever a sighting is left 'pending'
-// above, also email him at contactcuriouslygeorgie@gmail.com so he finds
+// above, also email him at curiositybygeorgie@gmail.com so he finds
 // out about review-queue items without having to remember to check the
 // dashboard. Sent via Resend (a transactional-email API — see George's own
 // words in the project doc: a site can't send from a personal Gmail
@@ -40,9 +40,15 @@
 // signed up under. If RESEND_API_KEY isn't set yet, this is skipped
 // quietly (same pattern as ANTHROPIC_API_KEY below) — the sighting is
 // still safely left pending either way, just without the email nudge.
+//
+// Updated 2026-09-19: recipient changed from contactcuriouslygeorgie@
+// gmail.com to curiositybygeorgie@gmail.com, matching the site's rename
+// to Curiosity by Georgie. IMPORTANT — this alone is not enough: see the
+// "Resend account email" note in the deployment instructions further
+// down this file before redeploying.
 
 const LAUNCH_DATE = "2026-01-01"; // TODO: George — set the real Brisbane Air 50 launch date here
-const NOTIFY_EMAIL = "contactcuriouslygeorgie@gmail.com";
+const NOTIFY_EMAIL = "curiositybygeorgie@gmail.com";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -243,7 +249,7 @@ async function sendReviewNotification(details: {
         authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "Curiously Georgie <onboarding@resend.dev>",
+        from: "Curiosity by Georgie <onboarding@resend.dev>",
         to: [NOTIFY_EMAIL],
         subject: `Pending review: ${details.species} — ${details.participantName}`,
         html:
@@ -329,7 +335,7 @@ function json(body: unknown) {
 //    George, this step is yours to do, Claude can't sign up for
 //    third-party accounts or enter API keys on your behalf:
 //      a. Sign up for a free Resend account at resend.com using
-//         contactcuriouslygeorgie@gmail.com as the account email — this
+//         curiositybygeorgie@gmail.com as the account email — this
 //         matters, since it's what lets you skip domain verification (see
 //         below).
 //      b. Dashboard → API Keys → create one, copy it.
@@ -340,10 +346,28 @@ function json(body: unknown) {
 //    That's it — no DNS/domain setup needed. Resend's shared
 //    onboarding@resend.dev sender can send to your own account's email
 //    address without a verified domain; since every notification here
-//    only ever goes to contactcuriouslygeorgie@gmail.com, that's exactly
+//    only ever goes to curiositybygeorgie@gmail.com, that's exactly
 //    what's needed. If RESEND_API_KEY is never set, everything above still
 //    works exactly as before — sightings just won't email you when they're
 //    left pending.
+//
+//    Rename note (2026-09-19) — Resend account email, not just this file:
+//    Resend's shared onboarding@resend.dev sender will ONLY deliver to
+//    the email address your Resend account itself is signed up under —
+//    that's the whole reason no domain verification was needed originally.
+//    So changing NOTIFY_EMAIL in this file to curiositybygeorgie@gmail.com
+//    is not enough on its own. If your Resend account is still signed up
+//    under contactcuriouslygeorgie@gmail.com, either:
+//      • Update your Resend account's email (Dashboard → Settings →
+//        Account) to curiositybygeorgie@gmail.com — Resend will send a
+//        confirmation link to the new address that you'll need to click
+//        to verify it, then redeploy this function; or
+//      • Sign up for a brand-new free Resend account directly under
+//        curiositybygeorgie@gmail.com, generate a new API key from it,
+//        and replace the RESEND_API_KEY secret in Supabase with that new
+//        key before redeploying.
+//    Either way this is a Resend-dashboard step only you can do — Claude
+//    doesn't have Resend credentials and can't log in on your behalf.
 //
 // To test without waiting for a real submission: Table Editor → sightings
 // → insert a test row with a photo_path pointing at any file already in

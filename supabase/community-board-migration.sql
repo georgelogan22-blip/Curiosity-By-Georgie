@@ -80,6 +80,14 @@ create policy "public can read board posts"
 -- created via create_board_post() (security definer, checks PIN),
 -- and removal is dashboard-only (project owner), same as sightings.
 
+-- Explicit Data API grant — Supabase stops auto-granting this for new
+-- tables from 2026-10-30 (see their announcement email); this table
+-- only worked without it because it predates that cutoff. Select only,
+-- matching the RLS policy above — assets/supabase-client.js reads the
+-- board feed with a direct `.from("board_posts").select(...)`, while
+-- writes go through create_board_post() instead.
+grant select on public.board_posts to anon;
+
 -- ---------------------------------------------------------------------
 -- Table: board_comments
 -- Same participant_name/participant_key denormalisation as board_posts.
@@ -104,6 +112,11 @@ create policy "public can read board comments"
   on public.board_comments for select
   to anon
   using (true);
+
+-- Explicit Data API grant — same reasoning as board_posts above. Select
+-- only; comments are created via create_board_comment(), not a direct
+-- insert.
+grant select on public.board_comments to anon;
 
 -- ---------------------------------------------------------------------
 -- Function: create_board_post

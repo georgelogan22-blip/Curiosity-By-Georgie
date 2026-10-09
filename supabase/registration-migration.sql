@@ -112,6 +112,28 @@ create policy "public can register"
 -- enabled and no matching policy, those actions are refused outright.
 
 -- ---------------------------------------------------------------------
+-- Explicit Data API grants
+-- Supabase stops auto-granting Data API access to new tables from
+-- 2026-10-30 (see their announcement email) — until now this table
+-- worked only because it was created before that cutoff. Added here so
+-- the site keeps working if this migration is ever replayed from
+-- scratch (a new Supabase project, a preview branch, a local
+-- `supabase db reset`), not because anything is broken today.
+--   - anon: insert only, matching the RLS policy above — this is what
+--     register.js actually calls (registerParticipant() in
+--     assets/supabase-client.js does a direct `.from("participants")
+--     .insert(...)`, not through a function).
+--   - service_role: select only, for the send-pin-reset Edge Function
+--     (supabase/functions/send-pin-reset/index.ts), which looks up a
+--     participant by key before emailing a reset link. No insert/
+--     update/delete for service_role either — even the dashboard-only
+--     admin actions (banning, status changes) are done through the
+--     Supabase table editor UI, not this key.
+-- ---------------------------------------------------------------------
+grant insert on public.participants to anon;
+grant select on public.participants to service_role;
+
+-- ---------------------------------------------------------------------
 -- Function: participant_status
 -- Lets the site ask "is this name registered, and in good standing?"
 -- without ever exposing the participant's actual data. Returns:

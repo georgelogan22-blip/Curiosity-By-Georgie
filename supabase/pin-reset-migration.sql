@@ -13,9 +13,9 @@
 -- owner's own address — it cannot deliver to an arbitrary participant.
 -- Sending a real reset link to a participant's own registered email
 -- needs a verified domain in Resend (a few DNS records at your registrar
--- — curiouslygeorgie.site works today, without waiting on the .au ID
--- check). See supabase/functions/send-pin-reset/index.ts for the rest of
--- the setup steps once that's done.
+-- — curiositybygeorgie.au is registered and active, confirmed 2026-10-09).
+-- See supabase/functions/send-pin-reset/index.ts for the rest of the setup
+-- steps once that's done.
 --
 -- How to use: open your Supabase project → SQL Editor → New query, paste
 -- this whole file, and click Run. Safe to re-run — everything here uses
@@ -55,6 +55,16 @@ create index if not exists pin_resets_token_idx on public.pin_resets (token);
 -- no matching policy, a direct anon SELECT/INSERT/UPDATE is refused.
 -- ---------------------------------------------------------------------
 alter table public.pin_resets enable row level security;
+
+-- Explicit Data API grant — Supabase stops auto-granting this for new
+-- tables from 2026-10-30 (see their announcement email); this table
+-- only worked without it because it predates that cutoff. Update only,
+-- for the send-pin-reset Edge Function, which PATCHes a row's
+-- emailed_at directly via the REST API using the service-role key
+-- (supabase/functions/send-pin-reset/index.ts) after everything else
+-- here (select/insert) already goes through the SECURITY DEFINER
+-- functions below, which don't need a table grant at all.
+grant update on public.pin_resets to service_role;
 
 -- ---------------------------------------------------------------------
 -- Function: request_pin_reset
@@ -141,7 +151,7 @@ grant execute on function public.redeem_pin_reset(text, text) to anon;
 -- Remaining setup steps (do these after running this file):
 --
 -- 1. Verify a sending domain in Resend (Dashboard → Domains → Add
---    Domain → curiouslygeorgie.site), then add the DNS records it shows
+--    Domain → curiositybygeorgie.au), then add the DNS records it shows
 --    you at VentraIP. Takes a few minutes to a few hours to verify.
 -- 2. Deploy the send-pin-reset Edge Function — see the setup steps in
 --    supabase/functions/send-pin-reset/index.ts (same process as

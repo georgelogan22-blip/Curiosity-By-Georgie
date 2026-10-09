@@ -65,6 +65,20 @@ create policy "public can read sightings"
   to anon
   using (true);
 
+-- Note: the two `anon` policies above are currently unused by the live
+-- site — submit_sighting() and participant_sightings() (added in later
+-- migrations) handle inserts/reads instead, so no `anon` Data API grant
+-- is added here for them. If a direct `.from("sightings")` call is ever
+-- added back to assets/supabase-client.js, it'll need
+-- `grant select, insert on public.sightings to anon;` alongside it —
+-- Supabase stopped auto-granting that for new tables from 2026-10-30.
+
+-- Explicit Data API grant — for the verify-sighting Edge Function,
+-- which PATCHes a sighting's status directly via the REST API using the
+-- service-role key (supabase/functions/verify-sighting/index.ts) after
+-- running its AI photo check. Same 2026-10-30 auto-grant change as above.
+grant update on public.sightings to service_role;
+
 -- ---------------------------------------------------------------------
 -- View: leaderboard
 -- One row per participant, with their confirmed unique-species count.

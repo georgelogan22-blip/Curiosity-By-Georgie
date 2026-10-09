@@ -2,9 +2,9 @@
 //
 // Enter your registered display name + PIN (same as logging a sighting)
 // to see your own dashboard: a chosen bird avatar, your live level (Air
-// Novice through Air Master, based on confirmed species), your Air
-// Points, and your sightings split into Confirmed / Pending / Rejected
-// tabs. Calls fetchParticipantDashboard() + fetchMySightings() in
+// Novice through Air Master, based on confirmed species — Air Master
+// means all 50 are in), your Air Points, and your sightings split into
+// Confirmed / Pending / Rejected tabs. Calls fetchParticipantDashboard() + fetchMySightings() in
 // assets/supabase-client.js — the first for the profile summary
 // (participant_dashboard(), see supabase/avatar-migration.sql), the
 // second for the actual sighting rows (participant_sightings(), see
@@ -28,17 +28,23 @@ document.addEventListener("DOMContentLoaded", function () {
   var session = { name: null, pinHash: null };
 
   // ---- Level system ----------------------------------------------------
-  // Five levels across the Brisbane Air 50's 50 species, roughly every
-  // ten — "Air Master" here is a live, self-updating read on progress
-  // (see it the moment a sighting is confirmed), separate from the
-  // official "Air 50 Master" Hall of Fame induction, which still goes
-  // through Georgie's own review once all 50 are in (see rules.html).
+  // Six levels across the Brisbane Air 50's 50 species, roughly every
+  // ten — each is a live, self-updating read on progress (see it change
+  // the moment a sighting is confirmed). "Air Master" is reserved for
+  // exactly what the physical finisher's coin says: all 50 confirmed —
+  // George's decision, 2026-09-27, after the coin prototype's engraving
+  // made it clear that title needed to mean the same thing on the coin
+  // and on the dashboard, not just the last 10-species band. Note this
+  // is still separate from actual Hall of Fame induction, which needs
+  // Georgie's own manual review after all 50 are in (see rules.html) —
+  // reaching this level here is instant and automatic, induction isn't.
   var LEVELS = [
     { name: "Air Novice", min: 0 },
     { name: "Air Fledgling", min: 10 },
     { name: "Air Spotter", min: 20 },
     { name: "Air Ranger", min: 30 },
-    { name: "Air Master", min: 40 },
+    { name: "Air Veteran", min: 40 },
+    { name: "Air Master", min: 50 },
   ];
   var LEVEL_MAX = 50;
 

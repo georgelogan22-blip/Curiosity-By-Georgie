@@ -307,6 +307,29 @@ function fetchLeaderboard(limit) {
     });
 }
 
+// Finisher Rewards page: the coin's front design stays hidden behind a
+// silhouette until the site-wide reveal condition is met — the first
+// participant reaching 40 confirmed OFFICIAL species (George's decision,
+// 2026-09-27 — matches the "Air Veteran" level in assets/my-sightings.js;
+// "Air Master" itself now means all 50, same as the coin's engraving).
+// This only needs the single highest air50_species_count on the board, so
+// it asks for exactly one row ordered by that column rather than the whole
+// leaderboard fetchLeaderboard() above pulls. Same public "leaderboard"
+// view/grant as fetchLeaderboard() — no extra backend work needed.
+function fetchTopAir50Count() {
+  if (!supabaseClient) return Promise.resolve(0);
+  return supabaseClient
+    .from("leaderboard")
+    .select("air50_species_count")
+    .order("air50_species_count", { ascending: false })
+    .limit(1)
+    .then(function (res) {
+      if (res.error) throw res.error;
+      var rows = res.data || [];
+      return rows.length ? rows[0].air50_species_count || 0 : 0;
+    });
+}
+
 // Everyone George has actually PUBLISHED to the Hall of Fame — see
 // supabase/hall-of-fame-inductions-migration.sql. Reaching
 // air50_species_count >= 50 on the leaderboard (all 50 OFFICIAL Brisbane
