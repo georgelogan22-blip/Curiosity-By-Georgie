@@ -106,7 +106,7 @@
     <div>
       <p><strong>What we collect:</strong> your display name, full legal name, date of birth, address, phone, and email — once, here at registration — plus a parent/guardian consent tickbox if you're under 18.</p>
       <p><strong>What's public:</strong> only your <strong>display name</strong>, species tally, and most recent sighting date, on the <a href="leaderboard.html">Leaderboard</a> and <a href="hall-of-fame.html">Hall of Fame</a>. Everything else is never published or available through the public API — only Georgie, as project admin, can see it. Your address is used to post a finisher's coin if you're among the first fifty to complete all fifty; the rest is kept as a registration record, mainly so anyone who harms a participant or wildlife can be identified and banned.</p>
-      <p class="hint">Data is stored with Supabase, hosted in Australia. To correct, remove, or ask what's held about you, contact <a href="mailto:curiositybygeorgie@gmail.com">curiositybygeorgie@gmail.com</a>. This isn't formal legal advice — the registration flow should be reviewed against the Australian Privacy Act before launch.</p>
+      <p class="hint">Data is stored with Supabase, hosted in Australia. To correct, remove, or ask what's held about you, <a href="contact.html?topic=privacy&page=Registration%20page">get in touch</a>. This isn't formal legal advice — the registration flow should be reviewed against the Australian Privacy Act before launch.</p>
     </div>
   </div>
 
@@ -124,8 +124,8 @@
        left"), so real sign-ups — which collect DOB, address, and phone —
        are turned off here until that review is done. To re-open
        registration: delete this comment (the two lines directly below,
-       and the closing "-->" after the form) and remove the "Not Yet
-       Open" block above. assets/register.js already no-ops safely when
+       and the closing comment marker after the form) and remove the
+       "Not Yet Open" block above. assets/register.js already no-ops safely when
        this form isn't present (`if (!form) return;`), so nothing else
        needs to change to take it back out again.
 
@@ -202,7 +202,7 @@
           <input type="password" id="pin-confirm" name="pinConfirm" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="••••" required>
         </div>
       </div>
-      <p class="hint" style="margin-top:-8px; margin-bottom:18px;">You'll enter this alongside your display name whenever you log a sighting, so no one else can log sightings under your name. Keep it simple — there's no self-service reset, so if you forget it you'll need to email <a href="mailto:curiositybygeorgie@gmail.com">curiositybygeorgie@gmail.com</a>.</p>
+      <p class="hint" style="margin-top:-8px; margin-bottom:18px;">You'll enter this alongside your display name whenever you log a sighting, so no one else can log sightings under your name. Keep it simple — if you forget it, you can reset it yourself on the <a href="forgot-pin.html">Forgot Your PIN</a> page.</p>
 
       <div class="field" id="parental-consent-field" hidden>
         <label style="display:flex; align-items:flex-start; gap:8px; font-weight:400;">
