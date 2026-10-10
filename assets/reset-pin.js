@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
     setStatus("Saving…");
 
     if (typeof redeemPinReset !== "function" || typeof hashPin !== "function") {
-      setStatus("This isn't connected right now — please try again shortly, or email curiositybygeorgie@gmail.com.");
+      setStatus("This isn't connected right now — please try again shortly, or get in touch via the Contact page.");
       if (submitBtn) submitBtn.disabled = false;
       return;
     }
@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
         } else if (msg === "token_expired") {
           setStatus('That reset link has expired (links last 30 minutes) — <a href="forgot-pin.html">request a new one</a>.');
         } else if (msg === "offline-demo") {
-          setStatus("This isn't connected right now — please try again shortly, or email curiositybygeorgie@gmail.com.");
+          setStatus("This isn't connected right now — please try again shortly, or get in touch via the Contact page.");
         } else {
           setStatus("Couldn't save that right now — please try again.");
         }

@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         if (status === "banned") {
           setStatusHtml(
-            "This name isn't able to log sightings. If you think this is a mistake, email <a href=\"mailto:curiositybygeorgie@gmail.com\">curiositybygeorgie@gmail.com</a>."
+            "This name isn't able to log sightings. If you think this is a mistake, <a href=\"contact.html?topic=account\">get in touch</a>."
           );
           if (submitBtn) submitBtn.disabled = false;
           return;
@@ -166,7 +166,7 @@ document.addEventListener("DOMContentLoaded", function () {
               );
             } else if (msg === "not_active") {
               setStatusHtml(
-                "This name isn't able to log sightings. If you think this is a mistake, email <a href=\"mailto:curiositybygeorgie@gmail.com\">curiositybygeorgie@gmail.com</a>."
+                "This name isn't able to log sightings. If you think this is a mistake, <a href=\"contact.html?topic=account\">get in touch</a>."
               );
             } else if (msg === "invalid_pin") {
               setStatusHtml('<span class="status-warn">That PIN doesn\'t match this name — check it and try again.</span>');

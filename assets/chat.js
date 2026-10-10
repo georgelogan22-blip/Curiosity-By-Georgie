@@ -182,24 +182,22 @@ document.addEventListener("DOMContentLoaded", function () {
     );
   }
 
-  // A one-tap "Report" link for a post — no backend/moderation queue to
-  // build, just a pre-filled mailto: so a bad post reaches Georgie with
-  // enough context to find it (post ID + author + a caption excerpt)
-  // instead of a blank "something inappropriate" email she has to chase
-  // down herself. Keeps the existing footer line as the fallback for
-  // anyone who'd rather just write in.
+  // A one-tap "Report" link for a post — routes to contact.html with the
+  // topic preselected and enough context pre-filled (post ID + author +
+  // a caption excerpt) that George can find the post without a back-and-
+  // forth, instead of a blank "something inappropriate" message he has
+  // to chase down himself. See assets/contact.js. Keeps the existing
+  // footer line as the fallback for anyone who'd rather just write in.
   function renderReportLink(post) {
     var excerpt = (post.caption || "").slice(0, 120);
-    var subject = "Reporting a Community Board post (" + post.id + ")";
-    var body =
-      "Post ID: " + post.id + "\n" +
-      "Posted by: " + post.name + "\n" +
+    var context =
+      "Post by " + post.name + " (id " + post.id + "). " +
       "Caption: " + excerpt + (post.caption && post.caption.length > 120 ? "…" : "") + "\n\n" +
       "What's wrong with it: ";
     var href =
-      "mailto:curiositybygeorgie@gmail.com" +
-      "?subject=" + encodeURIComponent(subject) +
-      "&body=" + encodeURIComponent(body);
+      "contact.html?topic=report" +
+      "&page=" + encodeURIComponent("Community Board post (" + post.id + ")") +
+      "&context=" + encodeURIComponent(context);
     return '<a class="board-report-link" href="' + href + '">Report</a>';
   }
 
@@ -344,7 +342,7 @@ document.addEventListener("DOMContentLoaded", function () {
           return;
         }
         if (status === "banned") {
-          setStatus('This name isn\'t able to post here. If you think this is a mistake, email <a href="mailto:curiositybygeorgie@gmail.com">curiositybygeorgie@gmail.com</a>.');
+          setStatus('This name isn\'t able to post here. If you think this is a mistake, <a href="contact.html?topic=account">get in touch</a>.');
           if (submitBtn) submitBtn.disabled = false;
           return;
         }
@@ -411,7 +409,7 @@ document.addEventListener("DOMContentLoaded", function () {
             } else if (msg === "not_registered" || (err && err.code === "42501")) {
               setStatus('That name isn\'t registered yet — <a href="register.html">register here</a>, then post again.');
             } else if (msg === "not_active") {
-              setStatus('This name isn\'t able to post here. If you think this is a mistake, email <a href="mailto:curiositybygeorgie@gmail.com">curiositybygeorgie@gmail.com</a>.');
+              setStatus('This name isn\'t able to post here. If you think this is a mistake, <a href="contact.html?topic=account">get in touch</a>.');
             } else if (msg === "invalid_pin") {
               setStatus('<span class="status-warn">That PIN doesn\'t match this name — check it and try again.</span>');
             } else if (msg === "caption_required") {
@@ -466,7 +464,7 @@ document.addEventListener("DOMContentLoaded", function () {
           return;
         }
         if (status === "banned") {
-          setStatus('This name isn\'t able to comment here. If you think this is a mistake, email <a href="mailto:curiositybygeorgie@gmail.com">curiositybygeorgie@gmail.com</a>.');
+          setStatus('This name isn\'t able to comment here. If you think this is a mistake, <a href="contact.html?topic=account">get in touch</a>.');
           if (submitBtn) submitBtn.disabled = false;
           return;
         }
@@ -500,7 +498,7 @@ document.addEventListener("DOMContentLoaded", function () {
             } else if (msg === "not_registered") {
               setStatus('That name isn\'t registered yet — <a href="register.html">register here</a>, then comment again.');
             } else if (msg === "not_active") {
-              setStatus('This name isn\'t able to comment here. If you think this is a mistake, email <a href="mailto:curiositybygeorgie@gmail.com">curiositybygeorgie@gmail.com</a>.');
+              setStatus('This name isn\'t able to comment here. If you think this is a mistake, <a href="contact.html?topic=account">get in touch</a>.');
             } else if (msg === "invalid_pin") {
               setStatus('<span class="status-warn">That PIN doesn\'t match this name — check it and try again.</span>');
             } else if (msg === "post_not_found") {
@@ -598,7 +596,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
           }
           if (status === "banned") {
-            setStatus('This name isn\'t able to react here. If you think this is a mistake, email <a href="mailto:curiositybygeorgie@gmail.com">curiositybygeorgie@gmail.com</a>.');
+            setStatus('This name isn\'t able to react here. If you think this is a mistake, <a href="contact.html?topic=account">get in touch</a>.');
             curiousBtn.disabled = false;
             return;
           }
@@ -637,7 +635,7 @@ document.addEventListener("DOMContentLoaded", function () {
               } else if (msg === "not_registered") {
                 setStatus('That name isn\'t registered yet — <a href="register.html">register here</a> first.');
               } else if (msg === "not_active") {
-                setStatus('This name isn\'t able to react here. If you think this is a mistake, email <a href="mailto:curiositybygeorgie@gmail.com">curiositybygeorgie@gmail.com</a>.');
+                setStatus('This name isn\'t able to react here. If you think this is a mistake, <a href="contact.html?topic=account">get in touch</a>.');
               } else if (msg === "invalid_pin") {
                 setStatus('<span class="status-warn">That PIN doesn\'t match this name — check it and try again.</span>');
               } else if (msg === "post_not_found") {

@@ -121,7 +121,7 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .catch(function (err) {
         var code = err && err.code;
-        var message = "Something went wrong — please try again, or email curiositybygeorgie@gmail.com if it keeps happening.";
+        var message = "Something went wrong — please try again, or get in touch via the Contact page if it keeps happening.";
         if (err && err.message === "offline-demo") {
           message = "Registration isn't connected to the shared database right now — please try again shortly.";
         } else if (code === "23505") {

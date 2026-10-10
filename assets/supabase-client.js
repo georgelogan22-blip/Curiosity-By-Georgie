@@ -281,6 +281,28 @@ function redeemPinReset(token, newPinHash) {
     });
 }
 
+// Calls submit_contact_message() (see supabase/contact-migration.sql) —
+// the backend for contact.html, built to replace every mailto: link on
+// the site (see that migration's header comment for why). Rejects with
+// an error whose .message is "invalid_email", "message_too_short", or
+// "message_too_long" (raised by the database function) so contact.js
+// can show a specific message for each case, or with new Error(
+// "offline-demo") if the backend isn't configured.
+function submitContactMessage(record) {
+  if (!supabaseClient) return Promise.reject(new Error("offline-demo"));
+  return supabaseClient
+    .rpc("submit_contact_message", {
+      p_name: record.name || null,
+      p_email: record.email,
+      p_topic: record.topic || "general",
+      p_message: record.message,
+      p_page: record.page || null,
+    })
+    .then(function (res) {
+      if (res.error) throw res.error;
+    });
+}
+
 // Top N participants by accumulated Air Points (see
 // supabase/points-migration.sql and supabase/air50-hall-of-fame-migration.sql
 // — the leaderboard view sums each participant's confirmed distinct
