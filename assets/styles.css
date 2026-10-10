@@ -196,6 +196,42 @@ a { color: var(--accent); }
   -webkit-text-stroke: 1px #000;
   paint-order: stroke fill;
 }
+/* contact.html's page heading, styled to echo the nav brand wordmark
+   above ("Curiosity" in Luckiest Guy / brand-yellow, "by" in Caveat /
+   ink-soft, "Georgie" in Lobster / accent — same fonts, colours, and
+   black-outline sticker stroke as .brand-word-1/-by/-2 above) at hero
+   scale instead of nav scale. Sizes are set in em, relative to the h1's
+   own clamp()'d font-size, so they scale together at any width instead
+   of needing their own breakpoints. "Contact" stays the page's normal
+   Fraunces display font — only the site's own name gets the wordmark
+   treatment, consistent with how the nav itself only styles the brand
+   name, not surrounding chrome. */
+.contact-hero-brand {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.18em;
+}
+.contact-hero-brand .hero-word-1 {
+  font-family: "Luckiest Guy", cursive;
+  color: var(--brand-yellow);
+  -webkit-text-stroke: 1.5px #000;
+  paint-order: stroke fill;
+  font-size: 0.82em;
+}
+.contact-hero-brand .hero-word-by {
+  font-family: "Caveat", cursive;
+  font-weight: 600;
+  color: var(--ink-soft);
+  font-size: 0.56em;
+}
+.contact-hero-brand .hero-word-2 {
+  font-family: "Lobster", cursive;
+  color: var(--accent);
+  -webkit-text-stroke: 1.3px #000;
+  paint-order: stroke fill;
+  font-size: 0.7em;
+}
 .brand-logo {
   width: 40px;
   height: 40px;
