@@ -1590,6 +1590,7 @@ tr:last-child td { border-bottom: none; }
 }
 .fame-card .date { color: var(--ink-soft); font-size: 0.82rem; }
 .badge-air50 { flex: none; display: block; }
+.fame-card .badge-row img.badge-air50 { width: 56px; height: 55px; object-fit: contain; }
 
 /* ---------- checklist ---------- */
 .checklist-group { margin-bottom: 34px; }
