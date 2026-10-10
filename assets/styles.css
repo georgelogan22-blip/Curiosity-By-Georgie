@@ -1602,6 +1602,13 @@ tr:last-child td { border-bottom: none; }
 .checklist-group.tier-s h3 { color: var(--tier-purple); }
 .checklist-group.tier-ss h3 { color: var(--tier-silver-text); }
 .checklist-group.tier-ssplus h3 { color: var(--tier-amber); }
+.checklist-group.tier-a .sp-name { color: var(--tier-red); }
+.checklist-group.tier-c .sp-name { color: var(--tier-orange); }
+.checklist-group.tier-u .sp-name { color: var(--accent); }
+.checklist-group.tier-r .sp-name { color: var(--tier-blue); }
+.checklist-group.tier-s .sp-name { color: var(--tier-purple); }
+.checklist-group.tier-ss .sp-name { color: var(--tier-silver-text); }
+.checklist-group.tier-ssplus .sp-name { color: var(--tier-amber); }
 .species-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
