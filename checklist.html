@@ -88,7 +88,7 @@
 <header class="page-head wrap">
   <span class="eyebrow">Species Checklist</span>
   <h1>The official fifty</h1>
-  <p class="lede">Every Brisbane Air 50 species, grouped by Air Points tier — from Abundant (easiest to find) up to the single Legendary species. Spotting something not on this list still counts, just without a tier — see the <a href="rules.html">rules</a>.</p>
+  <p class="lede">Every Brisbane Air 50 species, grouped by Air Points tier — from Abundant (easiest to find) up to the single Legendary species. Spotting something not on this list still counts, just without a tier — see the <a href="rules.html">rules</a>. Tap any species' name for a photo and overview on Wikipedia.</p>
 </header>
 
 <section class="wrap" id="checklist-sections">
@@ -150,9 +150,10 @@
       var rows = species
         .map(function (sp) {
           var slug = sp.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+          var wikiUrl = "https://en.wikipedia.org/wiki/" + encodeURIComponent(sp.wiki || sp.name.replace(/ /g, "_"));
           return (
             '<div class="species-row" id="species-' + slug + '">' +
-            '<span class="sp-left"><span class="sp-name">' + escapeHtml(sp.name) + '</span> ' +
+            '<span class="sp-left"><a class="sp-name" href="' + wikiUrl + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(sp.name) + '</a> ' +
             '<span class="sci">' + escapeHtml(sp.sci) + "</span></span>" +
             '<span class="sp-right"><span class="tier-points">' + info.points + (info.points === 1 ? "pt" : "pts") + "</span></span>" +
             "</div>"

@@ -1629,7 +1629,10 @@ tr:last-child td { border-bottom: none; }
   border-bottom: 1px solid var(--line);
 }
 .species-row .sp-left { min-width: 0; }
-.species-row .sp-name { display: block; }
+.species-row .sp-name { display: block; text-decoration: none; }
+.species-row a.sp-name:hover,
+.species-row a.sp-name:focus-visible { text-decoration: underline; text-underline-offset: 2px; }
+.species-row a.sp-name:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; border-radius: 2px; }
 .species-row .sci { color: var(--ink-soft); font-style: italic; font-size: 0.82rem; }
 .species-row .sp-right { display: flex; align-items: center; gap: 6px; flex: none; }
 
