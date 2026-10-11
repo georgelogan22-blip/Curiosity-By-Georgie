@@ -353,26 +353,48 @@ function fetchTopAir50Count() {
 }
 
 // Everyone George has actually PUBLISHED to the Hall of Fame — see
-// supabase/hall-of-fame-inductions-migration.sql. Reaching
+// supabase/hall-of-fame-multi-discipline-migration.sql. Reaching
 // air50_species_count >= 50 on the leaderboard (all 50 OFFICIAL Brisbane
 // Air 50 species confirmed) only makes someone ELIGIBLE for induction; it
 // no longer publishes them automatically. George's decision, 2026-09-13:
 // before anyone goes up permanently, he does one final manual look back
 // over that participant's 50 confirmed sightings (their evidence photos
 // are already sitting in storage from when each was originally logged —
-// no new submission needed) and only then adds their induction row. So
-// this just reads hall_of_fame_inductions and joins in each inductee's
-// current species_count/total_points from the leaderboard for display.
+// no new submission needed) and only then adds their induction row.
+//
+// George's decision, 2026-10-11: as the Brisbane 250 grows beyond Air 50
+// (Land 50, Water 50, etc.), one participant can be inducted into MORE
+// than one discipline over time — each with its own induction date and
+// its own "first fifty" numbering, independent of the others. So this
+// resolves to one entry PER PARTICIPANT (not per induction row), each
+// carrying a `medals` array of every discipline they've been inducted
+// into, oldest first. Participants are themselves ordered by their
+// EARLIEST medal's date — the first person ever inducted, to ANYTHING,
+// stays on top for good, even if someone else later beats them to a
+// second or third discipline.
 function fetchHallOfFame() {
   if (!supabaseClient) return Promise.resolve([]);
   return supabaseClient
     .from("hall_of_fame_inductions")
-    .select("participant_key, inducted_at")
+    .select("participant_key, discipline, inducted_at")
     .order("inducted_at", { ascending: true })
     .then(function (indRes) {
       if (indRes.error) throw indRes.error;
       var inductions = indRes.data || [];
       if (!inductions.length) return [];
+
+      // Finisher number = this row's 1-based rank within its OWN
+      // discipline's induction order — Air 50's first-ever finisher is
+      // "#001" independently of when Land 50's own first finisher shows
+      // up, and so on for every future discipline. `inductions` is
+      // already sorted inducted_at ascending, so a running
+      // per-discipline counter gets the right number in one pass.
+      var disciplineCounts = {};
+      inductions.forEach(function (ind) {
+        disciplineCounts[ind.discipline] = (disciplineCounts[ind.discipline] || 0) + 1;
+        ind.finisherNumber = disciplineCounts[ind.discipline];
+      });
+
       return supabaseClient
         .from("leaderboard")
         .select("*")
@@ -382,19 +404,43 @@ function fetchHallOfFame() {
           (lbRes.data || []).forEach(function (row) {
             byKey[row.participant_key] = row;
           });
-          return inductions.map(function (ind, i) {
-            var lb = byKey[ind.participant_key] || {};
+
+          // Group every induction row under its participant, keeping
+          // each participant's own medals in the order they earned
+          // them. `order` ends up earliest-participant-first too, since
+          // a participant is only pushed onto it the first time we see
+          // one of their rows — i.e. at their earliest medal.
+          var order = [];
+          var byParticipant = {};
+          inductions.forEach(function (ind) {
+            if (!byParticipant[ind.participant_key]) {
+              byParticipant[ind.participant_key] = [];
+              order.push(ind.participant_key);
+            }
+            byParticipant[ind.participant_key].push(ind);
+          });
+
+          return order.map(function (key) {
+            var lb = byKey[key] || {};
             return {
-              name: lb.participant_name || ind.participant_key,
+              name: lb.participant_name || key,
+              // species_count/total_points off the "leaderboard" view
+              // are Air 50-specific (see points-migration.sql) — no
+              // other discipline has its own scoring/leaderboard view
+              // yet, so this stays one flat field on the participant
+              // rather than per-medal until a second discipline gets
+              // its own stats source.
               count: lb.species_count,
               points: lb.total_points,
-              inductedAt: ind.inducted_at,
-              // 1-based position in induction order (inductions is already
-              // sorted inducted_at ascending, oldest first) — shown on the
-              // Hall of Fame card as their finisher number, e.g. "#001".
-              finisherNumber: i + 1,
               avatarKey: lb.avatar_key || null,
               avatarPhotoUrl: avatarPhotoUrl(lb.avatar_photo_path),
+              medals: byParticipant[key].map(function (ind) {
+                return {
+                  discipline: ind.discipline,
+                  inductedAt: ind.inducted_at,
+                  finisherNumber: ind.finisherNumber,
+                };
+              }),
             };
           });
         });

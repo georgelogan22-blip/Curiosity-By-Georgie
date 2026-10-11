@@ -1637,17 +1637,42 @@ tr:last-child td { border-bottom: none; }
 }
 .fame-card-head { display: flex; align-items: center; gap: 10px; }
 .fame-card .name { font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; }
-/* The medal block: badge, "AIR MASTER", finisher number, induction date,
-   all centred together as one certificate-like unit — tier-amber is the
-   same gold already used for the coin ring on finisher-rewards.html, so
-   this reads as the same "finisher" visual language. */
-.fame-card .fame-card-badge {
+.fame-card .preview-tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 1px 8px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+/* A card can carry more than one medal now — one person can be inducted
+   into more than one Brisbane 250 discipline over time (Air 50 today,
+   Land 50/Water 50/etc. later), each earned on its own date with its
+   own "first fifty" numbering. fame-card-medals is just the stack;
+   fame-medal is one certificate-like unit (badge, title, finisher
+   number, induction date) within it — tier-amber is the same gold
+   already used for the coin ring on finisher-rewards.html, so each
+   medal reads as the same "finisher" visual language regardless of
+   which discipline it's for. */
+.fame-card .fame-card-medals {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 14px 0 10px;
+}
+.fame-card .fame-medal {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   gap: 2px;
-  margin: 14px 0 10px;
   padding: 14px 10px 12px;
   background: color-mix(in srgb, var(--tier-amber) 8%, var(--paper-raised));
   border: 1px solid color-mix(in srgb, var(--tier-amber) 32%, transparent);
@@ -1669,7 +1694,7 @@ tr:last-child td { border-bottom: none; }
   color: var(--ink);
   font-variant-numeric: tabular-nums;
 }
-.fame-card .fame-card-badge .date { margin-top: 3px; }
+.fame-card .fame-medal .date { margin-top: 3px; }
 .fame-card .count {
   font-family: var(--font-mono);
   color: var(--accent-warm);
@@ -1677,7 +1702,13 @@ tr:last-child td { border-bottom: none; }
 }
 .fame-card .date { color: var(--ink-soft); font-size: 0.82rem; }
 .badge-air50 { flex: none; display: block; }
-.fame-card .fame-card-badge img.badge-air50 { width: 56px; height: 55px; object-fit: contain; }
+.fame-card .fame-medal img.badge-air50 { width: 56px; height: 55px; object-fit: contain; }
+/* Placeholder medal for a discipline that doesn't have real badge
+   artwork yet (see disciplineBadgeHtml() in hall-of-fame.html) — a
+   plain laurel-ring drawn in the site's own line-art style rather than
+   the gold coin photo, so it reads clearly as "not final art" without
+   looking broken. */
+.fame-card .badge-placeholder { flex: none; display: block; }
 
 /* ---------- checklist ---------- */
 .checklist-group { margin-bottom: 34px; }
