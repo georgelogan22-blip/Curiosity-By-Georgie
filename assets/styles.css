@@ -1444,14 +1444,18 @@ textarea { resize: vertical; min-height: 80px; }
    locale date format), which the standard min-width property does not
    override — that's why this needs its own WebKit-specific rule rather
    than just width:100%. On top of that, stretching a date field to
-   width:100% (like the text fields) just leaves a wide band of empty
-   space to the right of the actual "dd/mm/yyyy" value and the calendar
-   icon — a date never needs the full row width. Capping it with
-   max-width keeps it a sensible, content-sized box instead, the same
-   way the PIN field is capped above. */
+   width:100% (like the text fields) just leaves a band of empty space
+   to the right of the actual value (iOS renders it as "11 Oct 2026",
+   not numeric slashes) and the calendar icon — a date never needs the
+   full row width. Capped with max-width instead, the same way the PIN
+   field is capped above. First capped at 200px, which George found
+   read as too cramped/small against the other full-width fields on
+   his phone — widened to 260px, close to the full field width without
+   quite reaching it (avoids both the original dead-space complaint and
+   the too-small one). */
 input[type="date"] {
   min-width: 0;
-  max-width: 200px;
+  max-width: 260px;
   -webkit-min-logical-width: 0 !important;
 }
 form { background: var(--paper-raised); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 26px; }
