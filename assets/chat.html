@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chat — Curiosity by Georgie</title>
+<meta name="description" content="The Brisbane Air 50 community board — share sightings, swap tips, and plan meetups with other registered participants.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Public+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@500;600&family=Luckiest+Guy&family=Caveat:wght@600&family=Lobster&display=swap">
+<link rel="icon" type="image/png" href="data:image/png;base64,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">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Curiosity">
+<meta name="theme-color" content="#f5f4ea">
+<link rel="stylesheet" href="assets/styles.css">
+<script src="assets/species-data.js" defer></script>
+<script src="assets/search-data.js" defer></script>
+<script src="assets/nav.js" defer></script>
+<script src="assets/search.js" defer></script>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="wrap">
+    <a href="index.html" class="brand">
+      <span class="brand-logo" aria-hidden="true"></span>
+      <span class="brand-text"><span class="brand-word brand-word-1">Curiosity</span><span class="brand-line-2"><span class="brand-word-by">by</span><span class="brand-word brand-word-2">Georgie</span></span></span>
+    </a>
+      <div class="nav-right">
+<button type="button" class="nav-toggle" aria-expanded="false" aria-controls="primary-nav" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="primary-nav">
+      <li class="nav-more">
+        <button type="button" class="nav-more-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="nav-b250-menu">The Brisbane 250</button>
+        <ul class="nav-more-menu" id="nav-b250-menu">
+          <li class="nav-group-label">The Brisbane 250</li>
+          <li><a href="index.html">Air 50</a></li>
+          <li class="nav-soon"><span>More disciplines</span><small>Coming soon</small></li>
+        </ul>
+      </li>
+      <li class="nav-more">
+        <button type="button" class="nav-more-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="nav-rules-menu">Rules &amp; Checklist</button>
+        <ul class="nav-more-menu" id="nav-rules-menu">
+          <li class="nav-group-label">Rules &amp; Checklist</li>
+          <li><a href="rules.html">Rules</a></li>
+          <li><a href="checklist.html">Species Checklist</a></li>
+        </ul>
+      </li>
+      <li class="nav-more">
+        <button type="button" class="nav-more-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="nav-participate-menu">Participate</button>
+        <ul class="nav-more-menu" id="nav-participate-menu">
+          <li class="nav-group-label">Participate</li>
+          <li><a href="register.html">Register</a></li>
+          <li><a href="log-sighting.html">Log a Sighting</a></li>
+          <li><a href="my-sightings.html">My Sightings</a></li>
+        </ul>
+      </li>
+      <li class="nav-more">
+        <button type="button" class="nav-more-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="nav-community-menu">Community</button>
+        <ul class="nav-more-menu" id="nav-community-menu">
+          <li class="nav-group-label">Community</li>
+          <li><a href="leaderboard.html">Leaderboard</a></li>
+          <li><a href="hall-of-fame.html">Hall of Fame</a></li>
+          <li><a href="chat.html" aria-current="page">Curiosity Chat</a></li>
+        </ul>
+      </li>
+      <li class="nav-more">
+        <button type="button" class="nav-more-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="nav-more-menu">More</button>
+        <ul class="nav-more-menu" id="nav-more-menu">
+          <li class="nav-group-label">More</li>
+          <li><a href="finisher-rewards.html">Finisher Rewards</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li class="nav-soon"><span>Merchandise</span><small>Coming soon</small></li>
+        </ul>
+      </li>
+    </ul>
+    <div class="nav-search">
+      <button type="button" class="nav-search-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="nav-search-panel" aria-label="Search the site">
+        <svg class="nav-search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      </button>
+      <div class="nav-search-panel" id="nav-search-panel" hidden>
+        <form class="nav-search-form" role="search" autocomplete="off" onsubmit="return false;">
+          <input type="search" class="nav-search-input" id="nav-search-input" placeholder="Search rules, pages, species…" aria-label="Search the site" aria-controls="nav-search-results" aria-expanded="false" aria-autocomplete="list" role="combobox">
+        </form>
+        <ul class="nav-search-results" id="nav-search-results" role="listbox" aria-label="Search results"></ul>
+      </div>
+    </div>
+  </div>
+  </div>
+</nav>
+
+<header class="page-head wrap">
+  <span class="eyebrow">Chat</span>
+  <h1>The community board</h1>
+  <p class="lede">A shared space for Brisbane Air 50 participants — post a photo and a caption, swap birding tips and gear talk, or organise a meet-up. Anyone can browse; posting and commenting need your registered display name and PIN, same as logging a sighting.</p>
+</header>
+
+<section class="wrap section-tight">
+  <div class="board-layout">
+
+    <div class="board-identity" id="board-identity">
+      <div class="field-grid-2">
+        <div class="field" style="margin-bottom:0;">
+          <label for="board-name">Your name or nickname</label>
+          <input type="text" id="board-name" name="board-name" placeholder="e.g. Ava T.">
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label for="board-pin">Your 4-digit PIN</label>
+          <input type="password" id="board-pin" name="board-pin" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="••••">
+        </div>
+      </div>
+      <p class="hint">Used to post and comment below. Not registered yet? <a href="register.html">Register here</a> first — it only takes a minute. <a href="forgot-pin.html">Forgot your PIN?</a></p>
+      <button type="button" class="btn btn-ghost" id="board-check-replies">Check my replies</button>
+      <p class="hint" id="board-replies-status" hidden></p>
+      <div id="board-replies-results"></div>
+    </div>
+
+    <form id="board-composer">
+      <div class="field">
+        <label for="board-caption">Share something</label>
+        <textarea id="board-caption" name="caption" maxlength="500" placeholder="A sighting, a gear tip, a meet-up idea…" required></textarea>
+      </div>
+      <div class="field">
+        <label for="board-photo">Photo (optional)</label>
+        <input type="file" id="board-photo" name="photo" accept="image/*">
+        <p class="hint">Not every post needs one — gear talk and meet-up plans are welcome as text only.</p>
+      </div>
+      <button type="submit" class="btn btn-primary">Post</button>
+      <p class="hint" id="board-status" hidden></p>
+    </form>
+
+    <div>
+      <h3 style="margin-bottom:14px;">Recent posts</h3>
+      <div class="board-feed" id="board-feed">
+        <!-- Example posts — swapped for the real feed once posts exist in the shared database. -->
+        <article class="board-post" data-post-id="example-1">
+          <div class="board-post-head">
+            <span class="board-post-author"><svg viewBox="0 0 100 100" width="26" height="26" role="img" aria-label="Rainbow Lorikeet"><circle cx="50" cy="50" r="48" fill="#e7f3ea" stroke="var(--accent-warm)" stroke-width="3"/><circle cx="50" cy="52" r="22" fill="#1f7a4d"/><circle cx="40" cy="42" r="12" fill="#1f5fa8"/><path d="M50,58 Q66,54 78,60 Q66,64 54,64 Z" fill="#e8ac5e"/><path d="M30,40 L18,36 L30,46 Z" fill="#e8ac5e"/><circle cx="34" cy="38" r="2.4" fill="#172621"/><path d="M50,70 Q58,82 50,90 Q42,82 50,70 Z" fill="#b7383a"/></svg><span class="board-post-name">Priya N.</span></span>
+            <span class="board-post-time">3 Sep, 7:42 am</span>
+          </div>
+          <p class="board-post-caption">Finally caught a Powerful Owl roosting near the Mt Coot-tha lookout track this morning — anyone else seen one this month?</p>
+          <div class="board-comments">
+            <div class="board-comment">
+              <svg viewBox="0 0 100 100" width="26" height="26" role="img" aria-label="Laughing Kookaburra"><circle cx="50" cy="50" r="48" fill="#efe9df" stroke="var(--accent-warm)" stroke-width="3"/><ellipse cx="52" cy="58" rx="24" ry="20" fill="#8a6a4a"/><circle cx="36" cy="42" r="15" fill="#c9b18f"/><path d="M22,40 L4,37 L22,48 Z" fill="#45342180"/><path d="M22,40 L4,37 L22,45 Z" fill="#453421"/><circle cx="32" cy="38" r="2.6" fill="#172621"/><path d="M22,30 Q34,22 46,28" fill="none" stroke="#5c4630" stroke-width="4" stroke-linecap="round"/></svg>
+              <div class="board-comment-content">
+                <span class="board-comment-name">Chen W.</span>
+                <span class="board-comment-body">Yes! Same patch of fig trees, about a week ago. They seem to like it there.</span>
+              </div>
+            </div>
+          </div>
+          <div class="board-post-actions">
+            <button type="button" class="board-curious-btn" data-post-id="example-1" aria-pressed="false">
+              <span class="board-curious-icon" aria-hidden="true">🤙</span>
+              <span class="board-curious-label">Beauty!</span>
+              <span class="board-curious-count">5</span>
+            </button>
+            <a class="board-report-link" href="contact.html?topic=report&page=Community%20Board%20post%20(example-1)">Report</a>
+          </div>
+          <form class="board-comment-form" data-post-id="example-1">
+            <div class="board-comment-input-row">
+              <textarea name="body" maxlength="300" placeholder="Add a comment…" required></textarea>
+              <div class="board-comment-form-btns">
+                <button type="button" class="board-emoji-toggle" aria-label="Add an emoji" aria-haspopup="true" aria-expanded="false">🤓</button>
+                <button type="submit" class="btn btn-ghost">Comment</button>
+              </div>
+            </div>
+            <div class="board-emoji-picker">
+              <button type="button" class="board-emoji-option" data-emoji="🦅">🦅</button>
+              <button type="button" class="board-emoji-option" data-emoji="🦜">🦜</button>
+              <button type="button" class="board-emoji-option" data-emoji="🦉">🦉</button>
+              <button type="button" class="board-emoji-option" data-emoji="🦆">🦆</button>
+              <button type="button" class="board-emoji-option" data-emoji="🐦">🐦</button>
+              <button type="button" class="board-emoji-option" data-emoji="🦢">🦢</button>
+              <button type="button" class="board-emoji-option" data-emoji="🐣">🐣</button>
+              <button type="button" class="board-emoji-option" data-emoji="🦋">🦋</button>
+              <button type="button" class="board-emoji-option" data-emoji="🐝">🐝</button>
+              <button type="button" class="board-emoji-option" data-emoji="🌿">🌿</button>
+              <button type="button" class="board-emoji-option" data-emoji="🌳">🌳</button>
+              <button type="button" class="board-emoji-option" data-emoji="🌸">🌸</button>
+              <button type="button" class="board-emoji-option" data-emoji="🍃">🍃</button>
+              <button type="button" class="board-emoji-option" data-emoji="🌤️">🌤️</button>
+              <button type="button" class="board-emoji-option" data-emoji="🌅">🌅</button>
+              <button type="button" class="board-emoji-option" data-emoji="🌊">🌊</button>
+              <button type="button" class="board-emoji-option" data-emoji="🔭">🔭</button>
+              <button type="button" class="board-emoji-option" data-emoji="📸">📸</button>
+              <button type="button" class="board-emoji-option" data-emoji="😄">😄</button>
+              <button type="button" class="board-emoji-option" data-emoji="😂">😂</button>
+              <button type="button" class="board-emoji-option" data-emoji="🤩">🤩</button>
+              <button type="button" class="board-emoji-option" data-emoji="😍">😍</button>
+              <button type="button" class="board-emoji-option" data-emoji="🥹">🥹</button>
+              <button type="button" class="board-emoji-option" data-emoji="🥰">🥰</button>
+              <button type="button" class="board-emoji-option" data-emoji="😲">😲</button>
+              <button type="button" class="board-emoji-option" data-emoji="🙃">🙃</button>
+              <button type="button" class="board-emoji-option" data-emoji="😅">😅</button>
+              <button type="button" class="board-emoji-option" data-emoji="🤯">🤯</button>
+              <button type="button" class="board-emoji-option" data-emoji="😎">😎</button>
+              <button type="button" class="board-emoji-option" data-emoji="🥶">🥶</button>
+              <button type="button" class="board-emoji-option" data-emoji="🙄">🙄</button>
+              <button type="button" class="board-emoji-option" data-emoji="😴">😴</button>
+              <button type="button" class="board-emoji-option" data-emoji="😬">😬</button>
+              <button type="button" class="board-emoji-option" data-emoji="😇">😇</button>
+              <button type="button" class="board-emoji-option" data-emoji="👍">👍</button>
+              <button type="button" class="board-emoji-option" data-emoji="👎">👎</button>
+              <button type="button" class="board-emoji-option" data-emoji="🙌">🙌</button>
+              <button type="button" class="board-emoji-option" data-emoji="👏">👏</button>
+              <button type="button" class="board-emoji-option" data-emoji="🤝">🤝</button>
+              <button type="button" class="board-emoji-option" data-emoji="✌️">✌️</button>
+              <button type="button" class="board-emoji-option" data-emoji="🤙">🤙</button>
+              <button type="button" class="board-emoji-option" data-emoji="💪">💪</button>
+              <button type="button" class="board-emoji-option" data-emoji="❤️">❤️</button>
+              <button type="button" class="board-emoji-option" data-emoji="🔥">🔥</button>
+              <button type="button" class="board-emoji-option" data-emoji="🎉">🎉</button>
+              <button type="button" class="board-emoji-option" data-emoji="✨">✨</button>
+              <button type="button" class="board-emoji-option" data-emoji="⭐">⭐</button>
+              <button type="button" class="board-emoji-option" data-emoji="💯">💯</button>
+              <button type="button" class="board-emoji-option" data-emoji="✅">✅</button>
+              <button type="button" class="board-emoji-option" data-emoji="❓">❓</button>
+              <button type="button" class="board-emoji-option" data-emoji="❗">❗</button>
+              <button type="button" class="board-emoji-option" data-emoji="🤔">🤔</button>
+              <button type="button" class="board-emoji-option" data-emoji="🙏">🙏</button>
+              <button type="button" class="board-emoji-option" data-emoji="☕">☕</button>
+              <button type="button" class="board-emoji-option" data-emoji="🍻">🍻</button>
+              <button type="button" class="board-emoji-option" data-emoji="👀">👀</button>
+              <button type="button" class="board-emoji-option" data-emoji="🐧">🐧</button>
+              <button type="button" class="board-emoji-option" data-emoji="🦩">🦩</button>
+              <button type="button" class="board-emoji-option" data-emoji="🦚">🦚</button>
+              <button type="button" class="board-emoji-option" data-emoji="🦃">🦃</button>
+              <button type="button" class="board-emoji-option" data-emoji="🕊️">🕊️</button>
+              <button type="button" class="board-emoji-option" data-emoji="☀️">☀️</button>
+              <button type="button" class="board-emoji-option" data-emoji="🌙">🌙</button>
+              <button type="button" class="board-emoji-option" data-emoji="🌈">🌈</button>
+              <button type="button" class="board-emoji-option" data-emoji="🌧️">🌧️</button>
+              <button type="button" class="board-emoji-option" data-emoji="🍂">🍂</button>
+              <button type="button" class="board-emoji-option" data-emoji="🌾">🌾</button>
+              <button type="button" class="board-emoji-option" data-emoji="😆">😆</button>
+              <button type="button" class="board-emoji-option" data-emoji="🤣">🤣</button>
+              <button type="button" class="board-emoji-option" data-emoji="🥳">🥳</button>
+              <button type="button" class="board-emoji-option" data-emoji="😊">😊</button>
+              <button type="button" class="board-emoji-option" data-emoji="🤗">🤗</button>
+              <button type="button" class="board-emoji-option" data-emoji="😱">😱</button>
+              <button type="button" class="board-emoji-option" data-emoji="🫡">🫡</button>
+            </div>
+          </form>
+        </article>
+
+        <article class="board-post" data-post-id="example-2">
+          <div class="board-post-head">
+            <span class="board-post-author"><svg viewBox="0 0 100 100" width="26" height="26" role="img" aria-label="Australian Magpie"><circle cx="50" cy="50" r="48" fill="#eceae4" stroke="var(--accent-warm)" stroke-width="3"/><ellipse cx="52" cy="58" rx="24" ry="20" fill="#1c1c1c"/><path d="M30,50 Q52,46 60,58 Q46,64 30,58 Z" fill="#f4f4f0"/><circle cx="36" cy="40" r="13" fill="#1c1c1c"/><path d="M23,38 L8,35 L23,45 Z" fill="#e0e0d8"/><circle cx="33" cy="37" r="2.4" fill="#f4f4f0"/><path d="M60,78 Q70,86 62,92 Q54,86 60,78 Z" fill="#1c1c1c"/></svg><span class="board-post-name">Sam R.</span></span>
+            <span class="board-post-time">1 Sep, 6:15 pm</span>
+          </div>
+          <p class="board-post-caption">Anyone found a lightweight scope that doesn't break the bank? Looking to upgrade from binoculars before the next challenge variant drops.</p>
+          <div class="board-comments"></div>
+          <div class="board-post-actions">
+            <button type="button" class="board-curious-btn" data-post-id="example-2" aria-pressed="false">
+              <span class="board-curious-icon" aria-hidden="true">🤙</span>
+              <span class="board-curious-label">Beauty!</span>
+              <span class="board-curious-count">1</span>
+            </button>
+            <a class="board-report-link" href="contact.html?topic=report&page=Community%20Board%20post%20(example-2)">Report</a>
+          </div>
+          <form class="board-comment-form" data-post-id="example-2">
+            <div class="board-comment-input-row">
+              <textarea name="body" maxlength="300" placeholder="Add a comment…" required></textarea>
+              <div class="board-comment-form-btns">
+                <button type="button" class="board-emoji-toggle" aria-label="Add an emoji" aria-haspopup="true" aria-expanded="false">🤓</button>
+                <button type="submit" class="btn btn-ghost">Comment</button>
+              </div>
+            </div>
+            <div class="board-emoji-picker">
+              <button type="button" class="board-emoji-option" data-emoji="🦅">🦅</button>
+              <button type="button" class="board-emoji-option" data-emoji="🦜">🦜</button>
+              <button type="button" class="board-emoji-option" data-emoji="🦉">🦉</button>
+              <button type="button" class="board-emoji-option" data-emoji="🦆">🦆</button>
+              <button type="button" class="board-emoji-option" data-emoji="🐦">🐦</button>
+              <button type="button" class="board-emoji-option" data-emoji="🦢">🦢</button>
+              <button type="button" class="board-emoji-option" data-emoji="🐣">🐣</button>
+              <button type="button" class="board-emoji-option" data-emoji="🦋">🦋</button>
+              <button type="button" class="board-emoji-option" data-emoji="🐝">🐝</button>
+              <button type="button" class="board-emoji-option" data-emoji="🌿">🌿</button>
+              <button type="button" class="board-emoji-option" data-emoji="🌳">🌳</button>
+              <button type="button" class="board-emoji-option" data-emoji="🌸">🌸</button>
+              <button type="button" class="board-emoji-option" data-emoji="🍃">🍃</button>
+              <button type="button" class="board-emoji-option" data-emoji="🌤️">🌤️</button>
+              <button type="button" class="board-emoji-option" data-emoji="🌅">🌅</button>
+              <button type="button" class="board-emoji-option" data-emoji="🌊">🌊</button>
+              <button type="button" class="board-emoji-option" data-emoji="🔭">🔭</button>
+              <button type="button" class="board-emoji-option" data-emoji="📸">📸</button>
+              <button type="button" class="board-emoji-option" data-emoji="😄">😄</button>
+              <button type="button" class="board-emoji-option" data-emoji="😂">😂</button>
+              <button type="button" class="board-emoji-option" data-emoji="🤩">🤩</button>
+              <button type="button" class="board-emoji-option" data-emoji="😍">😍</button>
+              <button type="button" class="board-emoji-option" data-emoji="🥹">🥹</button>
+              <button type="button" class="board-emoji-option" data-emoji="🥰">🥰</button>
+              <button type="button" class="board-emoji-option" data-emoji="😲">😲</button>
+              <button type="button" class="board-emoji-option" data-emoji="🙃">🙃</button>
+              <button type="button" class="board-emoji-option" data-emoji="😅">😅</button>
+              <button type="button" class="board-emoji-option" data-emoji="🤯">🤯</button>
+              <button type="button" class="board-emoji-option" data-emoji="😎">😎</button>
+              <button type="button" class="board-emoji-option" data-emoji="🥶">🥶</button>
+              <button type="button" class="board-emoji-option" data-emoji="🙄">🙄</button>
+              <button type="button" class="board-emoji-option" data-emoji="😴">😴</button>
+              <button type="button" class="board-emoji-option" data-emoji="😬">😬</button>
+              <button type="button" class="board-emoji-option" data-emoji="😇">😇</button>
+              <button type="button" class="board-emoji-option" data-emoji="👍">👍</button>
+              <button type="button" class="board-emoji-option" data-emoji="👎">👎</button>
+              <button type="button" class="board-emoji-option" data-emoji="🙌">🙌</button>
+              <button type="button" class="board-emoji-option" data-emoji="👏">👏</button>
+              <button type="button" class="board-emoji-option" data-emoji="🤝">🤝</button>
+              <button type="button" class="board-emoji-option" data-emoji="✌️">✌️</button>
+              <button type="button" class="board-emoji-option" data-emoji="🤙">🤙</button>
+              <button type="button" class="board-emoji-option" data-emoji="💪">💪</button>
+              <button type="button" class="board-emoji-option" data-emoji="❤️">❤️</button>
+              <button type="button" class="board-emoji-option" data-emoji="🔥">🔥</button>
+              <button type="button" class="board-emoji-option" data-emoji="🎉">🎉</button>
+              <button type="button" class="board-emoji-option" data-emoji="✨">✨</button>
+              <button type="button" class="board-emoji-option" data-emoji="⭐">⭐</button>
+              <button type="button" class="board-emoji-option" data-emoji="💯">💯</button>
+              <button type="button" class="board-emoji-option" data-emoji="✅">✅</button>
+              <button type="button" class="board-emoji-option" data-emoji="❓">❓</button>
+              <button type="button" class="board-emoji-option" data-emoji="❗">❗</button>
+              <button type="button" class="board-emoji-option" data-emoji="🤔">🤔</button>
+              <button type="button" class="board-emoji-option" data-emoji="🙏">🙏</button>
+              <button type="button" class="board-emoji-option" data-emoji="☕">☕</button>
+              <button type="button" class="board-emoji-option" data-emoji="🍻">🍻</button>
+              <button type="button" class="board-emoji-option" data-emoji="👀">👀</button>
+              <button type="button" class="board-emoji-option" data-emoji="🐧">🐧</button>
+              <button type="button" class="board-emoji-option" data-emoji="🦩">🦩</button>
+              <button type="button" class="board-emoji-option" data-emoji="🦚">🦚</button>
+              <button type="button" class="board-emoji-option" data-emoji="🦃">🦃</button>
+              <button type="button" class="board-emoji-option" data-emoji="🕊️">🕊️</button>
+              <button type="button" class="board-emoji-option" data-emoji="☀️">☀️</button>
+              <button type="button" class="board-emoji-option" data-emoji="🌙">🌙</button>
+              <button type="button" class="board-emoji-option" data-emoji="🌈">🌈</button>
+              <button type="button" class="board-emoji-option" data-emoji="🌧️">🌧️</button>
+              <button type="button" class="board-emoji-option" data-emoji="🍂">🍂</button>
+              <button type="button" class="board-emoji-option" data-emoji="🌾">🌾</button>
+              <button type="button" class="board-emoji-option" data-emoji="😆">😆</button>
+              <button type="button" class="board-emoji-option" data-emoji="🤣">🤣</button>
+              <button type="button" class="board-emoji-option" data-emoji="🥳">🥳</button>
+              <button type="button" class="board-emoji-option" data-emoji="😊">😊</button>
+              <button type="button" class="board-emoji-option" data-emoji="🤗">🤗</button>
+              <button type="button" class="board-emoji-option" data-emoji="😱">😱</button>
+              <button type="button" class="board-emoji-option" data-emoji="🫡">🫡</button>
+            </div>
+          </form>
+        </article>
+
+        <article class="board-post" data-post-id="example-3">
+          <div class="board-post-head">
+            <span class="board-post-author"><svg viewBox="0 0 100 100" width="26" height="26" role="img" aria-label="Sulphur-crested Cockatoo"><circle cx="50" cy="50" r="48" fill="#f6f3e6" stroke="var(--accent-warm)" stroke-width="3"/><ellipse cx="52" cy="60" rx="22" ry="19" fill="#fbfaf3"/><circle cx="38" cy="44" r="13" fill="#fbfaf3"/><path d="M32,32 L26,12 L38,30 Z" fill="#e8c34a"/><path d="M40,30 L40,10 L48,28 Z" fill="#e8c34a"/><path d="M48,32 L54,14 L56,32 Z" fill="#e8c34a"/><path d="M25,42 L10,39 L25,49 Z" fill="#45342b"/><circle cx="35" cy="40" r="2.4" fill="#172621"/></svg><span class="board-post-name">Marco D.</span></span>
+            <span class="board-post-time">30 Aug, 9:03 am</span>
+          </div>
+          <p class="board-post-caption">Keen for a group walk through New Farm Park this Saturday morning if a few of us want to compare notes — reply here if you're in!</p>
+          <div class="board-comments"></div>
+          <div class="board-post-actions">
+            <button type="button" class="board-curious-btn" data-post-id="example-3" aria-pressed="false">
+              <span class="board-curious-icon" aria-hidden="true">🤙</span>
+              <span class="board-curious-label">Beauty!</span>
+              <span class="board-curious-count">3</span>
+            </button>
+            <a class="board-report-link" href="contact.html?topic=report&page=Community%20Board%20post%20(example-3)">Report</a>
+          </div>
+          <form class="board-comment-form" data-post-id="example-3">
+            <div class="board-comment-input-row">
+              <textarea name="body" maxlength="300" placeholder="Add a comment…" required></textarea>
+              <div class="board-comment-form-btns">
+                <button type="button" class="board-emoji-toggle" aria-label="Add an emoji" aria-haspopup="true" aria-expanded="false">🤓</button>
+                <button type="submit" class="btn btn-ghost">Comment</button>
+              </div>
+            </div>
+            <div class="board-emoji-picker">
+              <button type="button" class="board-emoji-option" data-emoji="🦅">🦅</button>
+              <button type="button" class="board-emoji-option" data-emoji="🦜">🦜</button>
+              <button type="button" class="board-emoji-option" data-emoji="🦉">🦉</button>
+              <button type="button" class="board-emoji-option" data-emoji="🦆">🦆</button>
+              <button type="button" class="board-emoji-option" data-emoji="🐦">🐦</button>
+              <button type="button" class="board-emoji-option" data-emoji="🦢">🦢</button>
+              <button type="button" class="board-emoji-option" data-emoji="🐣">🐣</button>
+              <button type="button" class="board-emoji-option" data-emoji="🦋">🦋</button>
+              <button type="button" class="board-emoji-option" data-emoji="🐝">🐝</button>
+              <button type="button" class="board-emoji-option" data-emoji="🌿">🌿</button>
+              <button type="button" class="board-emoji-option" data-emoji="🌳">🌳</button>
+              <button type="button" class="board-emoji-option" data-emoji="🌸">🌸</button>
+              <button type="button" class="board-emoji-option" data-emoji="🍃">🍃</button>
+              <button type="button" class="board-emoji-option" data-emoji="🌤️">🌤️</button>
+              <button type="button" class="board-emoji-option" data-emoji="🌅">🌅</button>
+              <button type="button" class="board-emoji-option" data-emoji="🌊">🌊</button>
+              <button type="button" class="board-emoji-option" data-emoji="🔭">🔭</button>
+              <button type="button" class="board-emoji-option" data-emoji="📸">📸</button>
+              <button type="button" class="board-emoji-option" data-emoji="😄">😄</button>
+              <button type="button" class="board-emoji-option" data-emoji="😂">😂</button>
+              <button type="button" class="board-emoji-option" data-emoji="🤩">🤩</button>
+              <button type="button" class="board-emoji-option" data-emoji="😍">😍</button>
+              <button type="button" class="board-emoji-option" data-emoji="🥹">🥹</button>
+              <button type="button" class="board-emoji-option" data-emoji="🥰">🥰</button>
+              <button type="button" class="board-emoji-option" data-emoji="😲">😲</button>
+              <button type="button" class="board-emoji-option" data-emoji="🙃">🙃</button>
+              <button type="button" class="board-emoji-option" data-emoji="😅">😅</button>
+              <button type="button" class="board-emoji-option" data-emoji="🤯">🤯</button>
+              <button type="button" class="board-emoji-option" data-emoji="😎">😎</button>
+              <button type="button" class="board-emoji-option" data-emoji="🥶">🥶</button>
+              <button type="button" class="board-emoji-option" data-emoji="🙄">🙄</button>
+              <button type="button" class="board-emoji-option" data-emoji="😴">😴</button>
+              <button type="button" class="board-emoji-option" data-emoji="😬">😬</button>
+              <button type="button" class="board-emoji-option" data-emoji="😇">😇</button>
+              <button type="button" class="board-emoji-option" data-emoji="👍">👍</button>
+              <button type="button" class="board-emoji-option" data-emoji="👎">👎</button>
+              <button type="button" class="board-emoji-option" data-emoji="🙌">🙌</button>
+              <button type="button" class="board-emoji-option" data-emoji="👏">👏</button>
+              <button type="button" class="board-emoji-option" data-emoji="🤝">🤝</button>
+              <button type="button" class="board-emoji-option" data-emoji="✌️">✌️</button>
+              <button type="button" class="board-emoji-option" data-emoji="🤙">🤙</button>
+              <button type="button" class="board-emoji-option" data-emoji="💪">💪</button>
+              <button type="button" class="board-emoji-option" data-emoji="❤️">❤️</button>
+              <button type="button" class="board-emoji-option" data-emoji="🔥">🔥</button>
+              <button type="button" class="board-emoji-option" data-emoji="🎉">🎉</button>
+              <button type="button" class="board-emoji-option" data-emoji="✨">✨</button>
+              <button type="button" class="board-emoji-option" data-emoji="⭐">⭐</button>
+              <button type="button" class="board-emoji-option" data-emoji="💯">💯</button>
+              <button type="button" class="board-emoji-option" data-emoji="✅">✅</button>
+              <button type="button" class="board-emoji-option" data-emoji="❓">❓</button>
+              <button type="button" class="board-emoji-option" data-emoji="❗">❗</button>
+              <button type="button" class="board-emoji-option" data-emoji="🤔">🤔</button>
+              <button type="button" class="board-emoji-option" data-emoji="🙏">🙏</button>
+              <button type="button" class="board-emoji-option" data-emoji="☕">☕</button>
+              <button type="button" class="board-emoji-option" data-emoji="🍻">🍻</button>
+              <button type="button" class="board-emoji-option" data-emoji="👀">👀</button>
+              <button type="button" class="board-emoji-option" data-emoji="🐧">🐧</button>
+              <button type="button" class="board-emoji-option" data-emoji="🦩">🦩</button>
+              <button type="button" class="board-emoji-option" data-emoji="🦚">🦚</button>
+              <button type="button" class="board-emoji-option" data-emoji="🦃">🦃</button>
+              <button type="button" class="board-emoji-option" data-emoji="🕊️">🕊️</button>
+              <button type="button" class="board-emoji-option" data-emoji="☀️">☀️</button>
+              <button type="button" class="board-emoji-option" data-emoji="🌙">🌙</button>
+              <button type="button" class="board-emoji-option" data-emoji="🌈">🌈</button>
+              <button type="button" class="board-emoji-option" data-emoji="🌧️">🌧️</button>
+              <button type="button" class="board-emoji-option" data-emoji="🍂">🍂</button>
+              <button type="button" class="board-emoji-option" data-emoji="🌾">🌾</button>
+              <button type="button" class="board-emoji-option" data-emoji="😆">😆</button>
+              <button type="button" class="board-emoji-option" data-emoji="🤣">🤣</button>
+              <button type="button" class="board-emoji-option" data-emoji="🥳">🥳</button>
+              <button type="button" class="board-emoji-option" data-emoji="😊">😊</button>
+              <button type="button" class="board-emoji-option" data-emoji="🤗">🤗</button>
+              <button type="button" class="board-emoji-option" data-emoji="😱">😱</button>
+              <button type="button" class="board-emoji-option" data-emoji="🫡">🫡</button>
+            </div>
+          </form>
+        </article>
+      </div>
+      <p class="sample-note" id="board-note"><span class="dot"></span>Example posts — this board fills with real ones once participants start posting.</p>
+    </div>
+
+  </div>
+</section>
+
+<footer class="wrap">
+  <p>Keep it kind and on-topic — see <a href="rules.html">Rule #1, Safety First</a>. Something inappropriate? Tap <strong>Report</strong> on the post, or <a href="contact.html?topic=report&page=Curiosity%20Chat">get in touch</a> directly, and Georgie will take it down.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="assets/supabase-client.js"></script>
+<script src="assets/avatars.js"></script>
+<script src="assets/chat.js"></script>
+</body>
+</html>
