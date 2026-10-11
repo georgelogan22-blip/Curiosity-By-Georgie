@@ -382,13 +382,17 @@ function fetchHallOfFame() {
           (lbRes.data || []).forEach(function (row) {
             byKey[row.participant_key] = row;
           });
-          return inductions.map(function (ind) {
+          return inductions.map(function (ind, i) {
             var lb = byKey[ind.participant_key] || {};
             return {
               name: lb.participant_name || ind.participant_key,
               count: lb.species_count,
               points: lb.total_points,
               inductedAt: ind.inducted_at,
+              // 1-based position in induction order (inductions is already
+              // sorted inducted_at ascending, oldest first) — shown on the
+              // Hall of Fame card as their finisher number, e.g. "#001".
+              finisherNumber: i + 1,
               avatarKey: lb.avatar_key || null,
               avatarPhotoUrl: avatarPhotoUrl(lb.avatar_photo_path),
             };

@@ -1443,9 +1443,15 @@ textarea { resize: vertical; min-height: 80px; }
    internal -webkit-min-logical-width (reserving room for the longest
    locale date format), which the standard min-width property does not
    override — that's why this needs its own WebKit-specific rule rather
-   than just width:100%. */
+   than just width:100%. On top of that, stretching a date field to
+   width:100% (like the text fields) just leaves a wide band of empty
+   space to the right of the actual "dd/mm/yyyy" value and the calendar
+   icon — a date never needs the full row width. Capping it with
+   max-width keeps it a sensible, content-sized box instead, the same
+   way the PIN field is capped above. */
 input[type="date"] {
   min-width: 0;
+  max-width: 200px;
   -webkit-min-logical-width: 0 !important;
 }
 form { background: var(--paper-raised); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 26px; }
@@ -1627,7 +1633,39 @@ tr:last-child td { border-bottom: none; }
 }
 .fame-card-head { display: flex; align-items: center; gap: 10px; }
 .fame-card .name { font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; }
-.fame-card .badge-row { display: flex; align-items: center; gap: 6px; margin: 8px 0; }
+/* The medal block: badge, "AIR MASTER", finisher number, induction date,
+   all centred together as one certificate-like unit — tier-amber is the
+   same gold already used for the coin ring on finisher-rewards.html, so
+   this reads as the same "finisher" visual language. */
+.fame-card .fame-card-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 2px;
+  margin: 14px 0 10px;
+  padding: 14px 10px 12px;
+  background: color-mix(in srgb, var(--tier-amber) 8%, var(--paper-raised));
+  border: 1px solid color-mix(in srgb, var(--tier-amber) 32%, transparent);
+  border-radius: var(--radius-sm);
+}
+.fame-card .badge-title {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tier-amber);
+  margin-top: 6px;
+}
+.fame-card .badge-number {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.fame-card .fame-card-badge .date { margin-top: 3px; }
 .fame-card .count {
   font-family: var(--font-mono);
   color: var(--accent-warm);
@@ -1635,7 +1673,7 @@ tr:last-child td { border-bottom: none; }
 }
 .fame-card .date { color: var(--ink-soft); font-size: 0.82rem; }
 .badge-air50 { flex: none; display: block; }
-.fame-card .badge-row img.badge-air50 { width: 56px; height: 55px; object-fit: contain; }
+.fame-card .fame-card-badge img.badge-air50 { width: 56px; height: 55px; object-fit: contain; }
 
 /* ---------- checklist ---------- */
 .checklist-group { margin-bottom: 34px; }
