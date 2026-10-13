@@ -1514,22 +1514,108 @@ section { padding: 40px 0; }
 
 .dex-detail {
   display: none;
-  margin-top: 16px;
+  margin-top: 18px;
+}
+.dex-detail.open { display: flex; justify-content: center; }
+
+/* Plain (non-flipping) teaser shown for a species that hasn't been
+   confirmed yet — deliberately NOT styled as a card, so it reads clearly
+   as "nothing to flip here yet". */
+.dex-locked-box {
+  width: 100%;
+  max-width: 340px;
   background: var(--paper-raised);
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
   padding: 20px 22px;
 }
-.dex-detail.open { display: block; }
-.dex-detail-head { display: flex; align-items: center; gap: 16px; }
-.dex-detail-head svg { width: 66px; height: 66px; flex: none; }
-.dex-detail h3 { margin: 0 0 2px; font-family: var(--font-display); }
-.dex-detail .sci { font-style: italic; color: var(--ink-soft); font-size: 0.9rem; margin: 0; }
-.dex-detail .dex-detail-tier { font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-soft); margin-top: 3px; }
-.dex-detail ul { margin: 14px 0 0; padding-left: 20px; }
-.dex-detail li { margin-bottom: 8px; }
-.dex-detail .dex-soon-note,
-.dex-detail .dex-locked-note { color: var(--ink-soft); font-size: 0.9rem; margin: 14px 0 0; }
+.dex-locked-box-head { display: flex; align-items: center; gap: 16px; }
+.dex-locked-box-head svg { width: 56px; height: 56px; flex: none; }
+.dex-locked-box h3 { margin: 0 0 2px; font-family: var(--font-display); font-size: 1.1rem; }
+.dex-detail .dex-detail-tier { font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-soft); margin-top: 2px; }
+.dex-locked-note { color: var(--ink-soft); font-size: 0.9rem; margin: 14px 0 0; }
+
+/* ---- the flip card (revealed species) ----
+   Two faces of one element, rotated 180deg apart in 3D space; toggling
+   .flipped on .dex-card spins .dex-card-inner between them. Front = photo
+   (or the badge art, for species without a photo yet) + bio stats, back =
+   the 3 facts — a trading-card format, tap/click/Enter to flip. */
+.dex-card {
+  width: 100%;
+  max-width: 340px;
+  perspective: 1400px;
+}
+.dex-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: var(--radius-md); }
+.dex-card-inner {
+  position: relative;
+  width: 100%;
+  min-height: 500px;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0.1, 0.2, 1);
+  cursor: pointer;
+}
+.dex-card.flipped .dex-card-inner { transform: rotateY(180deg); }
+@media (prefers-reduced-motion: reduce) {
+  .dex-card-inner { transition: none; }
+}
+.dex-card-face {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--accent-warm);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow);
+}
+.dex-card-back { transform: rotateY(180deg); }
+.dex-card-photo-wrap {
+  background: radial-gradient(ellipse at 50% 40%, color-mix(in srgb, var(--accent-warm) 20%, transparent), transparent 72%);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  min-height: 190px;
+}
+.dex-card-photo-wrap img,
+.dex-card-photo-wrap svg { max-height: 190px; max-width: 100%; width: auto; object-fit: contain; }
+.dex-card-name-row { margin-top: 12px; }
+.dex-card-name-row h3 { margin: 0; font-family: var(--font-display); font-size: 1.2rem; }
+.dex-card .sci { font-style: italic; color: var(--ink-soft); font-size: 0.86rem; margin: 2px 0 0; }
+.dex-stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 12px;
+}
+.dex-stat { background: var(--paper); border-radius: var(--radius-sm); padding: 7px 9px; }
+.dex-stat-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.dex-stat-value { font-weight: 700; font-size: 0.84rem; line-height: 1.25; }
+.dex-card-flip-hint {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  color: var(--ink-soft);
+  margin-top: 10px;
+}
+.dex-card-back h4 { margin: 0 0 10px; font-family: var(--font-display); font-size: 1.05rem; }
+.dex-card-back ul { margin: 0; padding-left: 18px; overflow: auto; }
+.dex-card-back li { margin-bottom: 10px; font-size: 0.9rem; }
+.dex-card-soon-note { color: var(--ink-soft); font-size: 0.9rem; }
 
 .dashboard-avatar-btn:focus-visible,
 .avatar-option:focus-visible,

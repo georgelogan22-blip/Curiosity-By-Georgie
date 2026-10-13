@@ -4,7 +4,14 @@
 // (see SPECIES_BY_KEY in species-data.js), so my-sightings.js can look up
 // SPECIES_ART[key] for any confirmed species without a second normalisation
 // scheme. Each entry is:
-//   { svg: "<svg>...</svg>", facts: ["...", "...", "..."] }
+//   {
+//     svg: "<svg>...</svg>",       // badge/thumbnail art for the Dex grid cell
+//     photo: "assets/species-photos/....png",   // OPTIONAL real photo/illustration
+//                                                // for the flip-card front — falls
+//                                                // back to `svg` when absent
+//     stats: { weight, length, wingspan, footprint },  // OPTIONAL "trading card" stat block
+//     facts: ["...", "...", "..."],
+//   }
 //
 // The <svg> MUST wrap every bird shape in a single <g class="dex-bird">
 // (plus an outer background circle+ring left OUTSIDE that group) — the Dex
@@ -12,20 +19,26 @@
 // with a brightness(0) filter until the sighting is confirmed, then
 // animates it back to full colour. This is why a locked bird can look like
 // a silhouette and a revealed one can look fully illustrated using the
-// exact same markup — no separate silhouette artwork needed.
+// exact same markup — no separate silhouette artwork needed. `photo`, if
+// present, is only ever shown AFTER a sighting is confirmed (the flip-card
+// front) — it's never put through the silhouette filter.
 //
-// STATUS (2026-10-12): hand-illustrated + fact-checked for 8 species so
+// STATUS (2026-10-13): hand-illustrated + fact-checked for 8 species so
 // far, reusing the Hall of Fame badge art line-for-line for the 4 species
 // that already had it (Willie Wagtail, Rainbow Lorikeet, Galah, Australian
 // Pelican), built fresh in the same style for 4 more. The other 42 render
 // fine today via the Dex's generic placeholder bird (see genericDexSvg() in
 // my-sightings.js) — they just show name/tier/sci-name once confirmed,
-// with a "coming soon" note instead of facts, until art+facts are added
-// here. Add a new entry below (lowercase species name as the key) and it
-// picks up automatically — no other file needs to change.
+// with a "coming soon" note instead of stats/facts, until art+facts are
+// added here. Add a new entry below (lowercase species name as the key)
+// and it picks up automatically — no other file needs to change.
 //
 // Facts are written for general public accuracy, not reproduced from any
 // single source — recheck before publishing anything genuinely contested.
+// Stats are sourced from Wikipedia species pages + a couple of supporting
+// field-guide sources checked 2026-10-13; two are flagged as estimates
+// below because a wingspan figure isn't well documented for that species —
+// worth a field-guide spot-check before this goes live.
 
 var SPECIES_ART = {
   "torresian crow": {
@@ -40,6 +53,12 @@ var SPECIES_ART = {
       '<path d="M25,44 L10,40 L25,50 Z" fill="#2b2b2b"/>' +
       '<circle cx="33" cy="43" r="2.6" fill="#f4f1e6"/>' +
       "</g></svg>",
+    stats: {
+      weight: "430–670 g",
+      length: "48–53 cm",
+      wingspan: "~90 cm (estimated)",
+      footprint: "Anisodactyl — 3 toes forward, 1 back; confident ground-walker"
+    },
     facts: [
       "They're one of the only all-black birds you'll see around Brisbane with pale, almost white eyes as adults — a handy trick for telling them apart from ravens at a glance.",
       "Torresian Crows are confident ground-feeders, often seen walking rather than hopping across lawns and car parks, probing for insects, scraps and carrion.",
@@ -59,6 +78,12 @@ var SPECIES_ART = {
       '<circle cx="33" cy="43" r="2.2" fill="#f4f4f0"/>' +
       '<path d="M28,56 Q36,66 46,60" fill="none" stroke="#f4f4f0" stroke-width="4" stroke-linecap="round"/>' +
       "</g></svg>",
+    stats: {
+      weight: "17–24 g",
+      length: "19–21.5 cm",
+      wingspan: "~25 cm (estimated)",
+      footprint: "Anisodactyl — tiny perching foot, rarely still for long"
+    },
     facts: [
       "That constant side-to-side tail wag isn't idle fidgeting — it's thought to help flush insects out of the grass so the bird can snap them up the moment they move.",
       "It's Australia's largest fantail, and easily one of the boldest — Willie Wagtails are famous for harassing birds many times their size, kookaburras and even eagles, that stray too close to the nest.",
@@ -79,6 +104,12 @@ var SPECIES_ART = {
       '<circle cx="35" cy="40" r="2.4" fill="#172621"/>' +
       '<ellipse cx="44" cy="66" rx="10" ry="6" fill="#d9652e"/>' +
       "</g></svg>",
+    stats: {
+      weight: "75–157 g",
+      length: "25–30 cm",
+      wingspan: "~46 cm",
+      footprint: "Zygodactyl — 2 toes forward, 2 back; strong climbing/clinging grip"
+    },
     facts: [
       "That rainbow plumage isn't just for show — lorikeets have a specialised brush-tipped tongue built for mopping up nectar and pollen from flowering eucalypts and grevilleas.",
       "They're almost never alone. Rainbow Lorikeets travel in fast, screeching flocks and tend to pair for life, roosting wing-to-wing with the same partner night after night.",
@@ -100,6 +131,12 @@ var SPECIES_ART = {
       '<circle cx="33" cy="43" r="3.2" fill="#f4f4f0"/>' +
       '<circle cx="33" cy="43" r="1.7" fill="#111"/>' +
       "</g></svg>",
+    stats: {
+      weight: "220–350 g",
+      length: "37–43 cm",
+      wingspan: "65–85 cm",
+      footprint: "Anisodactyl — walks with a confident, direct stride (doesn't hop)"
+    },
     facts: [
       "Magpies are among the most intelligent birds in the world — studies have shown individuals can recognise and remember dozens of different human faces, for years at a time.",
       "Their rich, warbling carol is produced by two independent voice boxes, letting a single bird layer two notes at once — part of why a dawn chorus of magpies sounds so layered and complex.",
@@ -120,6 +157,12 @@ var SPECIES_ART = {
       '<circle cx="30" cy="41" r="3" fill="#e9e2d0"/>' +
       '<circle cx="30" cy="41" r="1.7" fill="#15110c"/>' +
       "</g></svg>",
+    stats: {
+      weight: "200–465 g",
+      length: "41–47 cm",
+      wingspan: "~64–66 cm",
+      footprint: "Syndactyl — front toes partly fused, typical of the kingfisher family"
+    },
     facts: [
       "That iconic cackling call is almost never a lone bird — it's usually a family group calling together to mark their territory, often answered right back by a neighbouring family further off.",
       "Kookaburras are kingfishers that rarely eat fish. Around Brisbane they mostly hunt insects, lizards, mice and even small snakes, killing prey by bashing it hard against a branch.",
@@ -139,6 +182,12 @@ var SPECIES_ART = {
       '<path d="M25,42 L10,39 L25,49 Z" fill="#8a8a8a"/>' +
       '<circle cx="35" cy="40" r="2.4" fill="#172621"/>' +
       "</g></svg>",
+    stats: {
+      weight: "270–400 g",
+      length: "~35 cm",
+      wingspan: "~75 cm",
+      footprint: "Zygodactyl — 2 toes forward, 2 back; typical cockatoo grip"
+    },
     facts: [
       "That soft grey-and-pink colouring hides a clue to sex you can spot from the ground — adult males have dark brown eyes, while females develop a distinctive pinkish-red eye.",
       "Galahs mate for life and famously \"dance\" during courtship — bobbing, bowing and raising their crest to impress a partner.",
@@ -160,6 +209,17 @@ var SPECIES_ART = {
       '<circle cx="34" cy="43" r="3.4" fill="#dfeaf0"/>' +
       '<circle cx="34" cy="43" r="1.9" fill="#1a1a1a"/>' +
       "</g></svg>",
+    // Real photo (George's own reference image) for the flip card's front.
+    // The small badge SVG above still carries the Dex grid thumbnail + the
+    // locked silhouette, since brightness(0) filtering needs that <g
+    // class="dex-bird"> structure — photo is only ever shown post-reveal.
+    photo: "assets/species-photos/sulphur-crested-cockatoo.png",
+    stats: {
+      weight: "815–975 g",
+      length: "44–55 cm",
+      wingspan: "~90–103 cm",
+      footprint: "Zygodactyl — 2 toes forward, 2 back; strong grey scaled foot"
+    },
     facts: [
       "Their yellow crest usually lies flat against the head and only snaps upright when the bird is alarmed, excited, or landing — it's basically a mood indicator you can read from the ground.",
       "Sulphur-crested Cockatoos can live 40-plus years in the wild and well past 60 in captivity, so the noisy bird in a backyard tree might genuinely be older than the person watching it.",
@@ -179,6 +239,12 @@ var SPECIES_ART = {
       '<circle cx="33" cy="41" r="2.2" fill="#172621"/>' +
       '<path d="M56,46 Q70,40 74,52 Q64,56 56,50 Z" fill="#1f5fa8"/>' +
       "</g></svg>",
+    stats: {
+      weight: "4.5–7.7 kg (up to ~13 kg for very large males)",
+      length: "152–188 cm",
+      wingspan: "230–260 cm",
+      footprint: "Totipalmate — all 4 toes fully webbed, built for powerful swimming"
+    },
     facts: [
       "Its bill is the largest of any living bird — up to half a metre long — and the stretchy throat pouch underneath holds several litres, used for scooping and draining water rather than for storing food.",
       "Pelicans often fish cooperatively, forming a line or horseshoe shape on the water to herd fish into the shallows where they're easier to scoop up.",

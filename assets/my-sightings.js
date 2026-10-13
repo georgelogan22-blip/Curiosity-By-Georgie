@@ -251,6 +251,31 @@ document.addEventListener("DOMContentLoaded", function () {
     );
   }
 
+  // Stat block field order + friendly labels for the flip card's front
+  // face — see the `stats` object on a SPECIES_ART entry.
+  var DEX_STAT_FIELDS = [
+    { key: "weight", label: "Weight" },
+    { key: "length", label: "Length" },
+    { key: "wingspan", label: "Wingspan" },
+    { key: "footprint", label: "Footprint" }
+  ];
+
+  function renderStatGrid(stats) {
+    if (!stats) return "";
+    return (
+      '<div class="dex-stat-grid">' +
+      DEX_STAT_FIELDS.map(function (f) {
+        var value = stats[f.key];
+        if (!value) return "";
+        return (
+          '<div class="dex-stat"><span class="dex-stat-label">' + f.label + "</span>" +
+          '<span class="dex-stat-value">' + escapeHtml(value) + "</span></div>"
+        );
+      }).join("") +
+      "</div>"
+    );
+  }
+
   function wireDex(rows) {
     var grid = results.querySelector("#dex-grid");
     var detail = results.querySelector("#dex-detail");
@@ -272,28 +297,65 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!sp) return;
 
-        var html = '<div class="dex-detail-head">' + (art ? art.svg : genericDexSvg());
-        if (isConfirmed) {
-          html +=
-            "<div><h3>" + escapeHtml(sp.name) + "</h3>" +
-            '<p class="sci">' + escapeHtml(sp.sci) + "</p>" +
-            '<p class="dex-detail-tier">' + escapeHtml(sp.tierLabel) + " tier · " + sp.points + " Air Points</p>" +
-            "</div></div>";
-          if (art) {
-            html += "<ul>" + art.facts.map(function (f) { return "<li>" + escapeHtml(f) + "</li>"; }).join("") + "</ul>";
-          } else {
-            html += '<p class="dex-soon-note">The full illustration and three facts for this one are still being written up — check back soon.</p>';
-          }
-        } else {
-          html +=
+        if (!isConfirmed) {
+          detail.innerHTML =
+            '<div class="dex-locked-box"><div class="dex-locked-box-head">' +
+            (art ? art.svg : genericDexSvg()) +
             "<div><h3>Not yet revealed</h3>" +
             '<p class="dex-detail-tier">' + escapeHtml(sp.tierLabel) + " tier · " + sp.points + " Air Points</p>" +
             "</div></div>" +
-            '<p class="dex-locked-note">Spot this species and get the sighting confirmed to reveal it here.</p>';
+            '<p class="dex-locked-note">Spot this species and get the sighting confirmed to reveal it here.</p>' +
+            "</div>";
+          detail.classList.add("open");
+          return;
         }
 
-        detail.innerHTML = html;
+        // Front face: photo (if we have a real one yet) falling back to
+        // the badge art, name/sci/tier, and a bio stat grid when known.
+        var frontMedia = (art && art.photo)
+          ? '<img src="' + art.photo + '" alt="' + escapeHtml(sp.name) + '">'
+          : (art ? art.svg : genericDexSvg());
+
+        var frontHtml =
+          '<div class="dex-card-photo-wrap">' + frontMedia + "</div>" +
+          '<div class="dex-card-name-row"><h3>' + escapeHtml(sp.name) + "</h3>" +
+          '<p class="sci">' + escapeHtml(sp.sci) + "</p>" +
+          '<p class="dex-detail-tier">' + escapeHtml(sp.tierLabel) + " tier · " + sp.points + " Air Points</p>" +
+          "</div>" +
+          (art && art.stats
+            ? renderStatGrid(art.stats)
+            : '<p class="dex-card-soon-note" style="margin-top:auto;">Measurements for this one are still being researched.</p>') +
+          '<p class="dex-card-flip-hint">Tap the card for 3 facts →</p>';
+
+        // Back face: the 3 facts, Curiosity by Georgie style.
+        var backHtml =
+          "<h4>" + escapeHtml(sp.name) + " — 3 things worth knowing</h4>" +
+          (art && art.facts
+            ? "<ul>" + art.facts.map(function (f) { return "<li>" + escapeHtml(f) + "</li>"; }).join("") + "</ul>"
+            : '<p class="dex-card-soon-note">The full write-up for this species isn\'t ready yet — check back soon.</p>') +
+          '<p class="dex-card-flip-hint">← Tap to flip back</p>';
+
+        detail.innerHTML =
+          '<div class="dex-card" tabindex="0" role="button" aria-pressed="false" aria-label="' +
+          escapeHtml(sp.name) + ' card — tap to flip between stats and facts">' +
+          '<div class="dex-card-inner">' +
+          '<div class="dex-card-face dex-card-front">' + frontHtml + "</div>" +
+          '<div class="dex-card-face dex-card-back">' + backHtml + "</div>" +
+          "</div></div>";
         detail.classList.add("open");
+
+        var cardEl = detail.querySelector(".dex-card");
+        function toggleFlip() {
+          var flipped = cardEl.classList.toggle("flipped");
+          cardEl.setAttribute("aria-pressed", String(flipped));
+        }
+        cardEl.addEventListener("click", toggleFlip);
+        cardEl.addEventListener("keydown", function (e) {
+          if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+            e.preventDefault();
+            toggleFlip();
+          }
+        });
       });
     });
   }
