@@ -50,6 +50,13 @@
   --radius-sm: 6px;
   --radius-md: 12px;
   --radius-lg: 20px;
+
+  /* Species Dex locked-silhouette filter (see .dex-cell.locked in the
+     "species dex" section below) — a plain brightness(0) reads as a clean
+     dark silhouette on the light paper background, but would turn almost
+     invisible on dark mode's near-black paper, so dark mode swaps in an
+     inverted, lighter version of the same filter below. */
+  --dex-locked-filter: brightness(0) opacity(0.45);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -75,6 +82,8 @@
     --tier-purple: #b79af0;
     --tier-silver-text: #a8b4bd;
     --tier-amber: #d9b64e;
+
+    --dex-locked-filter: brightness(0) invert(0.82) opacity(0.5);
   }
 }
 
@@ -1417,6 +1426,110 @@ section { padding: 40px 0; }
 }
 .sightings-tab-panel { display: none; }
 .sightings-tab-panel.active { display: block; }
+
+/* ---------- species dex (my sightings) ----------
+   A 10x5 grid, one cell per official Air 50 species. Each cell's bird
+   artwork lives in a single <g class="dex-bird"> (see species-art.js) —
+   .locked forces it to a flat silhouette with a brightness(0) filter,
+   .confirmed lifts the filter and plays a short reveal animation. Using
+   one filter switch instead of two separate art sets is deliberate: every
+   species gets a silhouette "for free" the moment it has colour artwork. */
+.dex-section { margin: 30px 0 10px; }
+.dex-section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.dex-section-head h2 { margin: 0; }
+.dex-progress {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+.dex-intro { color: var(--ink-soft); margin: 4px 0 0; }
+
+.dex-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 8px;
+  margin-top: 16px;
+}
+@media (max-width: 900px) { .dex-grid { grid-template-columns: repeat(6, 1fr); } }
+@media (max-width: 560px) { .dex-grid { grid-template-columns: repeat(5, 1fr); gap: 6px; } }
+
+.dex-cell {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 5px 3px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  text-align: center;
+  font-family: inherit;
+}
+.dex-cell:hover { border-color: var(--accent-warm); }
+.dex-cell:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.dex-cell svg { width: 100%; height: auto; display: block; }
+.dex-cell.selected { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--paper-raised)); }
+.dex-cell .dex-cell-label {
+  font-family: var(--font-mono);
+  font-size: 0.56rem;
+  letter-spacing: 0.01em;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  min-width: 0;
+}
+.dex-cell.locked { opacity: 0.82; }
+.dex-cell.locked .dex-cell-label { opacity: 0.6; }
+
+.dex-cell.tier-a { border-top-color: var(--tier-red); }
+.dex-cell.tier-c { border-top-color: var(--tier-orange); }
+.dex-cell.tier-u { border-top-color: var(--accent); }
+.dex-cell.tier-r { border-top-color: var(--tier-blue); }
+.dex-cell.tier-s { border-top-color: var(--tier-purple); }
+.dex-cell.tier-ss { border-top-color: var(--tier-silver-text); }
+.dex-cell.tier-ssplus { border-top-color: var(--tier-amber); }
+
+.dex-cell.locked .dex-bird { filter: var(--dex-locked-filter); }
+.dex-cell.confirmed .dex-bird { animation: dexReveal 0.7s ease both; }
+@keyframes dexReveal {
+  from { filter: var(--dex-locked-filter); transform: scale(0.8) rotate(-6deg); }
+  60% { filter: none; opacity: 0.85; transform: scale(1.08) rotate(2deg); }
+  to { filter: none; transform: scale(1) rotate(0deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dex-cell.confirmed .dex-bird { animation: none; }
+}
+
+.dex-detail {
+  display: none;
+  margin-top: 16px;
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 20px 22px;
+}
+.dex-detail.open { display: block; }
+.dex-detail-head { display: flex; align-items: center; gap: 16px; }
+.dex-detail-head svg { width: 66px; height: 66px; flex: none; }
+.dex-detail h3 { margin: 0 0 2px; font-family: var(--font-display); }
+.dex-detail .sci { font-style: italic; color: var(--ink-soft); font-size: 0.9rem; margin: 0; }
+.dex-detail .dex-detail-tier { font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-soft); margin-top: 3px; }
+.dex-detail ul { margin: 14px 0 0; padding-left: 20px; }
+.dex-detail li { margin-bottom: 8px; }
+.dex-detail .dex-soon-note,
+.dex-detail .dex-locked-note { color: var(--ink-soft); font-size: 0.9rem; margin: 14px 0 0; }
 
 .dashboard-avatar-btn:focus-visible,
 .avatar-option:focus-visible,

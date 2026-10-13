@@ -168,6 +168,136 @@ document.addEventListener("DOMContentLoaded", function () {
     );
   }
 
+  // ---- Species Dex -------------------------------------------------------
+  // A 10x5 grid, one cell per official Air 50 species (SPECIES_LIST), each
+  // showing a silhouette until that species' sighting is confirmed, then
+  // revealing full-colour artwork + 3 facts. Custom artwork/facts live in
+  // assets/species-art.js (SPECIES_ART), keyed the same way SPECIES_BY_KEY
+  // is — lowercased/trimmed species name. A species without an entry there
+  // yet still gets a working cell (via genericDexSvg()) that shows its
+  // name/tier/sci-name once confirmed, with a "coming soon" note instead
+  // of facts — the grid mechanic doesn't wait on all 50 illustrations.
+
+  // Shared neutral placeholder bird for any species that doesn't have
+  // custom artwork in SPECIES_ART yet. Deliberately generic (not meant to
+  // resemble any one species) so it never misrepresents what was actually
+  // seen — see the comment at the top of species-art.js.
+  function genericDexSvg() {
+    return (
+      '<svg viewBox="0 0 100 100" aria-hidden="true">' +
+      '<circle cx="50" cy="50" r="48" fill="var(--paper)" stroke="var(--line)" stroke-width="3"/>' +
+      '<g class="dex-bird">' +
+      '<ellipse cx="52" cy="62" rx="22" ry="17" fill="#8a8f85"/>' +
+      '<circle cx="37" cy="45" r="12" fill="#8a8f85"/>' +
+      '<path d="M25,45 L11,42 L25,50 Z" fill="#5c6058"/>' +
+      '<path d="M62,54 Q80,52 86,66 Q72,72 60,64 Z" fill="#767b70"/>' +
+      '<circle cx="34" cy="43" r="2.2" fill="#2a2d27"/>' +
+      "</g></svg>"
+    );
+  }
+
+  // lowercased/trimmed species names the current participant has had
+  // CONFIRMED (pending/rejected don't reveal anything — same bar as
+  // counting toward species_count elsewhere on this page).
+  function confirmedKeySet(rows) {
+    var set = {};
+    (rows || []).forEach(function (row) {
+      if (row.status === "confirmed" && row.species) {
+        set[String(row.species).toLowerCase().trim()] = true;
+      }
+    });
+    return set;
+  }
+
+  function renderDex(rows) {
+    if (typeof SPECIES_LIST === "undefined" || !SPECIES_LIST.length) return "";
+
+    var confirmed = confirmedKeySet(rows);
+    var revealedCount = 0;
+
+    var cells = SPECIES_LIST.map(function (sp) {
+      var key = sp.name.toLowerCase().trim();
+      var isConfirmed = !!confirmed[key];
+      if (isConfirmed) revealedCount++;
+      var tierInfo = SPECIES_TIERS[sp.tier] || {};
+      var art = (typeof SPECIES_ART !== "undefined" && SPECIES_ART[key]) || null;
+      var svg = art ? art.svg : genericDexSvg();
+      var label = isConfirmed ? sp.name : "???";
+
+      return (
+        '<button type="button" class="dex-cell ' +
+        (tierInfo.className || "") +
+        " " +
+        (isConfirmed ? "confirmed" : "locked") +
+        '" data-dex-key="' +
+        escapeHtml(key) +
+        '" aria-label="' +
+        (isConfirmed ? escapeHtml(sp.name) : "Not yet revealed") +
+        '">' +
+        svg +
+        '<span class="dex-cell-label">' + escapeHtml(label) + "</span>" +
+        "</button>"
+      );
+    }).join("");
+
+    return (
+      '<section class="dex-section">' +
+      '<div class="dex-section-head"><h2>Your Species Dex</h2>' +
+      '<span class="dex-progress">' + revealedCount + " / " + SPECIES_LIST.length + " revealed</span></div>" +
+      '<p class="dex-intro hint">Every official Air 50 species starts as a shadow here. Once Georgie confirms a sighting, it reveals in full colour — tap any bird, caught or not, to see what\'s known about it.</p>' +
+      '<div class="dex-grid" id="dex-grid">' + cells + "</div>" +
+      '<div class="dex-detail" id="dex-detail" aria-live="polite"></div>' +
+      "</section>"
+    );
+  }
+
+  function wireDex(rows) {
+    var grid = results.querySelector("#dex-grid");
+    var detail = results.querySelector("#dex-detail");
+    if (!grid || !detail) return;
+
+    var confirmed = confirmedKeySet(rows);
+
+    grid.querySelectorAll(".dex-cell").forEach(function (cell) {
+      cell.addEventListener("click", function () {
+        grid.querySelectorAll(".dex-cell.selected").forEach(function (c) {
+          c.classList.remove("selected");
+        });
+        cell.classList.add("selected");
+
+        var key = cell.getAttribute("data-dex-key");
+        var sp = (typeof lookupSpecies === "function") ? lookupSpecies(key) : null;
+        var isConfirmed = !!confirmed[key];
+        var art = (typeof SPECIES_ART !== "undefined" && SPECIES_ART[key]) || null;
+
+        if (!sp) return;
+
+        var html = '<div class="dex-detail-head">' + (art ? art.svg : genericDexSvg());
+        if (isConfirmed) {
+          html +=
+            "<div><h3>" + escapeHtml(sp.name) + "</h3>" +
+            '<p class="sci">' + escapeHtml(sp.sci) + "</p>" +
+            '<p class="dex-detail-tier">' + escapeHtml(sp.tierLabel) + " tier · " + sp.points + " Air Points</p>" +
+            "</div></div>";
+          if (art) {
+            html += "<ul>" + art.facts.map(function (f) { return "<li>" + escapeHtml(f) + "</li>"; }).join("") + "</ul>";
+          } else {
+            html += '<p class="dex-soon-note">The full illustration and three facts for this one are still being written up — check back soon.</p>';
+          }
+        } else {
+          html +=
+            "<div><h3>Not yet revealed</h3>" +
+            '<p class="dex-detail-tier">' + escapeHtml(sp.tierLabel) + " tier · " + sp.points + " Air Points</p>" +
+            "</div></div>" +
+            '<p class="dex-locked-note">Spot this species and get the sighting confirmed to reveal it here.</p>';
+        }
+
+        detail.innerHTML = html;
+        detail.classList.add("open");
+      });
+    });
+  }
+
   // ---- Sightings tabs ----------------------------------------------------
   function renderTableRows(rows) {
     if (!rows.length) {
@@ -410,8 +540,9 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function renderDashboard(profile, rows) {
-    results.innerHTML = renderProfileCard(profile) + renderTabs(rows);
+    results.innerHTML = renderProfileCard(profile) + renderDex(rows) + renderTabs(rows);
     wireAvatarPicker(profile);
+    wireDex(rows);
     wireTabs();
   }
 
