@@ -185,7 +185,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function genericDexSvg() {
     return (
       '<svg viewBox="0 0 100 100" aria-hidden="true">' +
-      '<circle cx="50" cy="50" r="48" fill="var(--paper)" stroke="var(--line)" stroke-width="3"/>' +
+      '<circle cx="50" cy="50" r="48" class="dex-ring" fill="var(--paper)" stroke="var(--line)" stroke-width="3"/>' +
       '<g class="dex-bird">' +
       '<ellipse cx="52" cy="62" rx="22" ry="17" fill="#8a8f85"/>' +
       '<circle cx="37" cy="45" r="12" fill="#8a8f85"/>' +

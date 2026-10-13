@@ -44,7 +44,7 @@ var SPECIES_ART = {
   "torresian crow": {
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Torresian Crow">' +
-      '<circle cx="50" cy="50" r="48" fill="#e7ecf0" stroke="var(--accent-warm)" stroke-width="3"/>' +
+      '<circle cx="50" cy="50" r="48" class="dex-ring" fill="#e7ecf0" stroke="var(--accent-warm)" stroke-width="3"/>' +
       '<g class="dex-bird">' +
       '<ellipse cx="52" cy="62" rx="23" ry="18" fill="#14141a"/>' +
       '<circle cx="36" cy="46" r="12" fill="#14141a"/>' +
@@ -69,7 +69,7 @@ var SPECIES_ART = {
   "willie wagtail": {
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Willie Wagtail">' +
-      '<circle cx="50" cy="50" r="48" fill="#eceae4" stroke="var(--accent-warm)" stroke-width="3"/>' +
+      '<circle cx="50" cy="50" r="48" class="dex-ring" fill="#eceae4" stroke="var(--accent-warm)" stroke-width="3"/>' +
       '<g class="dex-bird">' +
       '<ellipse cx="48" cy="58" rx="18" ry="15" fill="#1c1c1c"/>' +
       '<circle cx="36" cy="46" r="11" fill="#1c1c1c"/>' +
@@ -94,7 +94,7 @@ var SPECIES_ART = {
   "rainbow lorikeet": {
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Rainbow Lorikeet">' +
-      '<circle cx="50" cy="50" r="48" fill="#eaf3ea" stroke="var(--accent-warm)" stroke-width="3"/>' +
+      '<circle cx="50" cy="50" r="48" class="dex-ring" fill="#eaf3ea" stroke="var(--accent-warm)" stroke-width="3"/>' +
       '<g class="dex-bird">' +
       '<ellipse cx="52" cy="60" rx="23" ry="19" fill="#2f8f4e"/>' +
       '<circle cx="38" cy="44" r="13" fill="#2b4fa0"/>' +
@@ -120,7 +120,7 @@ var SPECIES_ART = {
   "australian magpie": {
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Australian Magpie">' +
-      '<circle cx="50" cy="50" r="48" fill="#eef3ea" stroke="var(--accent-warm)" stroke-width="3"/>' +
+      '<circle cx="50" cy="50" r="48" class="dex-ring" fill="#eef3ea" stroke="var(--accent-warm)" stroke-width="3"/>' +
       '<g class="dex-bird">' +
       '<ellipse cx="52" cy="63" rx="23" ry="18" fill="#16171a"/>' +
       '<circle cx="36" cy="46" r="12" fill="#16171a"/>' +
@@ -147,7 +147,7 @@ var SPECIES_ART = {
   "laughing kookaburra": {
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Laughing Kookaburra">' +
-      '<circle cx="50" cy="50" r="48" fill="#f3ece0" stroke="var(--accent-warm)" stroke-width="3"/>' +
+      '<circle cx="50" cy="50" r="48" class="dex-ring" fill="#f3ece0" stroke="var(--accent-warm)" stroke-width="3"/>' +
       '<g class="dex-bird">' +
       '<ellipse cx="54" cy="64" rx="24" ry="17" fill="#7a5a3a"/>' +
       '<path d="M58,52 Q75,45 81,58 Q68,65 58,60 Z" fill="#3a6ea5"/>' +
@@ -173,7 +173,7 @@ var SPECIES_ART = {
   "galah": {
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Galah">' +
-      '<circle cx="50" cy="50" r="48" fill="#f6ecec" stroke="var(--accent-warm)" stroke-width="3"/>' +
+      '<circle cx="50" cy="50" r="48" class="dex-ring" fill="#f6ecec" stroke="var(--accent-warm)" stroke-width="3"/>' +
       '<g class="dex-bird">' +
       '<ellipse cx="52" cy="60" rx="23" ry="19" fill="#d98fa3"/>' +
       '<circle cx="38" cy="44" r="13" fill="#d98fa3"/>' +
@@ -198,7 +198,7 @@ var SPECIES_ART = {
   "sulphur-crested cockatoo": {
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Sulphur-crested Cockatoo">' +
-      '<circle cx="50" cy="50" r="48" fill="#eef0ea" stroke="var(--accent-warm)" stroke-width="3"/>' +
+      '<circle cx="50" cy="50" r="48" class="dex-ring" fill="#eef0ea" stroke="var(--accent-warm)" stroke-width="3"/>' +
       '<g class="dex-bird">' +
       '<ellipse cx="52" cy="62" rx="22" ry="18" fill="#f7f6ef"/>' +
       '<path d="M58,50 Q74,48 78,60 Q66,66 58,58 Z" fill="#e6e4da"/>' +
@@ -230,7 +230,7 @@ var SPECIES_ART = {
   "australian pelican": {
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Australian Pelican">' +
-      '<circle cx="50" cy="50" r="48" fill="#e9eef4" stroke="var(--accent-warm)" stroke-width="3"/>' +
+      '<circle cx="50" cy="50" r="48" class="dex-ring" fill="#e9eef4" stroke="var(--accent-warm)" stroke-width="3"/>' +
       '<g class="dex-bird">' +
       '<ellipse cx="54" cy="62" rx="24" ry="18" fill="#fbfaf3"/>' +
       '<circle cx="36" cy="46" r="12" fill="#fbfaf3"/>' +

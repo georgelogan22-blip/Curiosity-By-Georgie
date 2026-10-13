@@ -1502,6 +1502,17 @@ section { padding: 40px 0; }
 .dex-cell.tier-ssplus { border-top-color: var(--tier-amber); }
 
 .dex-cell.locked .dex-bird { filter: var(--dex-locked-filter); }
+/* Every badge's outer circle (class="dex-ring") carries its own species
+   colour (or var(--paper) for the generic placeholder) so a REVEALED bird
+   looks right. But while locked, force it to the same neutral theme tone
+   for every species — otherwise a species with custom art keeps its own
+   light pastel circle fill (a hardcoded hex, not a theme variable) behind
+   the now-light silhouette that dark mode's locked-filter produces, and
+   the two nearly-white tones sit on top of each other with barely any
+   contrast, making the whole cell look blank. This keeps every locked
+   cell visually uniform (which also suits the "still a mystery" framing)
+   regardless of which species or theme. */
+.dex-cell.locked .dex-ring { fill: var(--paper); stroke: var(--line); }
 .dex-cell.confirmed .dex-bird { animation: dexReveal 0.7s ease both; }
 @keyframes dexReveal {
   from { filter: var(--dex-locked-filter); transform: scale(0.8) rotate(-6deg); }
