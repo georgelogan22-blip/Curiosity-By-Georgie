@@ -52,16 +52,18 @@ var SPECIES_ART = {
       front: "assets/species-cards/torresian-crow-front.jpg",
       back: "assets/species-cards/torresian-crow-back.jpg"
     },
+    // Grid-cell badge: George's own Torresian Crow illustration, used as the
+    // Dex thumbnail instead of the old flat-colour schematic above. It's
+    // still wrapped in the standard ring-circle + <g class="dex-bird"> shape
+    // so the locked-silhouette CSS filter and reveal animation apply to it
+    // exactly like every hand-drawn svg badge — clipped to a circle so it
+    // reads as one consistent badge shape across the grid.
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Torresian Crow">' +
-      '<circle cx="50" cy="50" r="48" class="dex-ring" fill="#e7ecf0" stroke="var(--accent-warm)" stroke-width="3"/>' +
-      '<g class="dex-bird">' +
-      '<ellipse cx="52" cy="62" rx="23" ry="18" fill="#14141a"/>' +
-      '<circle cx="36" cy="46" r="12" fill="#14141a"/>' +
-      '<path d="M44,50 Q58,46 60,60 Q50,64 44,58 Z" fill="#060608"/>' +
-      '<path d="M64,52 Q84,50 88,66 Q74,74 62,64 Z" fill="#14141a"/>' +
-      '<path d="M25,44 L10,40 L25,50 Z" fill="#2b2b2b"/>' +
-      '<circle cx="33" cy="43" r="2.6" fill="#f4f1e6"/>' +
+      '<circle cx="50" cy="50" r="48" class="dex-ring" fill="#1b2a1f" stroke="var(--accent-warm)" stroke-width="3"/>' +
+      "<defs><clipPath id=\"crowBadgeClip\"><circle cx=\"50\" cy=\"50\" r=\"46\"/></clipPath></defs>" +
+      '<g class="dex-bird" clip-path="url(#crowBadgeClip)">' +
+      '<image href="assets/species-photos/torresian-crow-badge.png" x="4" y="4" width="92" height="92" preserveAspectRatio="xMidYMid slice"/>' +
       "</g></svg>",
     stats: {
       weight: "430–670 g",
