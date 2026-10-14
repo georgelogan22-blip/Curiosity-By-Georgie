@@ -1460,6 +1460,12 @@ section { padding: 40px 0; }
 }
 @media (max-width: 900px) { .dex-grid { grid-template-columns: repeat(6, 1fr); } }
 @media (max-width: 560px) { .dex-grid { grid-template-columns: repeat(5, 1fr); gap: 6px; } }
+/* Phone-width: 5 cramped columns made every cell (and any photo-based
+   badge, which has none of a schematic icon's built-in padding) look
+   inconsistent — too small to read labels, too tight for a clean circular
+   crop. 3 wider columns give every cell the same comfortable, consistent
+   size regardless of what kind of art is inside it. */
+@media (max-width: 480px) { .dex-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; } }
 
 .dex-cell {
   background: var(--paper-raised);

@@ -54,20 +54,22 @@ var SPECIES_ART = {
     },
     // Grid-cell badge: George's own Torresian Crow illustration, used as the
     // Dex thumbnail instead of the old flat-colour schematic above. No ring
-    // and no circular crop (George wants the whole bird, not a cropped
-    // badge) — "meet" fits the full square image inside the viewBox with
-    // nothing cut off, wrapped in the standard <g class="dex-bird"> so the
-    // locked-silhouette CSS filter and reveal animation still apply to it
-    // exactly like every hand-drawn svg badge.
+    // (George wants the whole bird, not a cropped badge) — but inset with
+    // the same ~12% margin every schematic icon has around its drawn bird,
+    // so the photo reads at the same visual "size" as every other cell
+    // instead of bleeding to the edges. "Meet" keeps the full image inside
+    // that inset box with nothing cut off, wrapped in the standard
+    // <g class="dex-bird"> so the locked-silhouette CSS filter and reveal
+    // animation still apply to it exactly like every hand-drawn svg badge.
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Torresian Crow">' +
       '<g class="dex-bird">' +
-      '<image href="assets/species-photos/torresian-crow-badge.png" x="2" y="2" width="96" height="96" preserveAspectRatio="xMidYMid meet"/>' +
+      '<image href="assets/species-photos/torresian-crow-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
       "</g></svg>",
     stats: {
       weight: "430–670 g",
       length: "48–53 cm",
-      wingspan: "~90 cm (estimated)",
+      wingspan: "~95–100 cm (estimated)",
       footprint: "Anisodactyl — 3 toes forward, 1 back; confident ground-walker"
     },
     facts: [
