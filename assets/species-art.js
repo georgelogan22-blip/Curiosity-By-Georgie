@@ -54,16 +54,15 @@ var SPECIES_ART = {
     },
     // Grid-cell badge: George's own Torresian Crow illustration, used as the
     // Dex thumbnail instead of the old flat-colour schematic above. No ring
-    // circle behind it (George asked for a clean image, not a framed
-    // badge) — just the photo, clipped to a circle so it still matches the
-    // round silhouette shape every other cell uses, wrapped in the standard
-    // <g class="dex-bird"> so the locked-silhouette CSS filter and reveal
-    // animation still apply to it exactly like every hand-drawn svg badge.
+    // and no circular crop (George wants the whole bird, not a cropped
+    // badge) — "meet" fits the full square image inside the viewBox with
+    // nothing cut off, wrapped in the standard <g class="dex-bird"> so the
+    // locked-silhouette CSS filter and reveal animation still apply to it
+    // exactly like every hand-drawn svg badge.
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Torresian Crow">' +
-      "<defs><clipPath id=\"crowBadgeClip\"><circle cx=\"50\" cy=\"50\" r=\"48\"/></clipPath></defs>" +
-      '<g class="dex-bird" clip-path="url(#crowBadgeClip)">' +
-      '<image href="assets/species-photos/torresian-crow-badge.png" x="2" y="2" width="96" height="96" preserveAspectRatio="xMidYMid slice"/>' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/torresian-crow-badge.png" x="2" y="2" width="96" height="96" preserveAspectRatio="xMidYMid meet"/>' +
       "</g></svg>",
     stats: {
       weight: "430–670 g",
