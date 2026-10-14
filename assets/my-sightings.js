@@ -310,37 +310,52 @@ document.addEventListener("DOMContentLoaded", function () {
           return;
         }
 
-        // Front face: photo (if we have a real one yet) falling back to
-        // the badge art, name/sci/tier, and a bio stat grid when known.
-        var frontMedia = (art && art.photo)
-          ? '<img src="' + art.photo + '" alt="' + escapeHtml(sp.name) + '">'
-          : (art ? art.svg : genericDexSvg());
+        var hasImageCard = !!(art && art.card && art.card.front && art.card.back);
+        var frontHtml, backHtml;
 
-        var frontHtml =
-          '<div class="dex-card-photo-wrap">' + frontMedia + "</div>" +
-          '<div class="dex-card-name-row"><h3>' + escapeHtml(sp.name) + "</h3>" +
-          '<p class="sci">' + escapeHtml(sp.sci) + "</p>" +
-          '<p class="dex-detail-tier">' + escapeHtml(sp.tierLabel) + " tier · " + sp.points + " Air Points</p>" +
-          "</div>" +
-          (art && art.stats
-            ? renderStatGrid(art.stats)
-            : '<p class="dex-card-soon-note" style="margin-top:auto;">Measurements for this one are still being researched.</p>') +
-          '<p class="dex-card-flip-hint">Tap the card for 3 facts →</p>';
+        if (hasImageCard) {
+          // George's own fully-designed card art — shown edge-to-edge,
+          // with no auto-built name/stats/facts markup overlaid (it's all
+          // baked into the image already).
+          frontHtml =
+            '<img src="' + art.card.front + '" alt="' + escapeHtml(sp.name) + ' — species discovery card, front">' +
+            '<span class="dex-card-flip-pill">Tap for 3 facts →</span>';
+          backHtml =
+            '<img src="' + art.card.back + '" alt="' + escapeHtml(sp.name) + ' — species discovery card, back">' +
+            '<span class="dex-card-flip-pill">← Tap to flip back</span>';
+        } else {
+          // Front face: photo (if we have a real one yet) falling back to
+          // the badge art, name/sci/tier, and a bio stat grid when known.
+          var frontMedia = (art && art.photo)
+            ? '<img src="' + art.photo + '" alt="' + escapeHtml(sp.name) + '">'
+            : (art ? art.svg : genericDexSvg());
 
-        // Back face: the 3 facts, Curiosity by Georgie style.
-        var backHtml =
-          "<h4>" + escapeHtml(sp.name) + " — 3 things worth knowing</h4>" +
-          (art && art.facts
-            ? "<ul>" + art.facts.map(function (f) { return "<li>" + escapeHtml(f) + "</li>"; }).join("") + "</ul>"
-            : '<p class="dex-card-soon-note">The full write-up for this species isn\'t ready yet — check back soon.</p>') +
-          '<p class="dex-card-flip-hint">← Tap to flip back</p>';
+          frontHtml =
+            '<div class="dex-card-photo-wrap">' + frontMedia + "</div>" +
+            '<div class="dex-card-name-row"><h3>' + escapeHtml(sp.name) + "</h3>" +
+            '<p class="sci">' + escapeHtml(sp.sci) + "</p>" +
+            '<p class="dex-detail-tier">' + escapeHtml(sp.tierLabel) + " tier · " + sp.points + " Air Points</p>" +
+            "</div>" +
+            (art && art.stats
+              ? renderStatGrid(art.stats)
+              : '<p class="dex-card-soon-note" style="margin-top:auto;">Measurements for this one are still being researched.</p>') +
+            '<p class="dex-card-flip-hint">Tap the card for 3 facts →</p>';
+
+          // Back face: the 3 facts, Curiosity by Georgie style.
+          backHtml =
+            "<h4>" + escapeHtml(sp.name) + " — 3 things worth knowing</h4>" +
+            (art && art.facts
+              ? "<ul>" + art.facts.map(function (f) { return "<li>" + escapeHtml(f) + "</li>"; }).join("") + "</ul>"
+              : '<p class="dex-card-soon-note">The full write-up for this species isn\'t ready yet — check back soon.</p>') +
+            '<p class="dex-card-flip-hint">← Tap to flip back</p>';
+        }
 
         detail.innerHTML =
-          '<div class="dex-card" tabindex="0" role="button" aria-pressed="false" aria-label="' +
-          escapeHtml(sp.name) + ' card — tap to flip between stats and facts">' +
+          '<div class="dex-card' + (hasImageCard ? " dex-card-imagecard" : "") + '" tabindex="0" role="button" aria-pressed="false" aria-label="' +
+          escapeHtml(sp.name) + ' card — tap to flip between ' + (hasImageCard ? "front and back" : "stats and facts") + '">' +
           '<div class="dex-card-inner">' +
-          '<div class="dex-card-face dex-card-front">' + frontHtml + "</div>" +
-          '<div class="dex-card-face dex-card-back">' + backHtml + "</div>" +
+          '<div class="dex-card-face dex-card-front' + (hasImageCard ? " dex-card-image-face" : "") + '">' + frontHtml + "</div>" +
+          '<div class="dex-card-face dex-card-back' + (hasImageCard ? " dex-card-image-face" : "") + '">' + backHtml + "</div>" +
           "</div></div>";
         detail.classList.add("open");
 

@@ -1628,6 +1628,42 @@ section { padding: 40px 0; }
 .dex-card-back li { margin-bottom: 10px; font-size: 0.9rem; }
 .dex-card-soon-note { color: var(--ink-soft); font-size: 0.9rem; }
 
+/* ---- image-card variant: a fully pre-designed front/back pair supplied
+   as artwork (see SPECIES_ART[...].card). Same flip mechanic as above —
+   .dex-card-imagecard / .dex-card-image-face just swap the auto-built
+   stat-grid/photo-wrap chrome for an edge-to-edge image, sized to the
+   card artwork's own 2.5:3.5-ish trading-card aspect ratio. */
+.dex-card.dex-card-imagecard { max-width: 380px; }
+.dex-card.dex-card-imagecard .dex-card-inner { min-height: 0; aspect-ratio: 1060 / 1484; }
+.dex-card-image-face {
+  padding: 0;
+  border: none;
+  overflow: hidden;
+  background: var(--paper-raised);
+}
+.dex-card-image-face img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
+.dex-card-flip-pill {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  background: color-mix(in srgb, black 70%, transparent);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.03em;
+  padding: 6px 13px;
+  border-radius: 999px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
 .dashboard-avatar-btn:focus-visible,
 .avatar-option:focus-visible,
 .sightings-tab:focus-visible {

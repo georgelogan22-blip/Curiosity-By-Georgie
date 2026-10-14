@@ -42,6 +42,16 @@
 
 var SPECIES_ART = {
   "torresian crow": {
+    // George's own fully-designed trading card (front + back), species
+    // #1/50 — when `card` is present, the flip-card detail view shows
+    // these two images edge-to-edge instead of the auto-built stat-grid
+    // + facts layout (see wireDex() in my-sightings.js). The small `svg`
+    // badge below is unaffected — it's still what the Dex GRID cell shows
+    // and what the locked-silhouette filter uses.
+    card: {
+      front: "assets/species-cards/torresian-crow-front.jpg",
+      back: "assets/species-cards/torresian-crow-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Torresian Crow">' +
       '<circle cx="50" cy="50" r="48" class="dex-ring" fill="#e7ecf0" stroke="var(--accent-warm)" stroke-width="3"/>' +
