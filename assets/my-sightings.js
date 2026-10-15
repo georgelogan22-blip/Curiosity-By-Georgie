@@ -244,7 +244,7 @@ document.addEventListener("DOMContentLoaded", function () {
       '<section class="dex-section">' +
       '<div class="dex-section-head"><h2>Your Species Dex</h2>' +
       '<span class="dex-progress">' + revealedCount + " / " + SPECIES_LIST.length + " revealed</span></div>" +
-      '<p class="dex-intro hint">Every official Air 50 species starts as a shadow here. Once Georgie confirms a sighting, it reveals in full colour — tap any bird, caught or not, to see what\'s known about it.</p>' +
+      '<p class="dex-intro hint">Every official Air 50 species starts as a silhouette here. Once a sighting is confirmed, the confirmed species reveals in full colour, unlocking the species fact card!</p>' +
       '<div class="dex-grid" id="dex-grid">' + cells + "</div>" +
       '<div class="dex-detail" id="dex-detail" aria-live="polite"></div>' +
       "</section>"
