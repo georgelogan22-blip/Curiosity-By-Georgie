@@ -82,14 +82,8 @@ var SPECIES_ART = {
   "willie wagtail": {
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Willie Wagtail">' +
-      '<circle cx="50" cy="50" r="48" class="dex-ring" fill="#eceae4" stroke="var(--accent-warm)" stroke-width="3"/>' +
       '<g class="dex-bird">' +
-      '<ellipse cx="48" cy="58" rx="18" ry="15" fill="#1c1c1c"/>' +
-      '<circle cx="36" cy="46" r="11" fill="#1c1c1c"/>' +
-      '<path d="M60,60 Q84,52 90,68 Q84,80 62,72 Q72,64 60,60 Z" fill="#1c1c1c"/>' +
-      '<path d="M25,45 L12,42 L25,50 Z" fill="#3a3a3a"/>' +
-      '<circle cx="33" cy="43" r="2.2" fill="#f4f4f0"/>' +
-      '<path d="M28,56 Q36,66 46,60" fill="none" stroke="#f4f4f0" stroke-width="4" stroke-linecap="round"/>' +
+      '<image href="assets/species-photos/willie-wagtail-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
       "</g></svg>",
     stats: {
       weight: "17–24 g",
@@ -107,15 +101,8 @@ var SPECIES_ART = {
   "rainbow lorikeet": {
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Rainbow Lorikeet">' +
-      '<circle cx="50" cy="50" r="48" class="dex-ring" fill="#eaf3ea" stroke="var(--accent-warm)" stroke-width="3"/>' +
       '<g class="dex-bird">' +
-      '<ellipse cx="52" cy="60" rx="23" ry="19" fill="#2f8f4e"/>' +
-      '<circle cx="38" cy="44" r="13" fill="#2b4fa0"/>' +
-      '<path d="M32,34 Q38,20 48,26 Q40,30 36,40 Z" fill="#c9c9c9"/>' +
-      '<path d="M60,50 Q76,52 80,64 Q68,68 58,62 Z" fill="#e8ac5e"/>' +
-      '<path d="M25,42 L10,39 L25,49 Z" fill="#8a8a8a"/>' +
-      '<circle cx="35" cy="40" r="2.4" fill="#172621"/>' +
-      '<ellipse cx="44" cy="66" rx="10" ry="6" fill="#d9652e"/>' +
+      '<image href="assets/species-photos/rainbow-lorikeet-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
       "</g></svg>",
     stats: {
       weight: "75–157 g",
@@ -133,16 +120,8 @@ var SPECIES_ART = {
   "australian magpie": {
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Australian Magpie">' +
-      '<circle cx="50" cy="50" r="48" class="dex-ring" fill="#eef3ea" stroke="var(--accent-warm)" stroke-width="3"/>' +
       '<g class="dex-bird">' +
-      '<ellipse cx="52" cy="63" rx="23" ry="18" fill="#16171a"/>' +
-      '<circle cx="36" cy="46" r="12" fill="#16171a"/>' +
-      '<path d="M33,35 Q54,25 64,42 Q52,53 33,47 Z" fill="#f4f4f0"/>' +
-      '<path d="M62,55 Q83,50 89,67 Q74,77 60,67 Z" fill="#16171a"/>' +
-      '<path d="M80,58 Q89,62 87,69 Q78,69 78,62 Z" fill="#f4f4f0"/>' +
-      '<path d="M25,44 L11,41 L25,50 Z" fill="#2a2a2a"/>' +
-      '<circle cx="33" cy="43" r="3.2" fill="#f4f4f0"/>' +
-      '<circle cx="33" cy="43" r="1.7" fill="#111"/>' +
+      '<image href="assets/species-photos/australian-magpie-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
       "</g></svg>",
     stats: {
       weight: "220–350 g",
@@ -160,15 +139,8 @@ var SPECIES_ART = {
   "laughing kookaburra": {
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Laughing Kookaburra">' +
-      '<circle cx="50" cy="50" r="48" class="dex-ring" fill="#f3ece0" stroke="var(--accent-warm)" stroke-width="3"/>' +
       '<g class="dex-bird">' +
-      '<ellipse cx="54" cy="64" rx="24" ry="17" fill="#7a5a3a"/>' +
-      '<path d="M58,52 Q75,45 81,58 Q68,65 58,60 Z" fill="#3a6ea5"/>' +
-      '<circle cx="37" cy="43" r="15" fill="#e9e2d0"/>' +
-      '<path d="M20,43 L46,39 L46,45 L20,47 Z" fill="#4a3625"/>' +
-      '<path d="M21,41 L2,37 Q0,44 2,51 L21,47 Z" fill="#2b2320"/>' +
-      '<circle cx="30" cy="41" r="3" fill="#e9e2d0"/>' +
-      '<circle cx="30" cy="41" r="1.7" fill="#15110c"/>' +
+      '<image href="assets/species-photos/laughing-kookaburra-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
       "</g></svg>",
     stats: {
       weight: "200–465 g",
@@ -186,14 +158,8 @@ var SPECIES_ART = {
   "galah": {
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Galah">' +
-      '<circle cx="50" cy="50" r="48" class="dex-ring" fill="#f6ecec" stroke="var(--accent-warm)" stroke-width="3"/>' +
       '<g class="dex-bird">' +
-      '<ellipse cx="52" cy="60" rx="23" ry="19" fill="#d98fa3"/>' +
-      '<circle cx="38" cy="44" r="13" fill="#d98fa3"/>' +
-      '<path d="M32,34 Q38,20 48,26 Q40,30 36,40 Z" fill="#c9c9c9"/>' +
-      '<path d="M60,50 Q76,52 80,64 Q68,68 58,62 Z" fill="#c9c9c9"/>' +
-      '<path d="M25,42 L10,39 L25,49 Z" fill="#8a8a8a"/>' +
-      '<circle cx="35" cy="40" r="2.4" fill="#172621"/>' +
+      '<image href="assets/species-photos/galah-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
       "</g></svg>",
     stats: {
       weight: "270–400 g",
@@ -211,16 +177,8 @@ var SPECIES_ART = {
   "sulphur-crested cockatoo": {
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Sulphur-crested Cockatoo">' +
-      '<circle cx="50" cy="50" r="48" class="dex-ring" fill="#eef0ea" stroke="var(--accent-warm)" stroke-width="3"/>' +
       '<g class="dex-bird">' +
-      '<ellipse cx="52" cy="62" rx="22" ry="18" fill="#f7f6ef"/>' +
-      '<path d="M58,50 Q74,48 78,60 Q66,66 58,58 Z" fill="#e6e4da"/>' +
-      '<circle cx="37" cy="45" r="12" fill="#f7f6ef"/>' +
-      '<path d="M30,32 Q25,13 40,16 Q33,26 38,34 Z" fill="#f3d64e"/>' +
-      '<path d="M36,30 Q36,13 48,18 Q40,26 42,34 Z" fill="#f0c93a"/>' +
-      '<path d="M25,46 L10,43 L25,52 Z" fill="#2c2c2c"/>' +
-      '<circle cx="34" cy="43" r="3.4" fill="#dfeaf0"/>' +
-      '<circle cx="34" cy="43" r="1.9" fill="#1a1a1a"/>' +
+      '<image href="assets/species-photos/sulphur-crested-cockatoo-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
       "</g></svg>",
     // Real photo (George's own reference image) for the flip card's front.
     // The small badge SVG above still carries the Dex grid thumbnail + the
@@ -243,14 +201,8 @@ var SPECIES_ART = {
   "australian pelican": {
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Australian Pelican">' +
-      '<circle cx="50" cy="50" r="48" class="dex-ring" fill="#e9eef4" stroke="var(--accent-warm)" stroke-width="3"/>' +
       '<g class="dex-bird">' +
-      '<ellipse cx="54" cy="62" rx="24" ry="18" fill="#fbfaf3"/>' +
-      '<circle cx="36" cy="46" r="12" fill="#fbfaf3"/>' +
-      '<path d="M25,44 L2,40 Q10,50 2,56 L25,52 Z" fill="#e8ac5e"/>' +
-      '<path d="M25,44 L2,40 Q10,44 2,48 L25,48 Z" fill="#d98a3a"/>' +
-      '<circle cx="33" cy="41" r="2.2" fill="#172621"/>' +
-      '<path d="M56,46 Q70,40 74,52 Q64,56 56,50 Z" fill="#1f5fa8"/>' +
+      '<image href="assets/species-photos/australian-pelican-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
       "</g></svg>",
     stats: {
       weight: "4.5–7.7 kg (up to ~13 kg for very large males)",
@@ -263,5 +215,304 @@ var SPECIES_ART = {
       "Pelicans often fish cooperatively, forming a line or horseshoe shape on the water to herd fish into the shallows where they're easier to scoop up.",
       "They're powerful gliders that ride thermals up to altitudes of over 1,000 metres, sometimes covering hundreds of kilometres between wetlands in a single day as conditions change."
     ]
+  },
+
+  // --- New species art added 2026-10-15: George's own AI-illustrated badge
+  // art for the remaining species. Thumbnail-only for now (svg field) — stats
+  // and facts for these are still coming, so each entry falls back to the Dex's
+  // "coming soon" note until those are added, same as the mechanic above describes.
+  "noisy miner": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Noisy Miner">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/noisy-miner-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "welcome swallow": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Welcome Swallow">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/welcome-swallow-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "australian white ibis": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Australian White Ibis">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/australian-white-ibis-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "magpie-lark": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Magpie-lark">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/magpie-lark-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "grey butcherbird": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Grey Butcherbird">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/grey-butcherbird-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "masked lapwing": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Masked Lapwing">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/masked-lapwing-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "pied butcherbird": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Pied Butcherbird">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/pied-butcherbird-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "australasian figbird": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Australasian Figbird">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/australasian-figbird-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "brown honeyeater": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Brown Honeyeater">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/brown-honeyeater-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "pied currawong": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Pied Currawong">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/pied-currawong-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "crested pigeon": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Crested Pigeon">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/crested-pigeon-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "striated pardalote": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Striated Pardalote">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/striated-pardalote-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "blue-faced honeyeater": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Blue-faced Honeyeater">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/blue-faced-honeyeater-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "australian brushturkey": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Australian Brushturkey">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/australian-brushturkey-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "pacific black duck": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Pacific Black Duck">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/pacific-black-duck-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "australian wood duck": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Australian Wood Duck">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/australian-wood-duck-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "silvereye": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Silvereye">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/silvereye-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "noisy friarbird": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Noisy Friarbird">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/noisy-friarbird-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "rainbow bee-eater": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Rainbow Bee-eater">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/rainbow-bee-eater-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "sacred kingfisher": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Sacred Kingfisher">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/sacred-kingfisher-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "white-faced heron": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="White-faced Heron">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/white-faced-heron-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "eastern yellow robin": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Eastern Yellow Robin">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/eastern-yellow-robin-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "red-browed finch": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Red-browed Finch">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/red-browed-finch-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "little corella": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Little Corella">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/little-corella-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "little egret": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Little Egret">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/little-egret-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "pheasant coucal": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Pheasant Coucal">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/pheasant-coucal-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "brahminy kite": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Brahminy Kite">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/brahminy-kite-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "white-bellied sea-eagle": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="White-bellied Sea-Eagle">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/white-bellied-sea-eagle-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "black-shouldered kite": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Black-shouldered Kite">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/black-shouldered-kite-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "eastern osprey": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Eastern Osprey">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/eastern-osprey-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "tawny frogmouth": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Tawny Frogmouth">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/tawny-frogmouth-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "dollarbird": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Dollarbird">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/dollarbird-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "far eastern curlew": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Far Eastern Curlew">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/far-eastern-curlew-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "caspian tern": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Caspian Tern">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/caspian-tern-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "rufous fantail": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Rufous Fantail">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/rufous-fantail-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "crimson rosella": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Crimson Rosella">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/crimson-rosella-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "southern boobook": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Southern Boobook">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/southern-boobook-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "powerful owl": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Powerful Owl">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/powerful-owl-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "white-throated needletail": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="White-throated Needletail">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/white-throated-needletail-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "noisy pitta": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Noisy Pitta">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/noisy-pitta-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "beach stone-curlew": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Beach Stone-curlew">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/beach-stone-curlew-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
+  },
+  "wedge-tailed eagle": {
+    svg:
+      '<svg viewBox="0 0 100 100" role="img" aria-label="Wedge-tailed Eagle">' +
+      '<g class="dex-bird">' +
+      '<image href="assets/species-photos/wedge-tailed-eagle-badge.png" x="12" y="12" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>' +
+      "</g></svg>"
   }
 };
