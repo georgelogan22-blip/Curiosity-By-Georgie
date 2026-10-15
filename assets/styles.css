@@ -1548,6 +1548,16 @@ section { padding: 40px 0; }
 }
 .dex-locked-box-head { display: flex; align-items: center; gap: 16px; }
 .dex-locked-box-head svg { width: 56px; height: 56px; flex: none; }
+/* This teaser reuses the exact same badge <svg> as the grid cell it was
+   opened from — but it sits in its own .dex-locked-box, not a
+   .dex-cell.locked, so the grid's silhouette rule (.dex-cell.locked
+   .dex-bird) never matched it and the un-revealed species' real artwork
+   was showing here in full colour, defeating the whole "???" mystery.
+   Same two rules as the grid cell, reusing the same theme-aware filter
+   variable, so this teaser always matches whatever the locked grid cells
+   look like. */
+.dex-locked-box .dex-bird { filter: var(--dex-locked-filter); }
+.dex-locked-box .dex-ring { fill: var(--paper); stroke: var(--line); }
 .dex-locked-box h3 { margin: 0 0 2px; font-family: var(--font-display); font-size: 1.1rem; }
 .dex-detail .dex-detail-tier { font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-soft); margin-top: 2px; }
 .dex-locked-note { color: var(--ink-soft); font-size: 0.9rem; margin: 14px 0 0; }
