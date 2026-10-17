@@ -289,14 +289,11 @@ document.addEventListener("DOMContentLoaded", function () {
     );
   }
 
-  // On narrow (phone) widths, #dex-detail becomes a fixed, centered
-  // modal over a dimmed backdrop (see the @media (max-width: 820px)
-  // rule in styles.css) instead of rendering inline under the grid —
-  // so tapping a species shows its card/teaser right away instead of
-  // needing a scroll down past the rest of the 50-cell grid. On wider
-  // screens that CSS rule doesn't apply, so this is just the existing
-  // inline behaviour with a close button that's hidden by CSS until
-  // it's needed.
+  // Tapping a species pops its card/teaser up as a fixed, centered modal
+  // over a dimmed backdrop (see the .dex-detail.open rule in styles.css)
+  // instead of rendering inline under the grid — at every screen width,
+  // so there's never a scroll down past the rest of the 50-cell grid to
+  // see what got tapped.
   function closeDexDetail(detail) {
     detail.classList.remove("open");
     detail.innerHTML = "";
