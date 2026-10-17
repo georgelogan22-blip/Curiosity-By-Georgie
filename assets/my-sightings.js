@@ -72,6 +72,15 @@ document.addEventListener("DOMContentLoaded", function () {
     return div.innerHTML;
   }
 
+  // Zero-padded "#07" style Dex number — SPECIES_BY_KEY's `number` field is
+  // the species' fixed 1-50 position in SPECIES_LIST (see species-data.js),
+  // shown next to every Dex cell/detail so a species can be referenced the
+  // same way regardless of whether it's revealed yet ("#07" either way,
+  // name or "???" next to it).
+  function dexNumberLabel(n) {
+    return "#" + (n < 10 ? "0" + n : String(n));
+  }
+
   // status -> { label, className } for the small pill shown per row.
   // Reuses the site's existing accent colours (gold = "in progress",
   // green = "good", coral = "needs attention") rather than inventing a
@@ -215,13 +224,14 @@ document.addEventListener("DOMContentLoaded", function () {
     var confirmed = confirmedKeySet(rows);
     var revealedCount = 0;
 
-    var cells = SPECIES_LIST.map(function (sp) {
+    var cells = SPECIES_LIST.map(function (sp, i) {
       var key = sp.name.toLowerCase().trim();
       var isConfirmed = !!confirmed[key];
       if (isConfirmed) revealedCount++;
       var tierInfo = SPECIES_TIERS[sp.tier] || {};
       var art = (typeof SPECIES_ART !== "undefined" && SPECIES_ART[key]) || null;
       var svg = art ? art.svg : genericDexSvg();
+      var number = dexNumberLabel(i + 1);
       var label = isConfirmed ? sp.name : "???";
 
       return (
@@ -232,10 +242,13 @@ document.addEventListener("DOMContentLoaded", function () {
         '" data-dex-key="' +
         escapeHtml(key) +
         '" aria-label="' +
-        (isConfirmed ? escapeHtml(sp.name) : "Not yet revealed") +
+        number + " — " + (isConfirmed ? escapeHtml(sp.name) : "Not yet revealed") +
         '">' +
         svg +
-        '<span class="dex-cell-label">' + escapeHtml(label) + "</span>" +
+        '<span class="dex-cell-label">' +
+        '<span class="dex-cell-num">' + number + "</span>" +
+        '<span class="dex-cell-name">' + escapeHtml(label) + "</span>" +
+        "</span>" +
         "</button>"
       );
     }).join("");
@@ -276,12 +289,53 @@ document.addEventListener("DOMContentLoaded", function () {
     );
   }
 
+  // On narrow (phone) widths, #dex-detail becomes a fixed, centered
+  // modal over a dimmed backdrop (see the @media (max-width: 820px)
+  // rule in styles.css) instead of rendering inline under the grid —
+  // so tapping a species shows its card/teaser right away instead of
+  // needing a scroll down past the rest of the 50-cell grid. On wider
+  // screens that CSS rule doesn't apply, so this is just the existing
+  // inline behaviour with a close button that's hidden by CSS until
+  // it's needed.
+  function closeDexDetail(detail) {
+    detail.classList.remove("open");
+    detail.innerHTML = "";
+    document.body.classList.remove("dex-modal-open");
+  }
+
+  function openDexDetail(detail, bodyHtml) {
+    detail.innerHTML =
+      '<button type="button" class="dex-detail-close" aria-label="Close">&times;</button>' + bodyHtml;
+    detail.classList.add("open");
+    document.body.classList.add("dex-modal-open");
+    var closeBtn = detail.querySelector(".dex-detail-close");
+    if (closeBtn) {
+      closeBtn.addEventListener("click", function () {
+        closeDexDetail(detail);
+      });
+    }
+  }
+
   function wireDex(rows) {
     var grid = results.querySelector("#dex-grid");
     var detail = results.querySelector("#dex-detail");
     if (!grid || !detail) return;
 
     var confirmed = confirmedKeySet(rows);
+
+    // Tapping the dimmed backdrop (i.e. anywhere in #dex-detail that
+    // isn't the card/teaser itself) closes it, same as the close button
+    // or Escape — only reachable at all once the mobile modal CSS makes
+    // #dex-detail fill the screen.
+    detail.addEventListener("click", function (e) {
+      if (e.target === detail) closeDexDetail(detail);
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && detail.classList.contains("open")) {
+        closeDexDetail(detail);
+      }
+    });
 
     grid.querySelectorAll(".dex-cell").forEach(function (cell) {
       cell.addEventListener("click", function () {
@@ -298,15 +352,16 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!sp) return;
 
         if (!isConfirmed) {
-          detail.innerHTML =
+          openDexDetail(
+            detail,
             '<div class="dex-locked-box"><div class="dex-locked-box-head">' +
-            (art ? art.svg : genericDexSvg()) +
-            "<div><h3>Not yet revealed</h3>" +
-            '<p class="dex-detail-tier">' + escapeHtml(sp.tierLabel) + " tier · " + sp.points + " Air Points</p>" +
-            "</div></div>" +
-            '<p class="dex-locked-note">Spot this species and get the sighting confirmed to reveal it here.</p>' +
-            "</div>";
-          detail.classList.add("open");
+              (art ? art.svg : genericDexSvg()) +
+              "<div><h3>" + dexNumberLabel(sp.number) + " · Not yet revealed</h3>" +
+              '<p class="dex-detail-tier">' + escapeHtml(sp.tierLabel) + " tier · " + sp.points + " Air Points</p>" +
+              "</div></div>" +
+              '<p class="dex-locked-note">Spot this species and get the sighting confirmed to reveal it here.</p>' +
+              "</div>"
+          );
           return;
         }
 
@@ -332,7 +387,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
           frontHtml =
             '<div class="dex-card-photo-wrap">' + frontMedia + "</div>" +
-            '<div class="dex-card-name-row"><h3>' + escapeHtml(sp.name) + "</h3>" +
+            '<div class="dex-card-name-row"><h3>' + dexNumberLabel(sp.number) + " · " + escapeHtml(sp.name) + "</h3>" +
             '<p class="sci">' + escapeHtml(sp.sci) + "</p>" +
             '<p class="dex-detail-tier">' + escapeHtml(sp.tierLabel) + " tier · " + sp.points + " Air Points</p>" +
             "</div>" +
@@ -350,14 +405,15 @@ document.addEventListener("DOMContentLoaded", function () {
             '<p class="dex-card-flip-hint">← Tap to flip back</p>';
         }
 
-        detail.innerHTML =
+        openDexDetail(
+          detail,
           '<div class="dex-card' + (hasImageCard ? " dex-card-imagecard" : "") + '" tabindex="0" role="button" aria-pressed="false" aria-label="' +
-          escapeHtml(sp.name) + ' card — tap to flip between ' + (hasImageCard ? "front and back" : "stats and facts") + '">' +
-          '<div class="dex-card-inner">' +
-          '<div class="dex-card-face dex-card-front' + (hasImageCard ? " dex-card-image-face" : "") + '">' + frontHtml + "</div>" +
-          '<div class="dex-card-face dex-card-back' + (hasImageCard ? " dex-card-image-face" : "") + '">' + backHtml + "</div>" +
-          "</div></div>";
-        detail.classList.add("open");
+            escapeHtml(sp.name) + ' card — tap to flip between ' + (hasImageCard ? "front and back" : "stats and facts") + '">' +
+            '<div class="dex-card-inner">' +
+            '<div class="dex-card-face dex-card-front' + (hasImageCard ? " dex-card-image-face" : "") + '">' + frontHtml + "</div>" +
+            '<div class="dex-card-face dex-card-back' + (hasImageCard ? " dex-card-image-face" : "") + '">' + backHtml + "</div>" +
+            "</div></div>"
+        );
 
         var cardEl = detail.querySelector(".dex-card");
         function toggleFlip() {
