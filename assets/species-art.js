@@ -80,6 +80,11 @@ var SPECIES_ART = {
   },
 
   "willie wagtail": {
+    // George's own fully-designed trading card (front + back), species #8/50.
+    card: {
+      front: "assets/species-cards/willie-wagtail-front.jpg",
+      back: "assets/species-cards/willie-wagtail-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Willie Wagtail">' +
       '<g class="dex-bird">' +
@@ -99,6 +104,11 @@ var SPECIES_ART = {
   },
 
   "rainbow lorikeet": {
+    // George's own fully-designed trading card (front + back), species #3/50.
+    card: {
+      front: "assets/species-cards/rainbow-lorikeet-front.jpg",
+      back: "assets/species-cards/rainbow-lorikeet-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Rainbow Lorikeet">' +
       '<g class="dex-bird">' +
@@ -118,6 +128,11 @@ var SPECIES_ART = {
   },
 
   "australian magpie": {
+    // George's own fully-designed trading card (front + back), species #4/50.
+    card: {
+      front: "assets/species-cards/australian-magpie-front.jpg",
+      back: "assets/species-cards/australian-magpie-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Australian Magpie">' +
       '<g class="dex-bird">' +
@@ -137,6 +152,11 @@ var SPECIES_ART = {
   },
 
   "laughing kookaburra": {
+    // George's own fully-designed trading card (front + back), species #12/50.
+    card: {
+      front: "assets/species-cards/laughing-kookaburra-front.jpg",
+      back: "assets/species-cards/laughing-kookaburra-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Laughing Kookaburra">' +
       '<g class="dex-bird">' +
@@ -222,6 +242,11 @@ var SPECIES_ART = {
   // and facts for these are still coming, so each entry falls back to the Dex's
   // "coming soon" note until those are added, same as the mechanic above describes.
   "noisy miner": {
+    // George's own fully-designed trading card (front + back), species #2/50.
+    card: {
+      front: "assets/species-cards/noisy-miner-front.jpg",
+      back: "assets/species-cards/noisy-miner-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Noisy Miner">' +
       '<g class="dex-bird">' +
@@ -229,6 +254,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "welcome swallow": {
+    // George's own fully-designed trading card (front + back), species #5/50.
+    card: {
+      front: "assets/species-cards/welcome-swallow-front.jpg",
+      back: "assets/species-cards/welcome-swallow-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Welcome Swallow">' +
       '<g class="dex-bird">' +
@@ -236,6 +266,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "australian white ibis": {
+    // George's own fully-designed trading card (front + back), species #6/50.
+    card: {
+      front: "assets/species-cards/australian-white-ibis-front.jpg",
+      back: "assets/species-cards/australian-white-ibis-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Australian White Ibis">' +
       '<g class="dex-bird">' +
@@ -243,6 +278,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "magpie-lark": {
+    // George's own fully-designed trading card (front + back), species #7/50.
+    card: {
+      front: "assets/species-cards/magpie-lark-front.jpg",
+      back: "assets/species-cards/magpie-lark-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Magpie-lark">' +
       '<g class="dex-bird">' +
@@ -250,6 +290,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "grey butcherbird": {
+    // George's own fully-designed trading card (front + back), species #9/50.
+    card: {
+      front: "assets/species-cards/grey-butcherbird-front.jpg",
+      back: "assets/species-cards/grey-butcherbird-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Grey Butcherbird">' +
       '<g class="dex-bird">' +
@@ -257,6 +302,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "masked lapwing": {
+    // George's own fully-designed trading card (front + back), species #10/50.
+    card: {
+      front: "assets/species-cards/masked-lapwing-front.jpg",
+      back: "assets/species-cards/masked-lapwing-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Masked Lapwing">' +
       '<g class="dex-bird">' +
@@ -264,6 +314,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "pied butcherbird": {
+    // George's own fully-designed trading card (front + back), species #11/50.
+    card: {
+      front: "assets/species-cards/pied-butcherbird-front.jpg",
+      back: "assets/species-cards/pied-butcherbird-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Pied Butcherbird">' +
       '<g class="dex-bird">' +
@@ -271,6 +326,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "australasian figbird": {
+    // George's own fully-designed trading card (front + back), species #13/50.
+    card: {
+      front: "assets/species-cards/australasian-figbird-front.jpg",
+      back: "assets/species-cards/australasian-figbird-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Australasian Figbird">' +
       '<g class="dex-bird">' +
@@ -278,6 +338,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "brown honeyeater": {
+    // George's own fully-designed trading card (front + back), species #14/50.
+    card: {
+      front: "assets/species-cards/brown-honeyeater-front.jpg",
+      back: "assets/species-cards/brown-honeyeater-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Brown Honeyeater">' +
       '<g class="dex-bird">' +
@@ -285,6 +350,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "pied currawong": {
+    // George's own fully-designed trading card (front + back), species #15/50.
+    card: {
+      front: "assets/species-cards/pied-currawong-front.jpg",
+      back: "assets/species-cards/pied-currawong-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Pied Currawong">' +
       '<g class="dex-bird">' +
