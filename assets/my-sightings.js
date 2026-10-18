@@ -368,7 +368,7 @@ document.addEventListener("DOMContentLoaded", function () {
             detail,
             '<div class="dex-locked-box"><div class="dex-locked-box-head">' +
               (art ? art.svg : genericDexSvg()) +
-              "<div><h3>" + dexNumberLabel(sp.number) + " · Not yet revealed</h3>" +
+              "<div><h3>" + dexNumberLabel(sp.number) + " Species unidentified</h3>" +
               '<p class="dex-detail-tier">' + escapeHtml(sp.tierLabel) + " tier · " + sp.points + " Air Points</p>" +
               "</div></div>" +
               '<p class="dex-locked-note">Spot this species and get the sighting confirmed to reveal it here.</p>' +

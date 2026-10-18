@@ -131,8 +131,12 @@ var SPECIES_LIST = [
 // Species-key lookup (lowercased/trimmed name -> full entry incl. points),
 // mirroring the DB's `lower(trim(species))` normalisation so the two stay
 // in agreement about which typed text matches an official species.
+// `number` is the species' fixed position in SPECIES_LIST above (1-50,
+// easiest to hardest tier order) — the same "#1/50" numbering already
+// used informally in species-art.js's comments, now exposed properly so
+// the Dex grid/detail can show it next to every species' name.
 var SPECIES_BY_KEY = {};
-SPECIES_LIST.forEach(function (sp) {
+SPECIES_LIST.forEach(function (sp, idx) {
   var tierInfo = SPECIES_TIERS[sp.tier];
   SPECIES_BY_KEY[sp.name.toLowerCase().trim()] = {
     name: sp.name,
@@ -140,6 +144,7 @@ SPECIES_LIST.forEach(function (sp) {
     tier: sp.tier,
     tierLabel: tierInfo.label,
     points: tierInfo.points,
+    number: idx + 1,
   };
 });
 
