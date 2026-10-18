@@ -364,11 +364,15 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!sp) return;
 
         if (!isConfirmed) {
+          // Same silhouette swap renderDex() applies to the grid cells —
+          // without it this teaser box would show George's full-colour
+          // badge art for a species the player hasn't confirmed yet.
+          var lockedSvg = art ? art.svg.replace(/-badge\.png/g, "-badge-locked.png") : genericDexSvg();
           openDexDetail(
             detail,
             '<div class="dex-locked-box"><div class="dex-locked-box-head">' +
-              (art ? art.svg : genericDexSvg()) +
-              "<div><h3>" + dexNumberLabel(sp.number) + " Species unidentified</h3>" +
+              lockedSvg +
+              "<div><h3>" + dexNumberLabel(sp.number) + " - Unidentified species</h3>" +
               '<p class="dex-detail-tier">' + escapeHtml(sp.tierLabel) + " tier · " + sp.points + " Air Points</p>" +
               "</div></div>" +
               '<p class="dex-locked-note">Spot this species and get the sighting confirmed to reveal it here.</p>' +
