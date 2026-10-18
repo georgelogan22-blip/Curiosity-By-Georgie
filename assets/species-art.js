@@ -176,6 +176,11 @@ var SPECIES_ART = {
   },
 
   "galah": {
+    // George's own fully-designed trading card (front + back), species #21/50.
+    card: {
+      front: "assets/species-cards/galah-front.jpg",
+      back: "assets/species-cards/galah-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Galah">' +
       '<g class="dex-bird">' +
@@ -195,6 +200,11 @@ var SPECIES_ART = {
   },
 
   "sulphur-crested cockatoo": {
+    // George's own fully-designed trading card (front + back), species #16/50.
+    card: {
+      front: "assets/species-cards/sulphur-crested-cockatoo-front.jpg",
+      back: "assets/species-cards/sulphur-crested-cockatoo-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Sulphur-crested Cockatoo">' +
       '<g class="dex-bird">' +
@@ -219,6 +229,11 @@ var SPECIES_ART = {
   },
 
   "australian pelican": {
+    // George's own fully-designed trading card (front + back), species #24/50.
+    card: {
+      front: "assets/species-cards/australian-pelican-front.jpg",
+      back: "assets/species-cards/australian-pelican-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Australian Pelican">' +
       '<g class="dex-bird">' +
@@ -362,6 +377,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "crested pigeon": {
+    // George's own fully-designed trading card (front + back), species #17/50.
+    card: {
+      front: "assets/species-cards/crested-pigeon-front.jpg",
+      back: "assets/species-cards/crested-pigeon-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Crested Pigeon">' +
       '<g class="dex-bird">' +
@@ -369,6 +389,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "striated pardalote": {
+    // George's own fully-designed trading card (front + back), species #18/50.
+    card: {
+      front: "assets/species-cards/striated-pardalote-front.jpg",
+      back: "assets/species-cards/striated-pardalote-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Striated Pardalote">' +
       '<g class="dex-bird">' +
@@ -376,6 +401,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "blue-faced honeyeater": {
+    // George's own fully-designed trading card (front + back), species #19/50.
+    card: {
+      front: "assets/species-cards/blue-faced-honeyeater-front.jpg",
+      back: "assets/species-cards/blue-faced-honeyeater-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Blue-faced Honeyeater">' +
       '<g class="dex-bird">' +
@@ -383,6 +413,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "australian brushturkey": {
+    // George's own fully-designed trading card (front + back), species #20/50.
+    card: {
+      front: "assets/species-cards/australian-brushturkey-front.jpg",
+      back: "assets/species-cards/australian-brushturkey-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Australian Brushturkey">' +
       '<g class="dex-bird">' +
@@ -390,6 +425,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "pacific black duck": {
+    // George's own fully-designed trading card (front + back), species #22/50.
+    card: {
+      front: "assets/species-cards/pacific-black-duck-front.jpg",
+      back: "assets/species-cards/pacific-black-duck-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Pacific Black Duck">' +
       '<g class="dex-bird">' +
@@ -397,6 +437,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "australian wood duck": {
+    // George's own fully-designed trading card (front + back), species #23/50.
+    card: {
+      front: "assets/species-cards/australian-wood-duck-front.jpg",
+      back: "assets/species-cards/australian-wood-duck-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Australian Wood Duck">' +
       '<g class="dex-bird">' +
@@ -404,6 +449,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "silvereye": {
+    // George's own fully-designed trading card (front + back), species #25/50.
+    card: {
+      front: "assets/species-cards/silvereye-front.jpg",
+      back: "assets/species-cards/silvereye-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Silvereye">' +
       '<g class="dex-bird">' +
