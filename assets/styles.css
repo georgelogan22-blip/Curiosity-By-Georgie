@@ -1541,6 +1541,19 @@ section { padding: 40px 0; }
 .dex-cell.tier-ssplus { border-top-color: var(--tier-amber); }
 
 .dex-cell.locked .dex-bird { filter: var(--dex-locked-filter); }
+/* iOS WebKit (both Safari and Chrome-on-iOS run the same WebKit engine)
+   has a long-standing bug where a `filter` set on an SVG <g> that wraps
+   an <image> referencing an external raster file is silently ignored —
+   the group paints as if no filter were applied at all, even though the
+   exact same markup/CSS filters correctly in Chromium and Firefox. Every
+   species badge is now `<g class="dex-bird"><image href="....png"/></g>`
+   (see species-art.js), so this bug is exactly why locked cells were
+   showing full-colour thumbnails on iPhone while desktop looked correct
+   — reported 2026-10-18. The fix is to also set the filter directly on
+   the <image> element itself rather than relying on it inheriting from
+   the <g>; WebKit honours it there. Harmless/redundant on browsers where
+   the <g> filter already worked. */
+.dex-cell.locked .dex-bird image { filter: var(--dex-locked-filter); }
 /* Every badge's outer circle (class="dex-ring") carries its own species
    colour (or var(--paper) for the generic placeholder) so a REVEALED bird
    looks right. But while locked, force it to the same neutral theme tone
