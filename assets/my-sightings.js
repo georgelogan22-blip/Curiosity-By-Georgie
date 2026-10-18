@@ -231,6 +231,21 @@ document.addEventListener("DOMContentLoaded", function () {
       var tierInfo = SPECIES_TIERS[sp.tier] || {};
       var art = (typeof SPECIES_ART !== "undefined" && SPECIES_ART[key]) || null;
       var svg = art ? art.svg : genericDexSvg();
+      // Locked cells get a PRE-RENDERED silhouette PNG (same filename with
+      // "-badge" swapped for "-badge-locked") instead of relying on the
+      // CSS `filter: brightness(0)` trick to grey out the full-colour
+      // badge at render time. Reported 2026-10-18: iOS (Safari AND
+      // Chrome — both run WebKit there) was still showing every locked
+      // species in full colour even after confirming the correct filter
+      // CSS was deployed and live, with Desktop Site mode making no
+      // difference either — so the filter itself just isn't reliably
+      // applying to these SVG <image> badges on-device, for reasons that
+      // don't reproduce outside real iOS. Swapping the actual image file
+      // sidesteps the problem entirely: every browser can render a plain
+      // PNG as-is, no filter support required.
+      if (!isConfirmed) {
+        svg = svg.replace(/-badge\.png/g, "-badge-locked.png");
+      }
       var number = dexNumberLabel(i + 1);
       var label = isConfirmed ? sp.name : "???";
 
