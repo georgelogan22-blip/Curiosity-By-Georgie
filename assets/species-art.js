@@ -461,6 +461,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "noisy friarbird": {
+    // George's own fully-designed trading card (front + back), species #26/50.
+    card: {
+      front: "assets/species-cards/noisy-friarbird-front.jpg",
+      back: "assets/species-cards/noisy-friarbird-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Noisy Friarbird">' +
       '<g class="dex-bird">' +
@@ -468,6 +473,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "rainbow bee-eater": {
+    // George's own fully-designed trading card (front + back), species #27/50.
+    card: {
+      front: "assets/species-cards/rainbow-bee-eater-front.jpg",
+      back: "assets/species-cards/rainbow-bee-eater-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Rainbow Bee-eater">' +
       '<g class="dex-bird">' +
@@ -475,6 +485,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "sacred kingfisher": {
+    // George's own fully-designed trading card (front + back), species #28/50.
+    card: {
+      front: "assets/species-cards/sacred-kingfisher-front.jpg",
+      back: "assets/species-cards/sacred-kingfisher-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Sacred Kingfisher">' +
       '<g class="dex-bird">' +
@@ -482,6 +497,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "white-faced heron": {
+    // George's own fully-designed trading card (front + back), species #29/50.
+    card: {
+      front: "assets/species-cards/white-faced-heron-front.jpg",
+      back: "assets/species-cards/white-faced-heron-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="White-faced Heron">' +
       '<g class="dex-bird">' +
@@ -489,6 +509,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "eastern yellow robin": {
+    // George's own fully-designed trading card (front + back), species #30/50.
+    card: {
+      front: "assets/species-cards/eastern-yellow-robin-front.jpg",
+      back: "assets/species-cards/eastern-yellow-robin-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Eastern Yellow Robin">' +
       '<g class="dex-bird">' +
@@ -496,6 +521,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "red-browed finch": {
+    // George's own fully-designed trading card (front + back), species #31/50.
+    card: {
+      front: "assets/species-cards/red-browed-finch-front.jpg",
+      back: "assets/species-cards/red-browed-finch-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Red-browed Finch">' +
       '<g class="dex-bird">' +
@@ -503,6 +533,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "little corella": {
+    // George's own fully-designed trading card (front + back), species #32/50.
+    card: {
+      front: "assets/species-cards/little-corella-front.jpg",
+      back: "assets/species-cards/little-corella-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Little Corella">' +
       '<g class="dex-bird">' +
