@@ -545,6 +545,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "little egret": {
+    // George's own fully-designed trading card (front + back), species #33/50.
+    card: {
+      front: "assets/species-cards/little-egret-front.jpg",
+      back: "assets/species-cards/little-egret-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Little Egret">' +
       '<g class="dex-bird">' +
@@ -552,6 +557,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "pheasant coucal": {
+    // George's own fully-designed trading card (front + back), species #34/50.
+    card: {
+      front: "assets/species-cards/pheasant-coucal-front.jpg",
+      back: "assets/species-cards/pheasant-coucal-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Pheasant Coucal">' +
       '<g class="dex-bird">' +
@@ -559,6 +569,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "brahminy kite": {
+    // George's own fully-designed trading card (front + back), species #35/50.
+    card: {
+      front: "assets/species-cards/brahminy-kite-front.jpg",
+      back: "assets/species-cards/brahminy-kite-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Brahminy Kite">' +
       '<g class="dex-bird">' +
@@ -566,6 +581,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "white-bellied sea-eagle": {
+    // George's own fully-designed trading card (front + back), species #36/50.
+    card: {
+      front: "assets/species-cards/white-bellied-sea-eagle-front.jpg",
+      back: "assets/species-cards/white-bellied-sea-eagle-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="White-bellied Sea-Eagle">' +
       '<g class="dex-bird">' +
@@ -573,6 +593,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "black-shouldered kite": {
+    // George's own fully-designed trading card (front + back), species #37/50.
+    card: {
+      front: "assets/species-cards/black-shouldered-kite-front.jpg",
+      back: "assets/species-cards/black-shouldered-kite-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Black-shouldered Kite">' +
       '<g class="dex-bird">' +
@@ -580,6 +605,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "eastern osprey": {
+    // George's own fully-designed trading card (front + back), species #38/50.
+    card: {
+      front: "assets/species-cards/eastern-osprey-front.jpg",
+      back: "assets/species-cards/eastern-osprey-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Eastern Osprey">' +
       '<g class="dex-bird">' +
