@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script src="assets/launch-lockdown.js?v=20261025a"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Leaderboard — Curiosity by Georgie</title>
 <meta name="description" content="See who's closest to fifty species in the Brisbane Air 50 birding challenge.">
@@ -14,11 +15,11 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Curiosity">
 <meta name="theme-color" content="#f5f4ea">
-<link rel="stylesheet" href="assets/styles.css?v=20261018e">
-<script src="assets/species-data.js?v=20261018e" defer></script>
-<script src="assets/search-data.js?v=20261018e" defer></script>
-<script src="assets/nav.js?v=20261018e" defer></script>
-<script src="assets/search.js?v=20261018e" defer></script>
+<link rel="stylesheet" href="assets/styles.css?v=20261018h">
+<script src="assets/species-data.js?v=20261018h" defer></script>
+<script src="assets/search-data.js?v=20261018h" defer></script>
+<script src="assets/nav.js?v=20261018h" defer></script>
+<script src="assets/search.js?v=20261018h" defer></script>
 </head>
 <body>
 
@@ -132,9 +133,9 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="assets/supabase-client.js?v=20261018e"></script>
-<script src="assets/avatars.js?v=20261018e"></script>
-<script src="assets/script.js?v=20261018e"></script>
+<script src="assets/supabase-client.js?v=20261025b"></script>
+<script src="assets/avatars.js?v=20261018h"></script>
+<script src="assets/script.js?v=20261018h"></script>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     if (typeof fetchLeaderboard !== "function") return;
@@ -152,9 +153,10 @@
               : "—";
             var photoUrl = (typeof avatarPhotoUrl === "function") ? avatarPhotoUrl(r.avatar_photo_path) : null;
             var badge = (typeof renderAvatarBadge === "function") ? renderAvatarBadge(r.avatar_key, photoUrl, 28, r.participant_name) : "";
+            var foundingFlock = (typeof foundingFlockChipHtml === "function") ? foundingFlockChipHtml(r.founding_flock_rank) : "";
             return (
               '<tr><td data-label="Rank"><span class="rank-badge ' + badgeClass + '">' + rank + "</span></td>" +
-              '<td data-label="Participant"><span class="participant-cell">' + badge + '<span>' + escapeHtml(r.participant_name) + "</span></span></td>" +
+              '<td data-label="Participant"><span class="participant-cell">' + badge + '<span>' + escapeHtml(r.participant_name) + "</span>" + foundingFlock + "</span></td>" +
               '<td class="num" data-label="Air Points">' + r.total_points + "</td>" +
               '<td class="num" data-label="Species /50">' + r.air50_species_count + "</td>" +
               '<td data-label="Last sighting">' + lastSeen + "</td></tr>"

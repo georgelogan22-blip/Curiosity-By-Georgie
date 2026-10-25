@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script src="assets/launch-lockdown.js?v=20261025a"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Finisher Rewards — Curiosity by Georgie</title>
 <meta name="description" content="Only 50 Air coins will ever exist — one for each of the first 50 finishers of the Brisbane Air 50. A genuine thank-you, never sold. See the design.">
@@ -14,11 +15,11 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Curiosity">
 <meta name="theme-color" content="#f5f4ea">
-<link rel="stylesheet" href="assets/styles.css?v=20261018e">
-<script src="assets/species-data.js?v=20261018e" defer></script>
-<script src="assets/search-data.js?v=20261018e" defer></script>
-<script src="assets/nav.js?v=20261018e" defer></script>
-<script src="assets/search.js?v=20261018e" defer></script>
+<link rel="stylesheet" href="assets/styles.css?v=20261018h">
+<script src="assets/species-data.js?v=20261018h" defer></script>
+<script src="assets/search-data.js?v=20261018h" defer></script>
+<script src="assets/nav.js?v=20261018h" defer></script>
+<script src="assets/search.js?v=20261018h" defer></script>
 </head>
 <body>
 
@@ -131,6 +132,12 @@
 
 <section class="wrap rewards-info">
   <div class="rules-block rules-grid">
+    <h3>The Founding Flock — first 100 registrations</h3>
+    <div>
+      <p>Separate from the coin: the first <strong>100 people</strong> to register get a <strong>Founding Flock</strong> badge next to their name on the <a href="leaderboard.html">Leaderboard</a> and <a href="hall-of-fame.html">Hall of Fame</a>, for good, from the moment they sign up — see <a href="register.html">Register</a>. Go on to complete the full Brisbane Air 50 as one of them and there's a second, undisclosed thank-you waiting. It stacks with the coin above: register early <em>and</em> finish inside the first fifty, and you keep both rewards in full — one doesn't come at the cost of the other.</p>
+    </div>
+  </div>
+  <div class="rules-block rules-grid">
     <h3>How you earn one</h3>
     <div>
       <p>Log and confirm all 50 official Brisbane Air 50 species and you're eligible for the <a href="hall-of-fame.html">Hall of Fame</a> — no cap, no matter when you finish. The coin is different: only the first fifty people inducted receive one, in the order Georgie confirms them. If you're among them, once your induction goes up Georgie posts your coin to the address you gave at <a href="register.html">registration</a> — engraved with your display name, and numbered by your place in that first fifty.</p>
@@ -156,8 +163,8 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="assets/supabase-client.js?v=20261018e"></script>
-<script src="assets/script.js?v=20261018e"></script>
+<script src="assets/supabase-client.js?v=20261025b"></script>
+<script src="assets/script.js?v=20261018h"></script>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     if (typeof fetchTopAir50Count !== "function") return;
