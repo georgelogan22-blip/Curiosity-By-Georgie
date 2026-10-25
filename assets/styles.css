@@ -802,6 +802,7 @@ section { padding: 40px 0; }
 .stat-tile {
   background: var(--paper-raised);
   padding: 22px 20px;
+  position: relative;
 }
 .stat-tile .num {
   font-family: var(--font-mono);
@@ -812,6 +813,30 @@ section { padding: 40px 0; }
   display: block;
 }
 .stat-tile .label { color: var(--ink-soft); font-size: 0.88rem; }
+
+/* "Live" pulse — only unhidden by index.html's script once a real
+   citywide_stats() fetch has succeeded (see supabase/
+   citywide-stats-migration.sql), never shown over the example-data
+   placeholder numbers. Uses --tier-orange rather than --accent so it
+   reads as a status indicator, not the number's own color. */
+.stat-tile .live-dot {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--tier-orange);
+  animation: live-dot-pulse 1.8s ease-out infinite;
+}
+@keyframes live-dot-pulse {
+  0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--tier-orange) 55%, transparent); }
+  70%  { box-shadow: 0 0 0 8px color-mix(in srgb, var(--tier-orange) 0%, transparent); }
+  100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--tier-orange) 0%, transparent); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stat-tile .live-dot { animation: none; }
+}
 
 /* Below this width, .stat-strip's auto-fit grid only has room for 2 of
    the 3 tiles per row, leaving an odd empty cell next to the last one
@@ -1068,6 +1093,34 @@ section { padding: 40px 0; }
   text-transform: uppercase;
   background: var(--accent-coral);
   color: #ffffff;
+  border-radius: 999px;
+  padding: 2px 10px;
+  margin-bottom: 0.5em;
+}
+
+/* Founding Flock callout on register.html — same family as
+   .safety-block/.consent-block/.privacy-block, but in the Founding
+   Flock badge's own dark/gold "founder's seal" colours (see
+   foundingFlockBadgeSvg() in assets/avatars.js) rather than reusing one
+   of those other blocks' colours, so it reads as its own distinct
+   thing. */
+.founding-flock-block {
+  background: color-mix(in srgb, var(--ink) 6%, var(--paper-raised));
+  border: 1px solid var(--accent-warm);
+  border-left: 4px solid var(--ink);
+  border-radius: var(--radius-md);
+  padding: 26px 28px;
+  margin-bottom: 8px;
+}
+.founding-flock-block h3 { color: var(--ink); }
+.founding-flock-block .rule-tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--ink);
+  color: var(--accent-warm);
   border-radius: 999px;
   padding: 2px 10px;
   margin-bottom: 0.5em;
@@ -2067,6 +2120,30 @@ tr:last-child td { border-bottom: none; }
    the gold coin photo, so it reads clearly as "not final art" without
    looking broken. */
 .fame-card .badge-placeholder { flex: none; display: block; }
+
+/* Founding Flock chip — see foundingFlockChipHtml() in assets/avatars.js.
+   Inline next to a name on the Leaderboard (.participant-cell), Hall of
+   Fame (.fame-card-head .name), and My Sightings' profile greeting. */
+.founding-flock-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--accent-warm);
+  background: color-mix(in srgb, var(--accent-warm) 12%, var(--paper-raised));
+  border: 1px solid color-mix(in srgb, var(--accent-warm) 35%, transparent);
+  border-radius: 999px;
+  padding: 2px 9px 2px 4px;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.founding-flock-chip svg { flex: none; display: block; }
+.fame-card .name .founding-flock-chip,
+.dashboard-greeting .founding-flock-chip { margin-left: 8px; }
 
 /* ---------- checklist ---------- */
 .checklist-group { margin-bottom: 34px; }
