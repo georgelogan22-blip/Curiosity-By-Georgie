@@ -15,7 +15,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Curiosity">
 <meta name="theme-color" content="#f5f4ea">
-<link rel="stylesheet" href="assets/styles.css?v=20261018h">
+<link rel="stylesheet" href="assets/styles.css?v=20261025c">
 <script src="assets/species-data.js?v=20261018h" defer></script>
 <script src="assets/search-data.js?v=20261018h" defer></script>
 <script src="assets/nav.js?v=20261018h" defer></script>
@@ -153,9 +153,9 @@
 <section class="wrap section-tight">
   <h2>City-wide so far</h2>
   <div class="stat-strip">
-    <div class="stat-tile"><span class="num" id="stat-participants">34</span><span class="label">Participants</span></div>
-    <div class="stat-tile"><span class="num" id="stat-species">118</span><span class="label">Species logged city-wide</span></div>
-    <div class="stat-tile"><span class="num" id="stat-hall-of-famers">3</span><span class="label">Hall of Famers</span></div>
+    <div class="stat-tile"><span class="live-dot" hidden aria-hidden="true"></span><span class="num" id="stat-participants">34</span><span class="label">Participants</span></div>
+    <div class="stat-tile"><span class="live-dot" hidden aria-hidden="true"></span><span class="num" id="stat-species">118</span><span class="label">Species logged city-wide</span></div>
+    <div class="stat-tile"><span class="live-dot" hidden aria-hidden="true"></span><span class="num" id="stat-hall-of-famers">3</span><span class="label">Hall of Famers</span></div>
   </div>
   <p class="sample-note" id="citywide-note"><span class="dot"></span>Example data — placeholder until sightings are wired to a shared, live database.</p>
 </section>
@@ -184,6 +184,13 @@
         if (note) note.hidden = true;
         var footerNote = document.getElementById("citywide-footer-note");
         if (footerNote) footerNote.textContent = "Live city-wide totals, updated as sightings come in.";
+        // Only reveal the pulsing "live" dots once real data has actually
+        // loaded — showing them over the placeholder numbers would be
+        // misleading (George's call: they should mean something, not
+        // just decorate the example figures).
+        document.querySelectorAll(".stat-tile .live-dot").forEach(function (dot) {
+          dot.hidden = false;
+        });
       })
       .catch(function () { /* keep example data if the backend isn't reachable */ });
   });
