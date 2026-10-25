@@ -434,6 +434,7 @@ function fetchHallOfFame() {
               points: lb.total_points,
               avatarKey: lb.avatar_key || null,
               avatarPhotoUrl: avatarPhotoUrl(lb.avatar_photo_path),
+              foundingFlockRank: lb.founding_flock_rank || null,
               medals: byParticipant[key].map(function (ind) {
                 return {
                   discipline: ind.discipline,
@@ -741,5 +742,31 @@ function toggleBoardCurious(postId, name, pinHash) {
       if (res.error) throw res.error;
       var row = Array.isArray(res.data) ? res.data[0] : res.data;
       return row || { is_curious: false, curious_count: 0 };
+    });
+}
+
+// Homepage "City-wide so far" strip — see
+// supabase/citywide-stats-migration.sql. Calls the public
+// citywide_stats() function (SECURITY DEFINER, so it can count
+// `participants` despite anon having no SELECT grant on that table —
+// see the migration file's comments) and normalises the single-row
+// result to plain numbers. Resolves with null if the backend isn't
+// configured OR the migration hasn't been run yet (unknown RPC —
+// PostgREST returns an error, which the caller's .catch() turns into
+// "keep showing the placeholder" rather than a broken page), so this is
+// safe to ship ahead of George actually running the SQL file.
+function fetchCityWideStats() {
+  if (!supabaseClient) return Promise.resolve(null);
+  return supabaseClient
+    .rpc("citywide_stats")
+    .then(function (res) {
+      if (res.error) throw res.error;
+      var row = Array.isArray(res.data) ? res.data[0] : res.data;
+      if (!row) return null;
+      return {
+        participantCount: Number(row.participant_count) || 0,
+        speciesCount: Number(row.species_count) || 0,
+        hallOfFamerCount: Number(row.hall_of_famer_count) || 0
+      };
     });
 }
