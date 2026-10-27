@@ -96,7 +96,7 @@
 <header class="page-head wrap">
   <span class="eyebrow">Reset Your PIN</span>
   <h1>Choose a new PIN</h1>
-  <p class="lede" id="rp-intro">Pick a new 4-digit PIN below — it replaces your old one right away, and you'll use it the same way from now on: alongside your display name whenever you log a sighting, comment, or react.</p>
+  <p class="lede" id="rp-intro">Pick a new 6-digit PIN below — it replaces your old one right away, and you'll use it the same way from now on: alongside your display name whenever you log a sighting, comment, or react.</p>
 </header>
 
 <section class="wrap section-tight">
@@ -104,12 +104,12 @@
     <form id="reset-pin-form">
       <div class="field field-grid-2">
         <div>
-          <label for="rp-pin">New 4-digit PIN</label>
-          <input type="password" id="rp-pin" name="pin" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="••••" required>
+          <label for="rp-pin">New 6-digit PIN</label>
+          <input type="password" id="rp-pin" name="pin" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="••••••" required>
         </div>
         <div>
           <label for="rp-pin-confirm">Confirm PIN</label>
-          <input type="password" id="rp-pin-confirm" name="pinConfirm" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="••••" required>
+          <input type="password" id="rp-pin-confirm" name="pinConfirm" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="••••••" required>
         </div>
       </div>
       <button type="submit" class="btn btn-primary">Set new PIN</button>
