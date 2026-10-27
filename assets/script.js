@@ -73,8 +73,8 @@ document.addEventListener("DOMContentLoaded", function () {
     var pin = (data.get("pin") || "").toString().trim();
     if (!species || !name) return;
 
-    if (!/^[0-9]{4}$/.test(pin)) {
-      setStatusHtml("Enter the 4-digit PIN you chose when you registered.");
+    if (!/^[0-9]{6}$/.test(pin)) {
+      setStatusHtml("Enter the 6-digit PIN you chose when you registered.");
       return;
     }
 
@@ -170,6 +170,8 @@ document.addEventListener("DOMContentLoaded", function () {
               );
             } else if (msg === "invalid_pin") {
               setStatusHtml('<span class="status-warn">That PIN doesn\'t match this name — check it and try again.</span>');
+            } else if (msg === "pin_locked") {
+              setStatusHtml('<span class="status-warn">Too many incorrect PIN attempts — this name is locked for 15 minutes. <a href="forgot-pin.html">Forgot your PIN?</a></span>');
             } else if (msg === "photo_required") {
               setStatusHtml("That photo didn't come through — please attach it again and resubmit.");
             } else {

@@ -39,8 +39,8 @@ document.addEventListener("DOMContentLoaded", function () {
     var pin = (data.get("pin") || "").toString().trim();
     var pinConfirm = (data.get("pinConfirm") || "").toString().trim();
 
-    if (!/^[0-9]{4}$/.test(pin)) {
-      setStatus("Choose a 4-digit PIN (numbers only).");
+    if (!/^[0-9]{6}$/.test(pin)) {
+      setStatus("Choose a 6-digit PIN (numbers only).");
       return;
     }
     if (pin !== pinConfirm) {

@@ -66,8 +66,8 @@ document.addEventListener("DOMContentLoaded", function () {
     var pin = (data.get("pin") || "").toString().trim();
     var pinConfirm = (data.get("pinConfirm") || "").toString().trim();
 
-    if (!/^[0-9]{4}$/.test(pin)) {
-      setStatus("Your PIN needs to be exactly 4 digits.");
+    if (!/^[0-9]{6}$/.test(pin)) {
+      setStatus("Your PIN needs to be exactly 6 digits.");
       return;
     }
     if (pin !== pinConfirm) {
@@ -115,9 +115,36 @@ document.addEventListener("DOMContentLoaded", function () {
           // localStorage unavailable (private browsing etc.) — not essential.
         }
         form.hidden = true;
-        setStatus(
-          "You're registered as “" + record.displayName + "” — head to Log a Sighting to get started."
-        );
+
+        // Founding Flock check — see supabase/founding-flock-migration.sql.
+        // The rank was assigned server-side the instant the registration
+        // above was inserted; this is just reading it back to decide what
+        // to say. Never lets this extra lookup hold up or fail the
+        // registration itself — if it errors or isn't available, we just
+        // fall back to the plain confirmation message.
+        var plainMessage =
+          "You're registered as “" + record.displayName + "” — head to Log a Sighting to get started.";
+
+        if (typeof fetchParticipantDashboard !== "function") {
+          setStatus(plainMessage);
+          return;
+        }
+
+        fetchParticipantDashboard(record.displayName, record.pinHash)
+          .then(function (dash) {
+            var rank = dash && dash.founding_flock_rank;
+            if (rank) {
+              setStatus(
+                "You're registered as “" + record.displayName + "” — and you're Founding Flock member #" + rank +
+                "! That badge is yours for good. Head to Log a Sighting to get started."
+              );
+            } else {
+              setStatus(plainMessage);
+            }
+          })
+          .catch(function () {
+            setStatus(plainMessage);
+          });
       })
       .catch(function (err) {
         var code = err && err.code;

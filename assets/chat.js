@@ -317,8 +317,8 @@ document.addEventListener("DOMContentLoaded", function () {
       setStatus("Enter your name to post.");
       return;
     }
-    if (!/^[0-9]{4}$/.test(pin)) {
-      setStatus("Enter the 4-digit PIN you chose when you registered.");
+    if (!/^[0-9]{6}$/.test(pin)) {
+      setStatus("Enter the 6-digit PIN you chose when you registered.");
       return;
     }
 
@@ -412,6 +412,8 @@ document.addEventListener("DOMContentLoaded", function () {
               setStatus('This name isn\'t able to post here. If you think this is a mistake, <a href="contact.html?topic=account">get in touch</a>.');
             } else if (msg === "invalid_pin") {
               setStatus('<span class="status-warn">That PIN doesn\'t match this name — check it and try again.</span>');
+            } else if (msg === "pin_locked") {
+              setStatus('<span class="status-warn">Too many incorrect PIN attempts — this name is locked for 15 minutes. <a href="forgot-pin.html">Forgot your PIN?</a></span>');
             } else if (msg === "caption_required") {
               setStatus("Say a little something before posting.");
             } else {
@@ -441,8 +443,8 @@ document.addEventListener("DOMContentLoaded", function () {
       setStatus("Enter your name above to comment.");
       return;
     }
-    if (!/^[0-9]{4}$/.test(pin)) {
-      setStatus("Enter your 4-digit PIN above to comment.");
+    if (!/^[0-9]{6}$/.test(pin)) {
+      setStatus("Enter your 6-digit PIN above to comment.");
       return;
     }
 
@@ -501,6 +503,8 @@ document.addEventListener("DOMContentLoaded", function () {
               setStatus('This name isn\'t able to comment here. If you think this is a mistake, <a href="contact.html?topic=account">get in touch</a>.');
             } else if (msg === "invalid_pin") {
               setStatus('<span class="status-warn">That PIN doesn\'t match this name — check it and try again.</span>');
+            } else if (msg === "pin_locked") {
+              setStatus('<span class="status-warn">Too many incorrect PIN attempts — this name is locked for 15 minutes. <a href="forgot-pin.html">Forgot your PIN?</a></span>');
             } else if (msg === "post_not_found") {
               setStatus("That post isn't there anymore.");
             } else {
@@ -574,8 +578,8 @@ document.addEventListener("DOMContentLoaded", function () {
         setStatus("Enter your name above to give it a Beauty!");
         return;
       }
-      if (!/^[0-9]{4}$/.test(pin)) {
-        setStatus("Enter your 4-digit PIN above to give it a Beauty!");
+      if (!/^[0-9]{6}$/.test(pin)) {
+        setStatus("Enter your 6-digit PIN above to give it a Beauty!");
         return;
       }
 
@@ -638,6 +642,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 setStatus('This name isn\'t able to react here. If you think this is a mistake, <a href="contact.html?topic=account">get in touch</a>.');
               } else if (msg === "invalid_pin") {
                 setStatus('<span class="status-warn">That PIN doesn\'t match this name — check it and try again.</span>');
+              } else if (msg === "pin_locked") {
+                setStatus('<span class="status-warn">Too many incorrect PIN attempts — this name is locked for 15 minutes. <a href="forgot-pin.html">Forgot your PIN?</a></span>');
               } else if (msg === "post_not_found") {
                 setStatus("That post isn't there anymore.");
               } else {
@@ -715,8 +721,8 @@ document.addEventListener("DOMContentLoaded", function () {
         setRepliesStatus("Enter your name above first.");
         return;
       }
-      if (!/^[0-9]{4}$/.test(pin)) {
-        setRepliesStatus("Enter your 4-digit PIN above first.");
+      if (!/^[0-9]{6}$/.test(pin)) {
+        setRepliesStatus("Enter your 6-digit PIN above first.");
         return;
       }
 
@@ -747,6 +753,8 @@ document.addEventListener("DOMContentLoaded", function () {
             setRepliesStatus('That name isn\'t registered yet — <a href="register.html">register here</a> first.');
           } else if (msg === "invalid_pin") {
             setRepliesStatus('<span class="status-warn">That PIN doesn\'t match this name — check it and try again.</span>');
+          } else if (msg === "pin_locked") {
+            setRepliesStatus('<span class="status-warn">Too many incorrect PIN attempts — this name is locked for 15 minutes. <a href="forgot-pin.html">Forgot your PIN?</a></span>');
           } else {
             setRepliesStatus("Couldn't check right now — please try again.");
           }

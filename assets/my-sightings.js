@@ -158,7 +158,9 @@ document.addEventListener("DOMContentLoaded", function () {
       "</div>" +
       "</div>" +
       '<div class="dashboard-headline">' +
-      '<p class="dashboard-greeting">Welcome back, <strong>' + escapeHtml(profile.display_name || "") + "</strong></p>" +
+      '<p class="dashboard-greeting">Welcome back, <strong>' + escapeHtml(profile.display_name || "") + "</strong>" +
+      ((typeof foundingFlockChipHtml === "function") ? foundingFlockChipHtml(profile.founding_flock_rank, 16) : "") +
+      "</p>" +
       '<div class="level-meter">' +
       '<div class="level-meter-top">' +
       '<span class="level-name">' + escapeHtml(lvl.current.name) + "</span>" +
@@ -702,8 +704,8 @@ document.addEventListener("DOMContentLoaded", function () {
     var pin = (data.get("pin") || "").toString().trim();
 
     if (!name) return;
-    if (!/^[0-9]{4}$/.test(pin)) {
-      setStatus("Enter the 4-digit PIN you chose when you registered.");
+    if (!/^[0-9]{6}$/.test(pin)) {
+      setStatus("Enter the 6-digit PIN you chose when you registered.");
       return;
     }
 
@@ -740,6 +742,8 @@ document.addEventListener("DOMContentLoaded", function () {
           setStatus('That name isn\'t registered yet — <a href="register.html">register here</a> first.');
         } else if (msg === "invalid_pin") {
           setStatus('<span class="status-warn">That PIN doesn\'t match this name — check it and try again.</span>');
+        } else if (msg === "pin_locked") {
+          setStatus('<span class="status-warn">Too many incorrect PIN attempts — this name is locked for 15 minutes. <a href="forgot-pin.html">Forgot your PIN?</a></span>');
         } else {
           setStatus("Couldn't reach the shared log right now — please try again.");
         }
