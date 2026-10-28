@@ -348,19 +348,29 @@ function submitContactMessage(record) {
 // includes off-list species), so the leaderboard reads as clean progress
 // toward the full set of 50 rather than a number that can outrun it. Same
 // field fetchHallOfFame() below gates induction on.
+//
+// Pass a number to cap how many rows come back (used nowhere currently —
+// kept for any future caller that wants a short top-N list), or pass
+// null/undefined for every row. leaderboard.html now always asks for the
+// full board (null) — needed both for its own name/registration-number
+// search (so it can find someone outside a "top 25" cutoff) and for My
+// Sightings' "Your Leaderboard Position" panel (assets/my-sightings.js),
+// which fetches the same full list client-side and finds the current
+// participant's own row in it rather than needing a separate backend
+// endpoint.
 function fetchLeaderboard(limit) {
   if (!supabaseClient) return Promise.resolve([]);
-  return supabaseClient
+  var query = supabaseClient
     .from("leaderboard")
     .select("*")
     .order("total_points", { ascending: false })
     .order("air50_species_count", { ascending: false })
-    .order("last_sighting", { ascending: false })
-    .limit(limit || 25)
-    .then(function (res) {
-      if (res.error) throw res.error;
-      return res.data;
-    });
+    .order("last_sighting", { ascending: false });
+  if (limit) query = query.limit(limit);
+  return query.then(function (res) {
+    if (res.error) throw res.error;
+    return res.data;
+  });
 }
 
 // Finisher Rewards page: the coin's front design stays hidden behind a

@@ -691,11 +691,84 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  // ---- Leaderboard position --------------------------------------------
+  // "Where do I stand compared to everyone else" — fetches the whole
+  // public leaderboard (same data the Leaderboard page itself shows, see
+  // fetchLeaderboard(null) in assets/supabase-client.js) and finds this
+  // participant's own row by participant_key, rather than needing a
+  // dedicated backend endpoint. Up to 2 neighbours on each side are shown
+  // for context, clipped at the top/bottom of the board. A participant
+  // with zero CONFIRMED sightings won't have a row on the leaderboard at
+  // all yet (same `having count(...) > 0` rule the Leaderboard page
+  // itself is subject to) — that's the empty state below, not an error.
+  function renderLeaderboardPositionHtml(rows, myKey) {
+    var idx = -1;
+    for (var i = 0; i < rows.length; i++) {
+      if (rows[i].participant_key === myKey) { idx = i; break; }
+    }
+
+    if (idx === -1) {
+      return (
+        '<div class="dashboard-leaderboard-position lbpos-empty">' +
+        '<span class="eyebrow">Leaderboard Position</span>' +
+        '<p class="hint">Not on the board yet — log and confirm your first sighting to see where you land. <a href="log-sighting.html">Log a sighting</a></p>' +
+        "</div>"
+      );
+    }
+
+    var rank = idx + 1;
+    var total = rows.length;
+    var start = Math.max(0, idx - 2);
+    var end = Math.min(rows.length, idx + 3);
+    var neighborRows = rows
+      .slice(start, end)
+      .map(function (r, i) {
+        var rowRank = start + i + 1;
+        var isYou = rowRank === rank;
+        return (
+          '<div class="lbpos-row' + (isYou ? " lbpos-row-you" : "") + '">' +
+          '<span class="lbpos-rank-num">' + rowRank + "</span>" +
+          '<span class="lbpos-name">' + (isYou ? "You" : escapeHtml(r.participant_name)) + "</span>" +
+          '<span class="lbpos-pts num">' + r.total_points + " pts</span>" +
+          "</div>"
+        );
+      })
+      .join("");
+
+    return (
+      '<div class="dashboard-leaderboard-position">' +
+      '<div class="lbpos-head"><span class="eyebrow">Leaderboard Position</span><a href="leaderboard.html" class="lbpos-link">View full leaderboard &rarr;</a></div>' +
+      '<p class="lbpos-rank-line"><span class="lbpos-rank-big">#' + rank + "</span><span class=\"lbpos-of\">of " + total + " participant" + (total === 1 ? "" : "s") + "</span></p>" +
+      '<div class="lbpos-neighbors">' + neighborRows + "</div>" +
+      "</div>"
+    );
+  }
+
+  function loadLeaderboardPosition(profile) {
+    var container = document.getElementById("leaderboard-position");
+    if (!container || typeof fetchLeaderboard !== "function") return;
+    var myKey = (profile.display_name || session.name || "").toLowerCase().trim();
+    fetchLeaderboard(null)
+      .then(function (rows) {
+        container.innerHTML = renderLeaderboardPositionHtml(rows || [], myKey);
+      })
+      .catch(function () {
+        // Quietly leave the section empty if the board can't be reached
+        // right now — same "don't break the rest of the page over a
+        // bonus panel" posture as fetchTopAir50Count()'s own caller.
+      });
+  }
+
   function renderDashboard(profile, rows) {
-    results.innerHTML = renderProfileCard(profile) + renderDex(rows) + renderTabs(rows);
+    results.innerHTML =
+      renderProfileCard(profile) +
+      '<div id="leaderboard-position" class="dashboard-leaderboard-position lbpos-loading"></div>' +
+      renderDex(rows) +
+      renderTabs(rows);
     wireAvatarPicker(profile);
     wireDex(rows);
     wireTabs();
+    loadLeaderboardPosition(profile);
   }
 
   form.addEventListener("submit", function (evt) {
