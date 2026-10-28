@@ -15,7 +15,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Curiosity">
 <meta name="theme-color" content="#f5f4ea">
-<link rel="stylesheet" href="assets/styles.css?v=20261025c">
+<link rel="stylesheet" href="assets/styles.css?v=20261029a">
 <script src="assets/species-data.js?v=20261018h" defer></script>
 <script src="assets/search-data.js?v=20261018h" defer></script>
 <script src="assets/nav.js?v=20261018h" defer></script>
@@ -100,30 +100,139 @@
 </header>
 
 <section class="wrap">
-  <div class="table-scroll">
-    <table>
-      <thead>
-        <tr>
-          <th>Rank</th>
-          <th>Participant</th>
-          <th class="num">Air Points</th>
-          <th class="num">Species /50</th>
-          <th>Last sighting</th>
-        </tr>
-      </thead>
-      <tbody id="leaderboard-body">
-        <tr><td data-label="Rank"><span class="rank-badge top1">1</span></td><td data-label="Participant">Priya N.</td><td class="num" data-label="Air Points">187</td><td class="num" data-label="Species /50">22</td><td data-label="Last sighting">6 Sep 2026</td></tr>
-        <tr><td data-label="Rank"><span class="rank-badge top2">2</span></td><td data-label="Participant">Sam R.</td><td class="num" data-label="Air Points">152</td><td class="num" data-label="Species /50">41</td><td data-label="Last sighting">5 Sep 2026</td></tr>
-        <tr><td data-label="Rank"><span class="rank-badge top3">3</span></td><td data-label="Participant">Marco D.</td><td class="num" data-label="Air Points">140</td><td class="num" data-label="Species /50">38</td><td data-label="Last sighting">30 Aug 2026</td></tr>
-        <tr><td data-label="Rank"><span class="rank-badge">4</span></td><td data-label="Participant">Ava T.</td><td class="num" data-label="Air Points">118</td><td class="num" data-label="Species /50">33</td><td data-label="Last sighting">3 Sep 2026</td></tr>
-        <tr><td data-label="Rank"><span class="rank-badge">5</span></td><td data-label="Participant">Chen W.</td><td class="num" data-label="Air Points">96</td><td class="num" data-label="Species /50">29</td><td data-label="Last sighting">1 Sep 2026</td></tr>
-        <tr><td data-label="Rank"><span class="rank-badge">6</span></td><td data-label="Participant">Bilal H.</td><td class="num" data-label="Air Points">71</td><td class="num" data-label="Species /50">24</td><td data-label="Last sighting">28 Aug 2026</td></tr>
-        <tr><td data-label="Rank"><span class="rank-badge">7</span></td><td data-label="Participant">Ruth O.</td><td class="num" data-label="Air Points">52</td><td class="num" data-label="Species /50">19</td><td data-label="Last sighting">25 Aug 2026</td></tr>
-        <tr><td data-label="Rank"><span class="rank-badge">8</span></td><td data-label="Participant">Tane M.</td><td class="num" data-label="Air Points">38</td><td class="num" data-label="Species /50">15</td><td data-label="Last sighting">20 Aug 2026</td></tr>
-        <tr><td data-label="Rank"><span class="rank-badge">9</span></td><td data-label="Participant">Freya S.</td><td class="num" data-label="Air Points">26</td><td class="num" data-label="Species /50">11</td><td data-label="Last sighting">15 Aug 2026</td></tr>
-        <tr><td data-label="Rank"><span class="rank-badge">10</span></td><td data-label="Participant">Django P.</td><td class="num" data-label="Air Points">14</td><td class="num" data-label="Species /50">8</td><td data-label="Last sighting">10 Aug 2026</td></tr>
-      </tbody>
-    </table>
+  <div class="leaderboard-search-wrap">
+    <label for="leaderboard-search" class="hint" style="display:block; margin-bottom:6px;">Find a player</label>
+    <input type="search" id="leaderboard-search" class="leaderboard-search-input" placeholder="Search by name or registration number, e.g. #123" autocomplete="off">
+    <p class="hint" id="leaderboard-search-status" aria-live="polite"></p>
+  </div>
+
+  <div class="leaderboard-table">
+    <div class="lb-head" aria-hidden="true">
+      <span class="lb-head-left"><span class="lb-head-rank">Rank</span><span>Participant</span></span>
+      <span class="lb-head-right"><span class="lb-head-cell num">Air Points</span><span class="lb-head-cell num">Species /50</span><span class="lb-head-cell">Last sighting</span></span>
+    </div>
+    <div id="leaderboard-body">
+      <div class="lb-row" data-name="priya n." data-reg="">
+        <button type="button" class="lb-row-toggle" aria-expanded="false" aria-controls="lb-details-1">
+          <span class="rank-badge top1">1</span>
+          <span class="participant-cell"><span>Priya N.</span></span>
+          <svg class="lb-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="lb-row-details" id="lb-details-1">
+          <div class="lb-cell num"><span class="lb-detail-label">Air Points</span><span>187</span></div>
+          <div class="lb-cell num"><span class="lb-detail-label">Species /50</span><span>22</span></div>
+          <div class="lb-cell"><span class="lb-detail-label">Last sighting</span><span>6 Sep 2026</span></div>
+        </div>
+      </div>
+      <div class="lb-row" data-name="sam r." data-reg="">
+        <button type="button" class="lb-row-toggle" aria-expanded="false" aria-controls="lb-details-2">
+          <span class="rank-badge top2">2</span>
+          <span class="participant-cell"><span>Sam R.</span></span>
+          <svg class="lb-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="lb-row-details" id="lb-details-2">
+          <div class="lb-cell num"><span class="lb-detail-label">Air Points</span><span>152</span></div>
+          <div class="lb-cell num"><span class="lb-detail-label">Species /50</span><span>41</span></div>
+          <div class="lb-cell"><span class="lb-detail-label">Last sighting</span><span>5 Sep 2026</span></div>
+        </div>
+      </div>
+      <div class="lb-row" data-name="marco d." data-reg="">
+        <button type="button" class="lb-row-toggle" aria-expanded="false" aria-controls="lb-details-3">
+          <span class="rank-badge top3">3</span>
+          <span class="participant-cell"><span>Marco D.</span></span>
+          <svg class="lb-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="lb-row-details" id="lb-details-3">
+          <div class="lb-cell num"><span class="lb-detail-label">Air Points</span><span>140</span></div>
+          <div class="lb-cell num"><span class="lb-detail-label">Species /50</span><span>38</span></div>
+          <div class="lb-cell"><span class="lb-detail-label">Last sighting</span><span>30 Aug 2026</span></div>
+        </div>
+      </div>
+      <div class="lb-row" data-name="ava t." data-reg="">
+        <button type="button" class="lb-row-toggle" aria-expanded="false" aria-controls="lb-details-4">
+          <span class="rank-badge">4</span>
+          <span class="participant-cell"><span>Ava T.</span></span>
+          <svg class="lb-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="lb-row-details" id="lb-details-4">
+          <div class="lb-cell num"><span class="lb-detail-label">Air Points</span><span>118</span></div>
+          <div class="lb-cell num"><span class="lb-detail-label">Species /50</span><span>33</span></div>
+          <div class="lb-cell"><span class="lb-detail-label">Last sighting</span><span>3 Sep 2026</span></div>
+        </div>
+      </div>
+      <div class="lb-row" data-name="chen w." data-reg="">
+        <button type="button" class="lb-row-toggle" aria-expanded="false" aria-controls="lb-details-5">
+          <span class="rank-badge">5</span>
+          <span class="participant-cell"><span>Chen W.</span></span>
+          <svg class="lb-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="lb-row-details" id="lb-details-5">
+          <div class="lb-cell num"><span class="lb-detail-label">Air Points</span><span>96</span></div>
+          <div class="lb-cell num"><span class="lb-detail-label">Species /50</span><span>29</span></div>
+          <div class="lb-cell"><span class="lb-detail-label">Last sighting</span><span>1 Sep 2026</span></div>
+        </div>
+      </div>
+      <div class="lb-row" data-name="bilal h." data-reg="">
+        <button type="button" class="lb-row-toggle" aria-expanded="false" aria-controls="lb-details-6">
+          <span class="rank-badge">6</span>
+          <span class="participant-cell"><span>Bilal H.</span></span>
+          <svg class="lb-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="lb-row-details" id="lb-details-6">
+          <div class="lb-cell num"><span class="lb-detail-label">Air Points</span><span>71</span></div>
+          <div class="lb-cell num"><span class="lb-detail-label">Species /50</span><span>24</span></div>
+          <div class="lb-cell"><span class="lb-detail-label">Last sighting</span><span>28 Aug 2026</span></div>
+        </div>
+      </div>
+      <div class="lb-row" data-name="ruth o." data-reg="">
+        <button type="button" class="lb-row-toggle" aria-expanded="false" aria-controls="lb-details-7">
+          <span class="rank-badge">7</span>
+          <span class="participant-cell"><span>Ruth O.</span></span>
+          <svg class="lb-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="lb-row-details" id="lb-details-7">
+          <div class="lb-cell num"><span class="lb-detail-label">Air Points</span><span>52</span></div>
+          <div class="lb-cell num"><span class="lb-detail-label">Species /50</span><span>19</span></div>
+          <div class="lb-cell"><span class="lb-detail-label">Last sighting</span><span>25 Aug 2026</span></div>
+        </div>
+      </div>
+      <div class="lb-row" data-name="tane m." data-reg="">
+        <button type="button" class="lb-row-toggle" aria-expanded="false" aria-controls="lb-details-8">
+          <span class="rank-badge">8</span>
+          <span class="participant-cell"><span>Tane M.</span></span>
+          <svg class="lb-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="lb-row-details" id="lb-details-8">
+          <div class="lb-cell num"><span class="lb-detail-label">Air Points</span><span>38</span></div>
+          <div class="lb-cell num"><span class="lb-detail-label">Species /50</span><span>15</span></div>
+          <div class="lb-cell"><span class="lb-detail-label">Last sighting</span><span>20 Aug 2026</span></div>
+        </div>
+      </div>
+      <div class="lb-row" data-name="freya s." data-reg="">
+        <button type="button" class="lb-row-toggle" aria-expanded="false" aria-controls="lb-details-9">
+          <span class="rank-badge">9</span>
+          <span class="participant-cell"><span>Freya S.</span></span>
+          <svg class="lb-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="lb-row-details" id="lb-details-9">
+          <div class="lb-cell num"><span class="lb-detail-label">Air Points</span><span>26</span></div>
+          <div class="lb-cell num"><span class="lb-detail-label">Species /50</span><span>11</span></div>
+          <div class="lb-cell"><span class="lb-detail-label">Last sighting</span><span>15 Aug 2026</span></div>
+        </div>
+      </div>
+      <div class="lb-row" data-name="django p." data-reg="">
+        <button type="button" class="lb-row-toggle" aria-expanded="false" aria-controls="lb-details-10">
+          <span class="rank-badge">10</span>
+          <span class="participant-cell"><span>Django P.</span></span>
+          <svg class="lb-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="lb-row-details" id="lb-details-10">
+          <div class="lb-cell num"><span class="lb-detail-label">Air Points</span><span>14</span></div>
+          <div class="lb-cell num"><span class="lb-detail-label">Species /50</span><span>8</span></div>
+          <div class="lb-cell"><span class="lb-detail-label">Last sighting</span><span>10 Aug 2026</span></div>
+        </div>
+      </div>
+    </div>
   </div>
   <p class="sample-note" id="leaderboard-note"><span class="dot"></span>Example data — this table will populate itself once sightings are logged to the shared database.</p>
 </section>
@@ -133,45 +242,135 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="assets/supabase-client.js?v=20261025b"></script>
+<script src="assets/supabase-client.js?v=20261029b"></script>
 <script src="assets/avatars.js?v=20261018h"></script>
 <script src="assets/script.js?v=20261018h"></script>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    if (typeof fetchLeaderboard !== "function") return;
-    fetchLeaderboard(25)
-      .then(function (rows) {
-        if (!rows || !rows.length) return; // keep example rows until real ones exist
-        var tbody = document.getElementById("leaderboard-body");
-        var note = document.getElementById("leaderboard-note");
-        tbody.innerHTML = rows
-          .map(function (r, i) {
-            var rank = i + 1;
-            var badgeClass = rank === 1 ? "top1" : rank === 2 ? "top2" : rank === 3 ? "top3" : "";
-            var lastSeen = r.last_sighting
-              ? new Date(r.last_sighting + "T00:00:00").toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })
-              : "—";
-            var photoUrl = (typeof avatarPhotoUrl === "function") ? avatarPhotoUrl(r.avatar_photo_path) : null;
-            var badge = (typeof renderAvatarBadge === "function") ? renderAvatarBadge(r.avatar_key, photoUrl, 28, r.participant_name) : "";
-            var foundingFlock = (typeof foundingFlockChipHtml === "function") ? foundingFlockChipHtml(r.founding_flock_rank) : "";
-            return (
-              '<tr><td data-label="Rank"><span class="rank-badge ' + badgeClass + '">' + rank + "</span></td>" +
-              '<td data-label="Participant"><span class="participant-cell">' + badge + '<span>' + escapeHtml(r.participant_name) + "</span>" + foundingFlock + "</span></td>" +
-              '<td class="num" data-label="Air Points">' + r.total_points + "</td>" +
-              '<td class="num" data-label="Species /50">' + r.air50_species_count + "</td>" +
-              '<td data-label="Last sighting">' + lastSeen + "</td></tr>"
-            );
-          })
-          .join("");
-        if (note) note.hidden = true;
-      })
-      .catch(function () { /* keep example data if the backend isn't reachable */ });
+    var tbody = document.getElementById("leaderboard-body");
+    var note = document.getElementById("leaderboard-note");
+    var searchInput = document.getElementById("leaderboard-search");
+    var searchStatus = document.getElementById("leaderboard-search-status");
 
     function escapeHtml(str) {
       var div = document.createElement("div");
       div.textContent = str == null ? "" : str;
       return div.innerHTML;
     }
+
+    // One row's markup — collapsed to rank + avatar/badge + name on
+    // mobile (see the CSS's @media max-width:640px block), with Air
+    // Points / Species /50 / Last sighting revealed by tapping the row;
+    // on wider screens the CSS instead lays the whole thing out as a
+    // single line, chevron hidden, like the old table did. Deliberately
+    // its own component rather than a <table> — see the CSS comment
+    // above ".leaderboard-table" for why.
+    function rowHtml(r, rank) {
+      var badgeClass = rank === 1 ? "top1" : rank === 2 ? "top2" : rank === 3 ? "top3" : "";
+      var lastSeen = r.last_sighting
+        ? new Date(r.last_sighting + "T00:00:00").toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })
+        : "—";
+      var photoUrl = (typeof avatarPhotoUrl === "function") ? avatarPhotoUrl(r.avatar_photo_path) : null;
+      var badge = (typeof renderAvatarBadge === "function") ? renderAvatarBadge(r.avatar_key, photoUrl, 28, r.participant_name) : "";
+      var foundingFlock = (typeof foundingFlockChipHtml === "function") ? foundingFlockChipHtml(r.founding_flock_rank) : "";
+      // Registration number — searchable ("#123") and shown as a small
+      // muted chip next to the name, like a bib number. See
+      // supabase/leaderboard-registration-number-migration.sql for why
+      // this is now public (George confirmed, 2026-10-29).
+      var regChip = r.registration_number ? '<span class="lb-reg-chip">#' + r.registration_number + "</span>" : "";
+      var nameKey = (r.participant_name || "").toLowerCase().trim();
+      var regKey = r.registration_number ? String(r.registration_number) : "";
+
+      return (
+        '<div class="lb-row" data-name="' + escapeHtml(nameKey) + '" data-reg="' + regKey + '">' +
+        '<button type="button" class="lb-row-toggle" aria-expanded="false" aria-controls="lb-details-' + rank + '">' +
+        '<span class="rank-badge ' + badgeClass + '">' + rank + "</span>" +
+        '<span class="participant-cell">' + badge + "<span>" + escapeHtml(r.participant_name) + "</span>" + foundingFlock + regChip + "</span>" +
+        '<svg class="lb-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+        "</button>" +
+        '<div class="lb-row-details" id="lb-details-' + rank + '">' +
+        '<div class="lb-cell num"><span class="lb-detail-label">Air Points</span><span>' + r.total_points + "</span></div>" +
+        '<div class="lb-cell num"><span class="lb-detail-label">Species /50</span><span>' + r.air50_species_count + "</span></div>" +
+        '<div class="lb-cell"><span class="lb-detail-label">Last sighting</span><span>' + lastSeen + "</span></div>" +
+        "</div>" +
+        "</div>"
+      );
+    }
+
+    // Tapping a row's summary line expands/collapses its details — the
+    // only thing this does on a wide screen (>640px) is spin the
+    // (hidden) chevron, since the CSS forces details visible there
+    // regardless of this class.
+    function wireToggle(rowEl) {
+      var btn = rowEl.querySelector(".lb-row-toggle");
+      if (!btn) return;
+      btn.addEventListener("click", function () {
+        var open = rowEl.classList.toggle("expanded");
+        btn.setAttribute("aria-expanded", open ? "true" : "false");
+      });
+    }
+
+    // Search by player name (substring, anywhere in the name) or by
+    // registration number ("123" or "#123", exact match). Deliberately
+    // doesn't hide non-matching rows — someone searching wants to see
+    // where they (or a friend) sit RELATIVE to everyone else, so matches
+    // are highlighted and auto-expanded/scrolled-to while the rest of
+    // the board stays visible, just dimmed, for context.
+    function wireSearch() {
+      if (!searchInput || !tbody) return;
+      searchInput.addEventListener("input", function () {
+        var q = searchInput.value.trim().toLowerCase();
+        var rows = tbody.querySelectorAll(".lb-row");
+        if (!q) {
+          rows.forEach(function (rowEl) {
+            rowEl.classList.remove("lb-row-match", "lb-row-dim");
+          });
+          if (searchStatus) searchStatus.textContent = "";
+          return;
+        }
+        var isNumQuery = /^#?\d+$/.test(q);
+        var numQ = q.replace(/^#/, "");
+        var matchCount = 0;
+        var firstMatch = null;
+        rows.forEach(function (rowEl) {
+          var matches = isNumQuery
+            ? rowEl.dataset.reg !== "" && rowEl.dataset.reg === numQ
+            : rowEl.dataset.name.indexOf(q) !== -1;
+          rowEl.classList.toggle("lb-row-match", matches);
+          rowEl.classList.toggle("lb-row-dim", !matches);
+          if (matches) {
+            matchCount++;
+            if (!firstMatch) firstMatch = rowEl;
+          }
+        });
+        if (firstMatch) {
+          firstMatch.classList.add("expanded");
+          var toggleBtn = firstMatch.querySelector(".lb-row-toggle");
+          if (toggleBtn) toggleBtn.setAttribute("aria-expanded", "true");
+          firstMatch.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+        if (searchStatus) {
+          searchStatus.textContent = matchCount
+            ? (matchCount === 1 ? "1 match — highlighted below." : matchCount + " matches — highlighted below.")
+            : "No one matches that yet.";
+        }
+      });
+    }
+
+    // Wire the static example rows immediately, so search/expand work
+    // even before (or if) real data loads.
+    if (tbody) tbody.querySelectorAll(".lb-row").forEach(wireToggle);
+    wireSearch();
+
+    if (typeof fetchLeaderboard !== "function") return;
+    fetchLeaderboard(null)
+      .then(function (rows) {
+        if (!rows || !rows.length) return; // keep example rows until real ones exist
+        tbody.innerHTML = rows.map(function (r, i) { return rowHtml(r, i + 1); }).join("");
+        tbody.querySelectorAll(".lb-row").forEach(wireToggle);
+        if (note) note.hidden = true;
+      })
+      .catch(function () { /* keep example data if the backend isn't reachable */ });
   });
 </script>
 </body>
