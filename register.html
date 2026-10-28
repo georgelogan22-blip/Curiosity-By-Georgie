@@ -125,24 +125,25 @@
     </div>
   </div>
 
-  <div class="rules-block rules-grid" style="max-width: 640px;">
-    <h3><span class="rule-tag">Not Yet Open</span><br>Registration isn't open yet</h3>
+  <div class="rules-block rules-grid" style="max-width: 640px; border-color: var(--accent-warm);">
+    <h3><span class="rule-tag">Preview &mdash; For Legal Review</span><br>Registration isn't accepting sign-ups yet</h3>
     <div>
-      <p>Thanks for your interest! The Brisbane Air 50 hasn't officially launched yet — registration will open once everything's ready, including a proper legal review of this registration flow (see the privacy note above). Check back soon, or see the <a href="rules.html">Rules &amp; Regulations</a> in the meantime.</p>
+      <p>This form is shown here temporarily so it can be reviewed in full before launch, alongside the Registration &amp; Liability and Your Privacy sections above. <strong>Submissions aren't being accepted yet</strong> &mdash; trying to register now won't go through. Check back once the Brisbane Air 50 officially launches, or see the <a href="rules.html">Rules &amp; Regulations</a> in the meantime.</p>
     </div>
   </div>
 
-  <!-- Registration form — intentionally disabled pre-launch (2026-10-10).
-       The site went live at curiositybygeorgie.au before the registration
-       flow's privacy/liability wording had been reviewed by a solicitor
-       (see claude/launch-punch-list-2026-10-09.md, "The one real blocker
-       left"), so real sign-ups — which collect DOB, address, and phone —
-       are turned off here until that review is done. To re-open
-       registration: delete this comment (the two lines directly below,
-       and the closing comment marker after the form) and remove the
-       "Not Yet Open" block above. assets/register.js already no-ops safely when
-       this form isn't present (`if (!form) return;`), so nothing else
-       needs to change to take it back out again.
+  <!-- Registration form: temporarily restored 2026-10-29 so the real
+       wording (fields, hints, Registration and Liability, and Your
+       Privacy sections above) can be reviewed by a solicitor on the
+       live site. See claude/launch-punch-list-2026-10-09.md, "The one
+       real blocker left." Backend insert is still revoked on
+       public.participants (same doc), so no real sign-up can actually
+       complete even though the form is visible and fillable; a submit
+       attempt just shows register.js's generic failure message. Re-hide
+       this form (wrap it back in a disabling comment and restore the
+       Not Yet Open notice above) once legal review no longer needs it
+       visible, or leave it live once the review clears and real
+       registration is ready to open for good. -->
 
   <div class="log-layout" style="grid-template-columns: 1fr; max-width: 640px;">
     <form id="register-form">
@@ -238,7 +239,6 @@
       <p class="hint" id="form-status" hidden></p>
     </form>
   </div>
-  -->
 </section>
 
 <footer class="wrap">
