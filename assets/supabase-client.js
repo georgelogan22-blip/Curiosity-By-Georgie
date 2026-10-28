@@ -35,6 +35,38 @@ function hashPin(pin) {
   });
 }
 
+// Pre-flight PIN check, called first by every PIN-gated function below,
+// via the record_pin_attempt() database function (see
+// supabase/pin-lockout-fix-migration.sql). This is its own separate
+// round trip rather than folded into the real action's own call, because
+// of a Postgres gotcha found 2026-10-28: if a database function updates a
+// row and then raises an exception in that same call, Postgres rolls
+// back the WHOLE transaction — including that update — the moment the
+// exception escapes uncaught. check_pin() does exactly that (update the
+// failed-attempt counter, then raise 'invalid_pin'), so the counter
+// update was always being silently undone and the lockout could never
+// actually trigger. record_pin_attempt() does the same lock-check /
+// counter logic but returns a plain "ok" / "invalid_pin" / "pin_locked"
+// result instead of raising for those two cases, so its update commits
+// normally as part of this call's own transaction. Once this resolves,
+// the real action below still runs its own check_pin() exactly as
+// before — same PIN, same stored hash, so it always passes cleanly; this
+// doesn't replace check_pin(), it just makes sure the attempt that got
+// us here was actually counted. Rejects with an error whose .message is
+// "not_registered", "invalid_pin", or "pin_locked" — same error
+// vocabulary every PIN-gated call already used, so no page needs to
+// change how it reads the error.
+function verifyPinAttempt(name, pinHash) {
+  if (!supabaseClient) return Promise.reject(new Error("offline-demo"));
+  return supabaseClient
+    .rpc("record_pin_attempt", { p_name: name, p_pin_hash: pinHash })
+    .then(function (res) {
+      if (res.error) throw res.error;
+      if (res.data === "invalid_pin") throw new Error("invalid_pin");
+      if (res.data === "pin_locked") throw new Error("pin_locked");
+    });
+}
+
 // Submit one sighting via the submit_sighting() database function (see
 // supabase/registration-migration.sql + photo-verification-migration.sql)
 // — this checks, in one call, that record.name is registered, active
@@ -52,21 +84,23 @@ function submitSighting(record) {
   if (!supabaseClient) {
     return Promise.reject(new Error("offline-demo"));
   }
-  return supabaseClient
-    .rpc("submit_sighting", {
-      p_name: record.name,
-      p_pin_hash: record.pinHash,
-      p_species: record.species,
-      p_sighting_date: record.date,
-      p_location: record.location || null,
-      p_notes: record.notes || null,
-      p_photo_path: record.photoPath,
-      p_photo_taken_at: record.photoTakenAt || null,
-    })
-    .then(function (res) {
-      if (res.error) throw res.error;
-      return Array.isArray(res.data) ? res.data[0] : res.data;
-    });
+  return verifyPinAttempt(record.name, record.pinHash).then(function () {
+    return supabaseClient
+      .rpc("submit_sighting", {
+        p_name: record.name,
+        p_pin_hash: record.pinHash,
+        p_species: record.species,
+        p_sighting_date: record.date,
+        p_location: record.location || null,
+        p_notes: record.notes || null,
+        p_photo_path: record.photoPath,
+        p_photo_taken_at: record.photoTakenAt || null,
+      })
+      .then(function (res) {
+        if (res.error) throw res.error;
+        return Array.isArray(res.data) ? res.data[0] : res.data;
+      });
+  });
 }
 
 // Shrinks an image file to at most `maxDim` px on its longest edge before
@@ -459,12 +493,14 @@ function fetchHallOfFame() {
 // see assets/my-sightings.js.
 function fetchMySightings(name, pinHash) {
   if (!supabaseClient) return Promise.reject(new Error("offline-demo"));
-  return supabaseClient
-    .rpc("participant_sightings", { p_name: name, p_pin_hash: pinHash })
-    .then(function (res) {
-      if (res.error) throw res.error;
-      return res.data || [];
-    });
+  return verifyPinAttempt(name, pinHash).then(function () {
+    return supabaseClient
+      .rpc("participant_sightings", { p_name: name, p_pin_hash: pinHash })
+      .then(function (res) {
+        if (res.error) throw res.error;
+        return res.data || [];
+      });
+  });
 }
 
 // Same name+PIN gate as fetchMySightings, for the My Sightings
@@ -475,12 +511,14 @@ function fetchMySightings(name, pinHash) {
 // object rather than an array, since it's always exactly one row.
 function fetchParticipantDashboard(name, pinHash) {
   if (!supabaseClient) return Promise.reject(new Error("offline-demo"));
-  return supabaseClient
-    .rpc("participant_dashboard", { p_name: name, p_pin_hash: pinHash })
-    .then(function (res) {
-      if (res.error) throw res.error;
-      return (res.data && res.data[0]) || null;
-    });
+  return verifyPinAttempt(name, pinHash).then(function () {
+    return supabaseClient
+      .rpc("participant_dashboard", { p_name: name, p_pin_hash: pinHash })
+      .then(function (res) {
+        if (res.error) throw res.error;
+        return (res.data && res.data[0]) || null;
+      });
+  });
 }
 
 // Saves the bird character chosen on the dashboard — avatarKey must be
@@ -489,12 +527,14 @@ function fetchParticipantDashboard(name, pinHash) {
 // no avatar chosen.
 function updateParticipantAvatar(name, pinHash, avatarKey) {
   if (!supabaseClient) return Promise.reject(new Error("offline-demo"));
-  return supabaseClient
-    .rpc("update_participant_avatar", { p_name: name, p_pin_hash: pinHash, p_avatar_key: avatarKey })
-    .then(function (res) {
-      if (res.error) throw res.error;
-      return true;
-    });
+  return verifyPinAttempt(name, pinHash).then(function () {
+    return supabaseClient
+      .rpc("update_participant_avatar", { p_name: name, p_pin_hash: pinHash, p_avatar_key: avatarKey })
+      .then(function (res) {
+        if (res.error) throw res.error;
+        return true;
+      });
+  });
 }
 
 // ---------------------------------------------------------------------
@@ -538,12 +578,14 @@ function uploadAvatarPhoto(file) {
 // whichever icon they last chose (or the neutral placeholder).
 function updateParticipantAvatarPhoto(name, pinHash, photoPath) {
   if (!supabaseClient) return Promise.reject(new Error("offline-demo"));
-  return supabaseClient
-    .rpc("update_participant_avatar_photo", { p_name: name, p_pin_hash: pinHash, p_photo_path: photoPath })
-    .then(function (res) {
-      if (res.error) throw res.error;
-      return true;
-    });
+  return verifyPinAttempt(name, pinHash).then(function () {
+    return supabaseClient
+      .rpc("update_participant_avatar_photo", { p_name: name, p_pin_hash: pinHash, p_photo_path: photoPath })
+      .then(function (res) {
+        if (res.error) throw res.error;
+        return true;
+      });
+  });
 }
 
 // Builds the public URL for a photo already uploaded to the
@@ -619,17 +661,19 @@ function createBoardPost(record) {
   if (!supabaseClient) {
     return Promise.reject(new Error("offline-demo"));
   }
-  return supabaseClient
-    .rpc("create_board_post", {
-      p_name: record.name,
-      p_pin_hash: record.pinHash,
-      p_caption: record.caption,
-      p_photo_path: record.photoPath || null,
-    })
-    .then(function (res) {
-      if (res.error) throw res.error;
-      return Array.isArray(res.data) ? res.data[0] : res.data;
-    });
+  return verifyPinAttempt(record.name, record.pinHash).then(function () {
+    return supabaseClient
+      .rpc("create_board_post", {
+        p_name: record.name,
+        p_pin_hash: record.pinHash,
+        p_caption: record.caption,
+        p_photo_path: record.photoPath || null,
+      })
+      .then(function (res) {
+        if (res.error) throw res.error;
+        return Array.isArray(res.data) ? res.data[0] : res.data;
+      });
+  });
 }
 
 // Creates a new comment on a post via create_board_comment(). record:
@@ -640,17 +684,19 @@ function createBoardComment(record) {
   if (!supabaseClient) {
     return Promise.reject(new Error("offline-demo"));
   }
-  return supabaseClient
-    .rpc("create_board_comment", {
-      p_post_id: record.postId,
-      p_name: record.name,
-      p_pin_hash: record.pinHash,
-      p_body: record.body,
-    })
-    .then(function (res) {
-      if (res.error) throw res.error;
-      return Array.isArray(res.data) ? res.data[0] : res.data;
-    });
+  return verifyPinAttempt(record.name, record.pinHash).then(function () {
+    return supabaseClient
+      .rpc("create_board_comment", {
+        p_post_id: record.postId,
+        p_name: record.name,
+        p_pin_hash: record.pinHash,
+        p_body: record.body,
+      })
+      .then(function (res) {
+        if (res.error) throw res.error;
+        return Array.isArray(res.data) ? res.data[0] : res.data;
+      });
+  });
 }
 
 // Fetches the board feed, newest first. Resolves with [] if the backend
@@ -704,12 +750,14 @@ function fetchBoardComments() {
 // "not_registered" / "invalid_pin".
 function checkBoardReplies(name, pinHash) {
   if (!supabaseClient) return Promise.reject(new Error("offline-demo"));
-  return supabaseClient
-    .rpc("check_board_replies", { p_name: name, p_pin_hash: pinHash })
-    .then(function (res) {
-      if (res.error) throw res.error;
-      return res.data || [];
-    });
+  return verifyPinAttempt(name, pinHash).then(function () {
+    return supabaseClient
+      .rpc("check_board_replies", { p_name: name, p_pin_hash: pinHash })
+      .then(function (res) {
+        if (res.error) throw res.error;
+        return res.data || [];
+      });
+  });
 }
 
 // "Curious" reactions on board posts — see
@@ -736,13 +784,15 @@ function fetchBoardCuriousCounts() {
 // "not_active" / "invalid_pin" / "post_not_found".
 function toggleBoardCurious(postId, name, pinHash) {
   if (!supabaseClient) return Promise.reject(new Error("offline-demo"));
-  return supabaseClient
-    .rpc("toggle_post_curious", { p_post_id: postId, p_name: name, p_pin_hash: pinHash })
-    .then(function (res) {
-      if (res.error) throw res.error;
-      var row = Array.isArray(res.data) ? res.data[0] : res.data;
-      return row || { is_curious: false, curious_count: 0 };
-    });
+  return verifyPinAttempt(name, pinHash).then(function () {
+    return supabaseClient
+      .rpc("toggle_post_curious", { p_post_id: postId, p_name: name, p_pin_hash: pinHash })
+      .then(function (res) {
+        if (res.error) throw res.error;
+        var row = Array.isArray(res.data) ? res.data[0] : res.data;
+        return row || { is_curious: false, curious_count: 0 };
+      });
+  });
 }
 
 // Homepage "City-wide so far" strip — see

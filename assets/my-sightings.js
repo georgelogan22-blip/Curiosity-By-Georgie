@@ -159,8 +159,9 @@ document.addEventListener("DOMContentLoaded", function () {
       "</div>" +
       '<div class="dashboard-headline">' +
       '<p class="dashboard-greeting">Welcome back, <strong>' + escapeHtml(profile.display_name || "") + "</strong>" +
-      ((typeof foundingFlockChipHtml === "function") ? foundingFlockChipHtml(profile.founding_flock_rank, 16) : "") +
+      ((typeof foundingFlockChipHtml === "function") ? foundingFlockChipHtml(profile.founding_flock_rank, 28) : "") +
       "</p>" +
+      (profile.registration_number ? '<p class="hint dashboard-reg-number">Participant #' + profile.registration_number + "</p>" : "") +
       '<div class="level-meter">' +
       '<div class="level-meter-top">' +
       '<span class="level-name">' + escapeHtml(lvl.current.name) + "</span>" +
@@ -714,15 +715,23 @@ document.addEventListener("DOMContentLoaded", function () {
     results.innerHTML = "";
     setStatus("Checking…");
 
-    if (typeof fetchMySightings !== "function" || typeof fetchParticipantDashboard !== "function" || typeof hashPin !== "function") {
+    if (typeof fetchMySightings !== "function" || typeof fetchParticipantDashboard !== "function" || typeof hashPin !== "function" || typeof verifyPinAttempt !== "function") {
       setStatus("This isn't connected to the shared log right now — please try again shortly.");
       if (submitBtn) submitBtn.disabled = false;
       return;
     }
 
+    // Checked once, up front, rather than letting fetchParticipantDashboard
+    // and fetchMySightings below each run their own PIN check in parallel —
+    // two parallel checks would count a single wrong PIN as two failed
+    // attempts toward the 5-attempt lockout. This single check still
+    // short-circuits both calls below on a wrong or locked-out PIN; on a
+    // correct one, their own built-in checks just pass again harmlessly.
     hashPin(pin)
       .then(function (pinHash) {
-        return Promise.all([fetchParticipantDashboard(name, pinHash), fetchMySightings(name, pinHash)]).then(function (res) {
+        return verifyPinAttempt(name, pinHash).then(function () {
+          return Promise.all([fetchParticipantDashboard(name, pinHash), fetchMySightings(name, pinHash)]);
+        }).then(function (res) {
           session.name = name;
           session.pinHash = pinHash;
           return res;
