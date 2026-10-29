@@ -710,7 +710,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (idx === -1) {
       return (
         '<div class="dashboard-leaderboard-position lbpos-empty">' +
-        '<span class="eyebrow">Leaderboard Position</span>' +
+        '<span class="eyebrow lbpos-eyebrow">Leaderboard Position</span>' +
         '<p class="hint">Not on the board yet — log and confirm your first sighting to see where you land. <a href="log-sighting.html">Log a sighting</a></p>' +
         "</div>"
       );
@@ -737,7 +737,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     return (
       '<div class="dashboard-leaderboard-position">' +
-      '<div class="lbpos-head"><span class="eyebrow">Leaderboard Position</span><a href="leaderboard.html" class="lbpos-link">View full leaderboard &rarr;</a></div>' +
+      '<div class="lbpos-head"><span class="eyebrow lbpos-eyebrow">Leaderboard Position</span><a href="leaderboard.html" class="lbpos-link">View full leaderboard &rarr;</a></div>' +
       '<p class="lbpos-rank-line"><span class="lbpos-rank-big">#' + rank + "</span><span class=\"lbpos-of\">of " + total + " participant" + (total === 1 ? "" : "s") + "</span></p>" +
       '<div class="lbpos-neighbors">' + neighborRows + "</div>" +
       "</div>"

@@ -1449,9 +1449,13 @@ section { padding: 40px 0; }
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
   background: var(--paper-raised);
+  overflow: hidden;
 }
 .dashboard-leaderboard-position.lbpos-loading { border-color: transparent; padding: 0; min-height: 0; }
 .lbpos-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+/* Brand-yellow + larger label, so this card reads as its own moment
+   rather than blending into the rest of the (very green) dashboard. */
+.lbpos-eyebrow { color: var(--brand-yellow); font-size: 1.44rem; }
 .lbpos-link { font-size: 0.86rem; white-space: nowrap; }
 .lbpos-rank-line { display: flex; align-items: baseline; gap: 8px; margin: 10px 0 14px; }
 .lbpos-rank-big {
@@ -1485,8 +1489,8 @@ section { padding: 40px 0; }
 .lbpos-pts { font-family: var(--font-mono); font-variant-numeric: tabular-nums; color: var(--ink-soft); flex: none; }
 .lbpos-row-you {
   background: color-mix(in srgb, var(--accent) 10%, transparent);
-  margin: 0 -12px;
-  padding: 8px 12px;
+  margin: 0 -6px;
+  padding: 8px 6px;
   border-radius: var(--radius-sm);
   border-bottom-color: transparent;
 }
