@@ -1113,9 +1113,14 @@ section { padding: 40px 0; }
   margin-bottom: 8px;
 }
 .founding-flock-block h3 { color: var(--ink); }
-.founding-flock-block-body { display: flex; gap: 20px; align-items: flex-start; }
-.founding-flock-block-badge { flex: none; width: 96px; height: 96px; object-fit: contain; }
-@media (max-width: 480px) { .founding-flock-block-badge { width: 64px; height: 64px; } }
+.founding-flock-block-badge {
+  display: block;
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  margin: 0 0 14px;
+}
+@media (max-width: 480px) { .founding-flock-block-badge { width: 56px; height: 56px; margin: 0 0 12px; } }
 .founding-flock-block .rule-tag {
   display: inline-block;
   font-family: var(--font-mono);
