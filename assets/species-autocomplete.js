@@ -32,7 +32,14 @@ document.addEventListener("DOMContentLoaded", function () {
         " · " +
         match.points +
         (match.points === 1 ? " point" : " points") +
-        "</span>";
+        "</span>" +
+        // Some species only confirm under a specific condition (e.g. the
+        // Pheasant Coucal's breeding plumage) — see captureNote on the
+        // SPECIES_LIST entry in species-data.js. Shown right here so it's
+        // seen before the photo is taken/submitted, not after rejection.
+        (match.captureNote
+          ? '<span class="species-capture-note">⚠ ' + match.captureNote + "</span>"
+          : "");
     } else if (input.value.trim()) {
       hint.textContent = "Not on the official 50 — still counts, no Air Points tier assigned.";
     } else {

@@ -1783,6 +1783,22 @@ body.dex-modal-open { overflow: hidden; }
 .dex-detail .dex-detail-tier { font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-soft); margin-top: 2px; }
 .dex-locked-note { color: var(--ink-soft); font-size: 0.9rem; margin: 14px 0 0; }
 
+/* A species-specific capture condition (e.g. the Pheasant Coucal only
+   confirming in breeding plumage) — shown on the Log a Sighting form's
+   species hint (species-autocomplete.js) and the Dex's locked teaser
+   (my-sightings.js). Deliberately in the coral "heads up" colour already
+   used for the Rules page's safety/consent callouts, not the brand
+   green, so it reads as a warning rather than routine tier info. */
+.species-capture-note {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.85rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+  color: var(--accent-coral);
+}
+p.species-capture-note { margin: 10px 0 0; }
+
 /* ---- the flip card (revealed species) ----
    Two faces of one element, rotated 180deg apart in 3D space; toggling
    .flipped on .dex-card spins .dex-card-inner between them. Front = photo

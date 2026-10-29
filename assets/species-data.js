@@ -106,7 +106,18 @@ var SPECIES_LIST = [
   { name: "Little Corella", sci: "Cacatua sanguinea", tier: "U", wiki: "Little_corella" },
 
   { name: "Little Egret", sci: "Egretta garzetta", tier: "R", wiki: "Little_egret" },
-  { name: "Pheasant Coucal", sci: "Centropus phasianinus", tier: "R", wiki: "Pheasant_coucal" },
+  {
+    name: "Pheasant Coucal", sci: "Centropus phasianinus", tier: "R", wiki: "Pheasant_coucal",
+    // Pheasant Coucals swap their usual hazel colouring for a dark,
+    // almost-black head and chest during breeding season (both sexes —
+    // not male-only, see the species-art.js card banner, which needs the
+    // same correction next time George revises that card's art). Only a
+    // photo showing that dark breeding plumage confirms the species —
+    // a hazel-plumage photo doesn't count toward the tally. Shown as a
+    // heads-up both on the Log a Sighting form (species-autocomplete.js)
+    // and on the locked Dex teaser (my-sightings.js).
+    captureNote: "Only counts in breeding plumage — dark, almost-black head & chest, not the usual hazel colouring.",
+  },
   { name: "Brahminy Kite", sci: "Haliastur indus", tier: "R", wiki: "Brahminy_kite" },
   { name: "White-bellied Sea-Eagle", sci: "Icthyophaga leucogaster", tier: "R", wiki: "White-bellied_sea_eagle" },
   { name: "Black-shouldered Kite", sci: "Elanus axillaris", tier: "R", wiki: "Black-shouldered_kite" },
@@ -145,6 +156,7 @@ SPECIES_LIST.forEach(function (sp, idx) {
     tierLabel: tierInfo.label,
     points: tierInfo.points,
     number: idx + 1,
+    captureNote: sp.captureNote || null,
   };
 });
 

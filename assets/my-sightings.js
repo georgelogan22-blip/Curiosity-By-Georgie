@@ -379,6 +379,13 @@ document.addEventListener("DOMContentLoaded", function () {
               '<p class="dex-detail-tier">' + escapeHtml(sp.tierLabel) + " tier · " + sp.points + " Air Points</p>" +
               "</div></div>" +
               '<p class="dex-locked-note">Spot this species and get the sighting confirmed to reveal it here.</p>' +
+              // A species with a special capture condition (e.g. the
+              // Pheasant Coucal's breeding plumage) also gets a heads-up
+              // here, in case someone opens this cell from the Dex grid
+              // instead of noticing the hint on the Log a Sighting form.
+              (sp.captureNote
+                ? '<p class="species-capture-note">⚠ ' + escapeHtml(sp.captureNote) + "</p>"
+                : "") +
               "</div>"
           );
           return;
