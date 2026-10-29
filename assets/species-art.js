@@ -617,6 +617,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "tawny frogmouth": {
+    // George's own fully-designed trading card (front + back), species #39/50.
+    card: {
+      front: "assets/species-cards/tawny-frogmouth-front.jpg",
+      back: "assets/species-cards/tawny-frogmouth-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Tawny Frogmouth">' +
       '<g class="dex-bird">' +
@@ -624,6 +629,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "dollarbird": {
+    // George's own fully-designed trading card (front + back), species #40/50.
+    card: {
+      front: "assets/species-cards/dollarbird-front.jpg",
+      back: "assets/species-cards/dollarbird-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Dollarbird">' +
       '<g class="dex-bird">' +
@@ -631,6 +641,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "far eastern curlew": {
+    // George's own fully-designed trading card (front + back), species #41/50.
+    card: {
+      front: "assets/species-cards/far-eastern-curlew-front.jpg",
+      back: "assets/species-cards/far-eastern-curlew-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Far Eastern Curlew">' +
       '<g class="dex-bird">' +
@@ -638,6 +653,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "caspian tern": {
+    // George's own fully-designed trading card (front + back), species #42/50.
+    card: {
+      front: "assets/species-cards/caspian-tern-front.jpg",
+      back: "assets/species-cards/caspian-tern-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Caspian Tern">' +
       '<g class="dex-bird">' +
@@ -645,6 +665,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "rufous fantail": {
+    // George's own fully-designed trading card (front + back), species #43/50.
+    card: {
+      front: "assets/species-cards/rufous-fantail-front.jpg",
+      back: "assets/species-cards/rufous-fantail-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Rufous Fantail">' +
       '<g class="dex-bird">' +
@@ -652,6 +677,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "crimson rosella": {
+    // George's own fully-designed trading card (front + back), species #44/50.
+    card: {
+      front: "assets/species-cards/crimson-rosella-front.jpg",
+      back: "assets/species-cards/crimson-rosella-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Crimson Rosella">' +
       '<g class="dex-bird">' +
@@ -659,6 +689,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "southern boobook": {
+    // George's own fully-designed trading card (front + back), species #45/50.
+    card: {
+      front: "assets/species-cards/southern-boobook-front.jpg",
+      back: "assets/species-cards/southern-boobook-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Southern Boobook">' +
       '<g class="dex-bird">' +
@@ -666,6 +701,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "powerful owl": {
+    // George's own fully-designed trading card (front + back), species #46/50.
+    card: {
+      front: "assets/species-cards/powerful-owl-front.jpg",
+      back: "assets/species-cards/powerful-owl-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Powerful Owl">' +
       '<g class="dex-bird">' +
@@ -673,6 +713,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "white-throated needletail": {
+    // George's own fully-designed trading card (front + back), species #47/50.
+    card: {
+      front: "assets/species-cards/white-throated-needletail-front.jpg",
+      back: "assets/species-cards/white-throated-needletail-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="White-throated Needletail">' +
       '<g class="dex-bird">' +
@@ -680,6 +725,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "noisy pitta": {
+    // George's own fully-designed trading card (front + back), species #48/50.
+    card: {
+      front: "assets/species-cards/noisy-pitta-front.jpg",
+      back: "assets/species-cards/noisy-pitta-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Noisy Pitta">' +
       '<g class="dex-bird">' +
@@ -687,6 +737,11 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "beach stone-curlew": {
+    // George's own fully-designed trading card (front + back), species #49/50.
+    card: {
+      front: "assets/species-cards/beach-stone-curlew-front.jpg",
+      back: "assets/species-cards/beach-stone-curlew-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Beach Stone-curlew">' +
       '<g class="dex-bird">' +
@@ -694,6 +749,12 @@ var SPECIES_ART = {
       "</g></svg>"
   },
   "wedge-tailed eagle": {
+    // George's own fully-designed trading card (front + back), species #50/50 —
+    // the last of the full set.
+    card: {
+      front: "assets/species-cards/wedge-tailed-eagle-front.jpg",
+      back: "assets/species-cards/wedge-tailed-eagle-back.jpg"
+    },
     svg:
       '<svg viewBox="0 0 100 100" role="img" aria-label="Wedge-tailed Eagle">' +
       '<g class="dex-bird">' +
