@@ -701,6 +701,14 @@ document.addEventListener("DOMContentLoaded", function () {
   // with zero CONFIRMED sightings won't have a row on the leaderboard at
   // all yet (same `having count(...) > 0` rule the Leaderboard page
   // itself is subject to) — that's the empty state below, not an error.
+  // Returns { extraClass, html } for the INSIDE of #leaderboard-position
+  // only — the container div already carries the "dashboard-leaderboard-
+  // position" box styling (border/padding/background) itself, so this
+  // must never return another nested copy of that class. (It used to —
+  // container.innerHTML was being set to a string that re-wrapped itself
+  // in a second ".dashboard-leaderboard-position" div, so the outer div's
+  // own background painted outside the inner div's border, reading as
+  // the highlight "bleeding past" the box. George caught this 2026-10-29.)
   function renderLeaderboardPositionHtml(rows, myKey) {
     var idx = -1;
     for (var i = 0; i < rows.length; i++) {
@@ -708,12 +716,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (idx === -1) {
-      return (
-        '<div class="dashboard-leaderboard-position lbpos-empty">' +
-        '<span class="eyebrow lbpos-eyebrow">Leaderboard Position</span>' +
-        '<p class="hint">Not on the board yet — log and confirm your first sighting to see where you land. <a href="log-sighting.html">Log a sighting</a></p>' +
-        "</div>"
-      );
+      return {
+        extraClass: "lbpos-empty",
+        html:
+          '<span class="eyebrow lbpos-eyebrow">Leaderboard Position</span>' +
+          '<p class="hint">Not on the board yet — log and confirm your first sighting to see where you land. <a href="log-sighting.html">Log a sighting</a></p>',
+      };
     }
 
     var rank = idx + 1;
@@ -735,13 +743,13 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .join("");
 
-    return (
-      '<div class="dashboard-leaderboard-position">' +
-      '<div class="lbpos-head"><span class="eyebrow lbpos-eyebrow">Leaderboard Position</span><a href="leaderboard.html" class="lbpos-link">View full leaderboard &rarr;</a></div>' +
-      '<p class="lbpos-rank-line"><span class="lbpos-rank-big">#' + rank + "</span><span class=\"lbpos-of\">of " + total + " participant" + (total === 1 ? "" : "s") + "</span></p>" +
-      '<div class="lbpos-neighbors">' + neighborRows + "</div>" +
-      "</div>"
-    );
+    return {
+      extraClass: "",
+      html:
+        '<div class="lbpos-head"><span class="eyebrow lbpos-eyebrow">Leaderboard Position</span><a href="leaderboard.html" class="lbpos-link">View full leaderboard &rarr;</a></div>' +
+        '<p class="lbpos-rank-line"><span class="lbpos-rank-big">#' + rank + "</span><span class=\"lbpos-of\">of " + total + " participant" + (total === 1 ? "" : "s") + "</span></p>" +
+        '<div class="lbpos-neighbors">' + neighborRows + "</div>",
+    };
   }
 
   function loadLeaderboardPosition(profile) {
@@ -750,7 +758,9 @@ document.addEventListener("DOMContentLoaded", function () {
     var myKey = (profile.display_name || session.name || "").toLowerCase().trim();
     fetchLeaderboard(null)
       .then(function (rows) {
-        container.innerHTML = renderLeaderboardPositionHtml(rows || [], myKey);
+        var result = renderLeaderboardPositionHtml(rows || [], myKey);
+        container.className = "dashboard-leaderboard-position" + (result.extraClass ? " " + result.extraClass : "");
+        container.innerHTML = result.html;
       })
       .catch(function () {
         // Quietly leave the section empty if the board can't be reached

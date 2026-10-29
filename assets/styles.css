@@ -1113,6 +1113,9 @@ section { padding: 40px 0; }
   margin-bottom: 8px;
 }
 .founding-flock-block h3 { color: var(--ink); }
+.founding-flock-block-body { display: flex; gap: 20px; align-items: flex-start; }
+.founding-flock-block-badge { flex: none; width: 96px; height: 96px; object-fit: contain; }
+@media (max-width: 480px) { .founding-flock-block-badge { width: 64px; height: 64px; } }
 .founding-flock-block .rule-tag {
   display: inline-block;
   font-family: var(--font-mono);
@@ -2033,7 +2036,7 @@ tr:last-child td { border-bottom: none; }
 .lb-row-toggle {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 72px;
   width: 100%;
   background: none;
   border: none;
@@ -2046,10 +2049,11 @@ tr:last-child td { border-bottom: none; }
 .lb-row-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 .lb-row-toggle .rank-badge { flex: none; }
 .lb-row-toggle .participant-cell { flex: 1 1 auto; min-width: 0; }
-.lb-row-toggle .participant-cell > span:first-child {
+.lb-row-toggle .participant-cell .lb-name-text {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  min-width: 0;
 }
 .lb-chevron {
   flex: none;
@@ -2076,7 +2080,7 @@ tr:last-child td { border-bottom: none; }
   display: none;
   flex-direction: column;
   gap: 8px;
-  padding: 0 16px 14px 66px;
+  padding: 0 16px 14px 114px;
 }
 .lb-row.expanded .lb-row-details { display: flex; }
 .lb-cell { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; font-size: 0.92rem; }
@@ -2109,7 +2113,7 @@ tr:last-child td { border-bottom: none; }
     font-weight: 600;
     border-bottom: 1px solid var(--line);
   }
-  .lb-head-left { display: flex; align-items: center; gap: 24px; flex: 1 1 auto; min-width: 0; }
+  .lb-head-left { display: flex; align-items: center; gap: 72px; flex: 1 1 auto; min-width: 0; }
   .lb-head-rank { width: 26px; white-space: nowrap; }
   .lb-head-right { display: flex; align-items: center; gap: 24px; flex: none; }
   .lb-head-cell { width: 108px; white-space: nowrap; }
