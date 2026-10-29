@@ -1106,21 +1106,23 @@ section { padding: 40px 0; }
    thing. */
 .founding-flock-block {
   background: color-mix(in srgb, var(--ink) 6%, var(--paper-raised));
-  border: 1px solid var(--accent-warm);
+  border: 1px solid var(--ink);
   border-left: 4px solid var(--ink);
   border-radius: var(--radius-md);
   padding: 26px 28px;
   margin-bottom: 8px;
 }
 .founding-flock-block h3 { color: var(--ink); }
+.founding-flock-block-label { display: flex; flex-direction: column; }
 .founding-flock-block-badge {
   display: block;
-  width: 72px;
-  height: 72px;
+  width: 144px;
+  height: 144px;
   object-fit: contain;
-  margin: 0 0 14px;
+  margin: 14px 0 0;
 }
-@media (max-width: 480px) { .founding-flock-block-badge { width: 56px; height: 56px; margin: 0 0 12px; } }
+@media (max-width: 700px) { .founding-flock-block-badge { margin-top: 10px; } }
+@media (max-width: 480px) { .founding-flock-block-badge { width: 112px; height: 112px; } }
 .founding-flock-block .rule-tag {
   display: inline-block;
   font-family: var(--font-mono);
