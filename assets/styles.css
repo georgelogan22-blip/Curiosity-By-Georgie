@@ -266,6 +266,41 @@ a { color: var(--accent); }
   background-repeat: no-repeat;
   background-position: center;
 }
+/* Social links beside the brand wordmark, top-left — the footer's
+   .footer-social (same icons) reads as too easy to miss, so this is
+   the more visible placement George asked for. A thin left border
+   (not a background chip) separates it from the brand without a
+   second boxed element competing with the logo chip for attention.
+   Hidden below 560px: at phone width the brand text + hamburger +
+   search icon already fill the 68px bar, and a 3rd cluster of tap
+   targets squeezed between them would crowd/wrap rather than add
+   real visibility — the footer icons still cover phones. */
+.nav-brand-social {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 14px;
+  margin-left: 4px;
+  border-left: 1px solid var(--line);
+  flex: none;
+}
+.nav-brand-social a {
+  display: inline-flex;
+  color: var(--ink-soft);
+  transition: color 0.15s ease;
+}
+.nav-brand-social a:hover,
+.nav-brand-social a:focus-visible {
+  color: var(--accent);
+}
+.nav-brand-social svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+@media (max-width: 560px) {
+  .nav-brand-social { display: none; }
+}
 .nav-links {
   display: flex;
   gap: 2px;
