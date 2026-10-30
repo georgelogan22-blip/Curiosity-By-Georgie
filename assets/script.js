@@ -132,25 +132,16 @@ document.addEventListener("DOMContentLoaded", function () {
             ? uploadSightingPhoto(photoFile)
                 .then(function (photoPath) {
                   record.photoPath = photoPath;
-                  return typeof readPhotoTakenDate === "function"
-                    ? readPhotoTakenDate(photoFile)
+                  return typeof readPhotoExifSummary === "function"
+                    ? readPhotoExifSummary(photoFile)
                     : null;
                 })
-                .then(function (photoTakenAt) {
-                  record.photoTakenAt = photoTakenAt;
-                  return typeof readPhotoGPSCoordinates === "function"
-                    ? readPhotoGPSCoordinates(photoFile)
-                    : null;
-                })
-                .then(function (photoGps) {
-                  record.photoGpsLat = photoGps ? photoGps.lat : null;
-                  record.photoGpsLng = photoGps ? photoGps.lng : null;
-                  return typeof readPhotoCapturedAt === "function"
-                    ? readPhotoCapturedAt(photoFile)
-                    : null;
-                })
-                .then(function (photoCapturedAt) {
-                  record.photoCapturedAt = photoCapturedAt;
+                .then(function (exif) {
+                  record.photoTakenAt = exif ? exif.takenDate : null;
+                  record.photoCapturedAt = exif ? exif.capturedAt : null;
+                  record.photoGpsLat = exif ? exif.gpsLat : null;
+                  record.photoGpsLng = exif ? exif.gpsLng : null;
+                  record.photoExif = exif ? exif.camera : null;
                   setStatusHtml("Saving…");
                   return hashPin(pin);
                 })

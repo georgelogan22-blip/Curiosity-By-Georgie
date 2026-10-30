@@ -98,6 +98,7 @@ function submitSighting(record) {
         p_photo_gps_lat: typeof record.photoGpsLat === "number" ? record.photoGpsLat : null,
         p_photo_gps_lng: typeof record.photoGpsLng === "number" ? record.photoGpsLng : null,
         p_photo_captured_at: record.photoCapturedAt || null,
+        p_photo_exif: record.photoExif || null,
       })
       .then(function (res) {
         if (res.error) throw res.error;
@@ -111,11 +112,11 @@ function submitSighting(record) {
 // cameras routinely produce multi-MB, 3000px+ photos — uploading those
 // as-is is the most likely thing to fail or stall for someone submitting
 // from a park on patchy mobile signal, which is exactly this site's real
-// use case. Deliberately independent of readPhotoTakenDate() below: that
-// function always reads EXIF from the *original* File the user picked
-// (never from the resized copy this function returns), because a canvas
-// re-encode strips EXIF entirely — so capture-date verification keeps
-// working exactly as before, unaffected by this. Never rejects: if the
+// use case. Deliberately independent of readPhotoExifSummary() below:
+// that function always reads EXIF from the *original* File the user
+// picked (never from the resized copy this function returns), because a
+// canvas re-encode strips EXIF entirely — so capture-date/GPS/camera
+// verification keeps working exactly as before, unaffected by this. Never rejects: if the
 // browser can't decode the file (unsupported format, corrupt image) or
 // canvas isn't available, it resolves with the original, untouched file
 // so the upload can still proceed rather than being blocked by this
@@ -203,108 +204,99 @@ function uploadSightingPhoto(file) {
   });
 }
 
-// Reads a photo's original capture date (EXIF "DateTimeOriginal") using
-// the exifr library (see the <script> tag on log-sighting.html) —
-// exactly what supabase/functions/verify-sighting checks against the
-// challenge's launch date, so a screenshot or a photo with its metadata
-// stripped shows up as "no date" rather than silently passing. Resolves
-// with a "YYYY-MM-DD" string, or null if no date could be read (missing
-// EXIF, unsupported format, or the exifr library failed to load).
-function readPhotoTakenDate(file) {
-  if (typeof exifr === "undefined") return Promise.resolve(null);
-  // Note: exifr.parse(file, ["DateTimeOriginal", "CreateDate"]) — the
-  // array-shorthand "pick" form — throws in the exifr build this site
-  // loads ("undefined is not iterable"), which was silently swallowed by
-  // the .catch() below, so EVERY sighting was coming back "no readable
-  // capture date" regardless of the photo. Calling parse() with no
-  // options at all reads the full tag set reliably; we just pick the two
-  // fields we need out of it ourselves.
+// Reads everything this site wants out of a sighting photo's EXIF data in
+// one pass — originally four separate exifr.parse() calls (capture date,
+// GPS, full capture timestamp, and now camera fingerprint), consolidated
+// here on 2026-10-30 since exifr.parse() always reads the whole tag set
+// regardless of what's picked out of it afterwards, so calling it four
+// times over just meant three wasted re-parses of the same file.
+//
+// Must be called on the original File the user picked, before any
+// resize/re-encode — resizeImageForUpload()'s canvas round-trip strips
+// EXIF entirely as a side effect, so capture-date/GPS/camera verification
+// always reads from the untouched original, independent of whatever
+// (possibly smaller) copy ends up uploaded.
+//
+// Note: exifr.parse(file, [...]) — the array-shorthand "pick" form —
+// throws in the exifr build this site loads ("undefined is not
+// iterable"). Calling parse() with no options reads the full tag set
+// reliably; the fields below are picked out of it manually instead.
+//
+// Resolves with:
+//   { takenDate, capturedAt, gpsLat, gpsLng, camera }
+// — takenDate: "YYYY-MM-DD" string or null (what the launch-date check in
+//   supabase/functions/verify-sighting compares against — a screenshot or
+//   a photo with its metadata stripped shows up as "no date" rather than
+//   silently passing).
+// — capturedAt: full ISO 8601 timestamp string or null — same underlying
+//   EXIF field as takenDate, just not truncated to a bare date. Captured
+//   for George's own records; nothing the site decides on uses this
+//   directly. Caveat worth knowing: EXIF's capture-time field carries no
+//   timezone of its own — this reads it as the browser's current local
+//   timezone at upload time, correct for the ordinary case (Queensland,
+//   no daylight saving) but possibly a few hours off for a photo taken
+//   while travelling, or from a device with its clock/timezone set wrong.
+// — gpsLat/gpsLng: numbers or null — read for George's own private
+//   play-zone/boundary verification (see
+//   supabase/gps-capture-migration.sql's comment); never shown anywhere
+//   public. The public photo itself still goes through
+//   resizeImageForUpload() exactly as before, which strips this, so
+//   anyone viewing a sighting's photo sees no location metadata either
+//   way — this only feeds the private photo_gps_lat/photo_gps_lng columns
+//   on George's review dashboard.
+// — camera: { make, model, lensModel, software, iso, fNumber,
+//   exposureTime, focalLength } with only the fields actually present, or
+//   null if none of these were readable at all. Used by
+//   verify-sighting's camera-fingerprint check (added 2026-10-30) as a
+//   soft signal — see that function's header comment for why a missing
+//   fingerprint alone proves nothing.
+// Any of the above can come back null independently — a photo can have a
+// date but no GPS, GPS but no camera make, and so on; that's normal and
+// expected, not an error.
+function readPhotoExifSummary(file) {
+  var empty = { takenDate: null, capturedAt: null, gpsLat: null, gpsLng: null, camera: null };
+  if (typeof exifr === "undefined") return Promise.resolve(empty);
   return exifr
     .parse(file)
     .then(function (tags) {
-      var d = tags && (tags.DateTimeOriginal || tags.CreateDate);
-      if (!d) return null;
-      var date = d instanceof Date ? d : new Date(d);
-      if (isNaN(date.getTime())) return null;
-      return date.toISOString().slice(0, 10);
-    })
-    .catch(function () {
-      return null;
-    });
-}
+      if (!tags) return empty;
 
-// Reads a photo's embedded GPS coordinates (if any) using the same
-// exifr library/pattern as readPhotoTakenDate() above — same
-// no-shorthand parse() call, same "read from the original File before
-// any resize/re-encode" rule, since resizeImageForUpload()'s canvas
-// round-trip strips this metadata as a side effect.
-//
-// This is captured for George's own play-zone/boundary verification
-// (see supabase/gps-capture-migration.sql's comment) — it is never
-// shown anywhere public. The public photo itself still goes through
-// resizeImageForUpload() exactly as before, so anyone viewing a
-// sighting's photo sees no location metadata either way; this function
-// only feeds the two private photo_gps_lat/photo_gps_lng columns that
-// are visible to George's review dashboard alone.
-//
-// Resolves with { lat, lng } (both numbers), or null if no GPS data
-// could be read (no location services when the photo was taken,
-// stripped already by a messaging app, unsupported format, or the
-// exifr library failed to load).
-function readPhotoGPSCoordinates(file) {
-  if (typeof exifr === "undefined") return Promise.resolve(null);
-  return exifr
-    .parse(file)
-    .then(function (tags) {
-      var lat = tags && tags.latitude;
-      var lng = tags && tags.longitude;
-      if (typeof lat !== "number" || typeof lng !== "number" || isNaN(lat) || isNaN(lng)) {
-        return null;
+      var takenDate = null;
+      var capturedAt = null;
+      var d = tags.DateTimeOriginal || tags.CreateDate;
+      if (d) {
+        var date = d instanceof Date ? d : new Date(d);
+        if (!isNaN(date.getTime())) {
+          takenDate = date.toISOString().slice(0, 10);
+          capturedAt = date.toISOString();
+        }
       }
-      return { lat: lat, lng: lng };
-    })
-    .catch(function () {
-      return null;
-    });
-}
 
-// Reads a photo's full original capture date+time (EXIF
-// "DateTimeOriginal"/"CreateDate" — the same field readPhotoTakenDate()
-// above reads, just not truncated down to a bare date) using the same
-// exifr pattern. Captured for George's own records — occasionally
-// useful context when eyeballing a pending sighting by eye, even though
-// the launch-date check itself only ever needs the date portion from
-// readPhotoTakenDate().
-//
-// Caveat worth knowing: EXIF's capture-time field has no timezone of
-// its own — it's just local wall-clock digits from whatever device took
-// the photo, with no UTC offset attached. This reads it as if that were
-// the browser's own current local timezone at upload time, which lines
-// up correctly for the ordinary case (someone in Queensland — which
-// doesn't observe daylight saving — uploading a photo they just took
-// nearby). It could come out a few hours off for a photo taken while
-// travelling in a different timezone, or from a device with its
-// clock/timezone set wrong. Nothing the site actually decides on is
-// affected by that (the launch-date check only ever compares dates, via
-// readPhotoTakenDate(), never this), so a rare miss here is just
-// slightly-off extra context, not something load-bearing.
-//
-// Resolves with a full ISO 8601 timestamp string, or null if no capture
-// date/time could be read (same reasons as readPhotoTakenDate(): no
-// EXIF, unsupported format, or the exifr library failed to load).
-function readPhotoCapturedAt(file) {
-  if (typeof exifr === "undefined") return Promise.resolve(null);
-  return exifr
-    .parse(file)
-    .then(function (tags) {
-      var d = tags && (tags.DateTimeOriginal || tags.CreateDate);
-      if (!d) return null;
-      var date = d instanceof Date ? d : new Date(d);
-      if (isNaN(date.getTime())) return null;
-      return date.toISOString();
+      var gpsLat = typeof tags.latitude === "number" && !isNaN(tags.latitude) ? tags.latitude : null;
+      var gpsLng = typeof tags.longitude === "number" && !isNaN(tags.longitude) ? tags.longitude : null;
+
+      var camera = null;
+      var cameraFields = {
+        make: tags.Make,
+        model: tags.Model,
+        lensModel: tags.LensModel,
+        software: tags.Software,
+        iso: tags.ISO,
+        fNumber: tags.FNumber,
+        exposureTime: tags.ExposureTime,
+        focalLength: tags.FocalLength,
+      };
+      Object.keys(cameraFields).forEach(function (key) {
+        var value = cameraFields[key];
+        if (value === undefined || value === null || value === "") return;
+        camera = camera || {};
+        camera[key] = value;
+      });
+
+      return { takenDate: takenDate, capturedAt: capturedAt, gpsLat: gpsLat, gpsLng: gpsLng, camera: camera };
     })
     .catch(function () {
-      return null;
+      return empty;
     });
 }
 
