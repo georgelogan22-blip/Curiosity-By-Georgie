@@ -266,41 +266,6 @@ a { color: var(--accent); }
   background-repeat: no-repeat;
   background-position: center;
 }
-/* Social links beside the brand wordmark, top-left — the footer's
-   .footer-social (same icons) reads as too easy to miss, so this is
-   the more visible placement George asked for. A thin left border
-   (not a background chip) separates it from the brand without a
-   second boxed element competing with the logo chip for attention.
-   Hidden below 560px: at phone width the brand text + hamburger +
-   search icon already fill the 68px bar, and a 3rd cluster of tap
-   targets squeezed between them would crowd/wrap rather than add
-   real visibility — the footer icons still cover phones. */
-.nav-brand-social {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding-left: 14px;
-  margin-left: 4px;
-  border-left: 1px solid var(--line);
-  flex: none;
-}
-.nav-brand-social a {
-  display: inline-flex;
-  color: var(--ink-soft);
-  transition: color 0.15s ease;
-}
-.nav-brand-social a:hover,
-.nav-brand-social a:focus-visible {
-  color: var(--accent);
-}
-.nav-brand-social svg {
-  width: 20px;
-  height: 20px;
-  display: block;
-}
-@media (max-width: 560px) {
-  .nav-brand-social { display: none; }
-}
 .nav-links {
   display: flex;
   gap: 2px;
@@ -563,6 +528,32 @@ a { color: var(--accent); }
   }
 }
 
+/* countdown.html's nav only has two short links (Rules, Register) and no
+   hamburger toggle to wire up the shared mobile nav-links panel above —
+   without this override, the shared <1200px rule that hides .nav-links
+   until a toggle adds .nav-open was hiding these two links entirely
+   below 1200px with no way to reopen them (a pre-existing bug noticed
+   while moving the nav social icons here, not something this change
+   introduced). Keeps the plain desktop flex-row layout at every width
+   instead — two words are in no danger of crowding the bar, even on a
+   phone, so there's no need for a collapsing menu on this page at all. */
+.countdown-page .nav-links {
+  display: flex;
+  position: static;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  max-height: none;
+  overflow: visible;
+  background: none;
+  border-bottom: none;
+  box-shadow: none;
+}
+.countdown-page .nav-links a { width: auto; text-align: left; padding: 8px 9px; }
+
 /* ---------- nav: right-hand group (search + mobile toggle + links) ----------
    Wraps the mobile hamburger toggle, the link list, and the search
    control in one flex group so `.site-nav .wrap`'s space-between still
@@ -671,6 +662,55 @@ a { color: var(--accent); }
 }
 @media (max-width: 420px) {
   .nav-search-panel { right: -8px; width: calc(100vw - 32px); }
+}
+
+/* ---------- nav: social links, top-right ----------
+   Last item in .nav-right, so it sits at the very right edge of the
+   bar — trailing the search icon, not beside the brand on the left
+   (tried there first; George felt it read oddly next to the wordmark).
+   The footer's .footer-social (same icons) stays as the quieter,
+   always-present fallback; this is the more visible placement.
+   A thin left border separates it from the search icon without a
+   second boxed/chip element competing for attention. Hidden below
+   720px: by then .nav-right is already carrying the hamburger +
+   search icon (desktop links have collapsed into the hamburger per
+   the 1200px breakpoint above), and a 3rd tap-target cluster there
+   would crowd rather than add real visibility — the footer icons
+   still cover phones and small tablets. */
+.nav-social {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 14px;
+  margin-left: 2px;
+  border-left: 1px solid var(--line);
+  flex: none;
+}
+.nav-social a {
+  display: inline-flex;
+  color: var(--ink-soft);
+  transition: color 0.15s ease;
+}
+/* Each icon hovers to its own platform colour rather than the site's
+   --accent — a small bit of personality, and it doubles as a cue for
+   which icon is which before the eye even reads the shape. Literal
+   hex, not design-system tokens: these are fixed external brand
+   colours (Instagram's pink/orange, YouTube's red, Facebook's blue),
+   not site theme colours, so they stay the same in light and dark
+   mode rather than living in the :root token set. */
+.nav-social a.icon-instagram:hover,
+.nav-social a.icon-instagram:focus-visible { color: #e4405f; }
+.nav-social a.icon-youtube:hover,
+.nav-social a.icon-youtube:focus-visible { color: #ff0000; }
+.nav-social a.icon-facebook:hover,
+.nav-social a.icon-facebook:focus-visible { color: #1877f2; }
+.nav-social svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+@media (max-width: 480px) {
+  .nav-social { display: none; }
 }
 
 /* ---------- jump-to-anchor highlight ----------
@@ -2675,10 +2715,14 @@ footer a { color: var(--ink-soft); }
   color: var(--ink-soft);
   transition: color 0.15s ease;
 }
-.footer-social a:hover,
-.footer-social a:focus-visible {
-  color: var(--accent);
-}
+/* Same per-platform hover treatment as .nav-social above — see its
+   comment for why these are literal hex rather than theme tokens. */
+.footer-social a.icon-instagram:hover,
+.footer-social a.icon-instagram:focus-visible { color: #e4405f; }
+.footer-social a.icon-youtube:hover,
+.footer-social a.icon-youtube:focus-visible { color: #ff0000; }
+.footer-social a.icon-facebook:hover,
+.footer-social a.icon-facebook:focus-visible { color: #1877f2; }
 .footer-social svg {
   width: 20px;
   height: 20px;
