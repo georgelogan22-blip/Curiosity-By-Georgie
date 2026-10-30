@@ -788,6 +788,11 @@ section { padding: 40px 0; }
   font-family: var(--font-body);
   font-weight: 700;
   font-size: 0.8rem;
+  /* Curiosity's own brand yellow, so the subtitle pops and reads as a
+     distinct line from the white body copy below it, not a continuation
+     of it — same token the "CURIOSITY" wordmark uses (see brand-word-1),
+     and unlike --accent-warm it doesn't shift between light/dark mode. */
+  color: var(--brand-yellow);
 }
 
 .stat-strip {
@@ -2619,6 +2624,30 @@ footer {
   font-size: 0.86rem;
 }
 footer a { color: var(--ink-soft); }
+
+/* Quiet social-link row under the footer text — same muted ink-soft
+   colour as the footer's text links, nothing shouting for attention.
+   Mirrors the small icon row a lot of email footers use (e.g. the
+   Hevy app's), just two links for now (Instagram, YouTube). */
+.footer-social {
+  display: flex;
+  gap: 16px;
+  margin-top: 14px;
+}
+.footer-social a {
+  display: inline-flex;
+  color: var(--ink-soft);
+  transition: color 0.15s ease;
+}
+.footer-social a:hover,
+.footer-social a:focus-visible {
+  color: var(--accent);
+}
+.footer-social svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
 
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
