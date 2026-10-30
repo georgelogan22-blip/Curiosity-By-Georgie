@@ -95,6 +95,9 @@ function submitSighting(record) {
         p_notes: record.notes || null,
         p_photo_path: record.photoPath,
         p_photo_taken_at: record.photoTakenAt || null,
+        p_photo_gps_lat: typeof record.photoGpsLat === "number" ? record.photoGpsLat : null,
+        p_photo_gps_lng: typeof record.photoGpsLng === "number" ? record.photoGpsLng : null,
+        p_photo_captured_at: record.photoCapturedAt || null,
       })
       .then(function (res) {
         if (res.error) throw res.error;
@@ -224,6 +227,81 @@ function readPhotoTakenDate(file) {
       var date = d instanceof Date ? d : new Date(d);
       if (isNaN(date.getTime())) return null;
       return date.toISOString().slice(0, 10);
+    })
+    .catch(function () {
+      return null;
+    });
+}
+
+// Reads a photo's embedded GPS coordinates (if any) using the same
+// exifr library/pattern as readPhotoTakenDate() above — same
+// no-shorthand parse() call, same "read from the original File before
+// any resize/re-encode" rule, since resizeImageForUpload()'s canvas
+// round-trip strips this metadata as a side effect.
+//
+// This is captured for George's own play-zone/boundary verification
+// (see supabase/gps-capture-migration.sql's comment) — it is never
+// shown anywhere public. The public photo itself still goes through
+// resizeImageForUpload() exactly as before, so anyone viewing a
+// sighting's photo sees no location metadata either way; this function
+// only feeds the two private photo_gps_lat/photo_gps_lng columns that
+// are visible to George's review dashboard alone.
+//
+// Resolves with { lat, lng } (both numbers), or null if no GPS data
+// could be read (no location services when the photo was taken,
+// stripped already by a messaging app, unsupported format, or the
+// exifr library failed to load).
+function readPhotoGPSCoordinates(file) {
+  if (typeof exifr === "undefined") return Promise.resolve(null);
+  return exifr
+    .parse(file)
+    .then(function (tags) {
+      var lat = tags && tags.latitude;
+      var lng = tags && tags.longitude;
+      if (typeof lat !== "number" || typeof lng !== "number" || isNaN(lat) || isNaN(lng)) {
+        return null;
+      }
+      return { lat: lat, lng: lng };
+    })
+    .catch(function () {
+      return null;
+    });
+}
+
+// Reads a photo's full original capture date+time (EXIF
+// "DateTimeOriginal"/"CreateDate" — the same field readPhotoTakenDate()
+// above reads, just not truncated down to a bare date) using the same
+// exifr pattern. Captured for George's own records — occasionally
+// useful context when eyeballing a pending sighting by eye, even though
+// the launch-date check itself only ever needs the date portion from
+// readPhotoTakenDate().
+//
+// Caveat worth knowing: EXIF's capture-time field has no timezone of
+// its own — it's just local wall-clock digits from whatever device took
+// the photo, with no UTC offset attached. This reads it as if that were
+// the browser's own current local timezone at upload time, which lines
+// up correctly for the ordinary case (someone in Queensland — which
+// doesn't observe daylight saving — uploading a photo they just took
+// nearby). It could come out a few hours off for a photo taken while
+// travelling in a different timezone, or from a device with its
+// clock/timezone set wrong. Nothing the site actually decides on is
+// affected by that (the launch-date check only ever compares dates, via
+// readPhotoTakenDate(), never this), so a rare miss here is just
+// slightly-off extra context, not something load-bearing.
+//
+// Resolves with a full ISO 8601 timestamp string, or null if no capture
+// date/time could be read (same reasons as readPhotoTakenDate(): no
+// EXIF, unsupported format, or the exifr library failed to load).
+function readPhotoCapturedAt(file) {
+  if (typeof exifr === "undefined") return Promise.resolve(null);
+  return exifr
+    .parse(file)
+    .then(function (tags) {
+      var d = tags && (tags.DateTimeOriginal || tags.CreateDate);
+      if (!d) return null;
+      var date = d instanceof Date ? d : new Date(d);
+      if (isNaN(date.getTime())) return null;
+      return date.toISOString();
     })
     .catch(function () {
       return null;

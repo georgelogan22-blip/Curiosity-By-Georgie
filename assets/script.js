@@ -138,6 +138,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 })
                 .then(function (photoTakenAt) {
                   record.photoTakenAt = photoTakenAt;
+                  return typeof readPhotoGPSCoordinates === "function"
+                    ? readPhotoGPSCoordinates(photoFile)
+                    : null;
+                })
+                .then(function (photoGps) {
+                  record.photoGpsLat = photoGps ? photoGps.lat : null;
+                  record.photoGpsLng = photoGps ? photoGps.lng : null;
+                  return typeof readPhotoCapturedAt === "function"
+                    ? readPhotoCapturedAt(photoFile)
+                    : null;
+                })
+                .then(function (photoCapturedAt) {
+                  record.photoCapturedAt = photoCapturedAt;
                   setStatusHtml("Saving…");
                   return hashPin(pin);
                 })
