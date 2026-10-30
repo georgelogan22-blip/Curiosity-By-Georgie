@@ -788,11 +788,12 @@ section { padding: 40px 0; }
   font-family: var(--font-body);
   font-weight: 700;
   font-size: 0.8rem;
-  /* Curiosity's own brand yellow, so the subtitle pops and reads as a
-     distinct line from the white body copy below it, not a continuation
-     of it — same token the "CURIOSITY" wordmark uses (see brand-word-1),
-     and unlike --accent-warm it doesn't shift between light/dark mode. */
-  color: var(--brand-yellow);
+  /* The site's warm gold, not --brand-yellow — that exact yellow is kept
+     exclusive to the "CURIOSITY" wordmark (see brand-word-1), so it still
+     reads as uniquely "the logo's colour" rather than a repeated accent.
+     --accent-warm still pops the subtitle apart from the white body copy
+     below it, just a shade more muted/olive than the wordmark's yellow. */
+  color: var(--accent-warm);
 }
 
 .stat-strip {
