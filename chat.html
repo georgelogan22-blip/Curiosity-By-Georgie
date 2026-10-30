@@ -15,7 +15,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Curiosity">
 <meta name="theme-color" content="#f5f4ea">
-<link rel="stylesheet" href="assets/styles.css?v=20261030h">
+<link rel="stylesheet" href="assets/styles.css?v=20261030i">
 <script src="assets/species-data.js?v=20261018i" defer></script>
 <script src="assets/search-data.js?v=20261018h" defer></script>
 <script src="assets/nav.js?v=20261018h" defer></script>
@@ -148,7 +148,7 @@
       <h3 style="margin-bottom:14px;">Recent posts</h3>
       <div class="board-feed" id="board-feed">
         <!-- Example posts — swapped for the real feed once posts exist in the shared database. -->
-        <article class="board-post" data-post-id="example-1">
+        <article class="board-post" data-post-id="example-1" data-author-key="priya n.">
           <div class="board-post-head">
             <span class="board-post-author"><svg viewBox="0 0 100 100" width="26" height="26" role="img" aria-label="Rainbow Lorikeet"><circle cx="50" cy="50" r="48" fill="#e7f3ea" stroke="var(--accent-warm)" stroke-width="3"/><circle cx="50" cy="52" r="22" fill="#1f7a4d"/><circle cx="40" cy="42" r="12" fill="#1f5fa8"/><path d="M50,58 Q66,54 78,60 Q66,64 54,64 Z" fill="#e8ac5e"/><path d="M30,40 L18,36 L30,46 Z" fill="#e8ac5e"/><circle cx="34" cy="38" r="2.4" fill="#172621"/><path d="M50,70 Q58,82 50,90 Q42,82 50,70 Z" fill="#b7383a"/></svg><span class="board-post-name">Priya N.</span></span>
             <span class="board-post-time">3 Sep, 7:42 am</span>
@@ -170,6 +170,7 @@
               <span class="board-curious-count">5</span>
             </button>
             <a class="board-report-link" href="contact.html?topic=report&page=Community%20Board%20post%20(example-1)">Report</a>
+            <button type="button" class="board-delete-link" data-post-id="example-1">Delete</button>
           </div>
           <form class="board-comment-form" data-post-id="example-1">
             <div class="board-comment-input-row">
@@ -258,7 +259,7 @@
           </form>
         </article>
 
-        <article class="board-post" data-post-id="example-2">
+        <article class="board-post" data-post-id="example-2" data-author-key="sam r.">
           <div class="board-post-head">
             <span class="board-post-author"><svg viewBox="0 0 100 100" width="26" height="26" role="img" aria-label="Australian Magpie"><circle cx="50" cy="50" r="48" fill="#eceae4" stroke="var(--accent-warm)" stroke-width="3"/><ellipse cx="52" cy="58" rx="24" ry="20" fill="#1c1c1c"/><path d="M30,50 Q52,46 60,58 Q46,64 30,58 Z" fill="#f4f4f0"/><circle cx="36" cy="40" r="13" fill="#1c1c1c"/><path d="M23,38 L8,35 L23,45 Z" fill="#e0e0d8"/><circle cx="33" cy="37" r="2.4" fill="#f4f4f0"/><path d="M60,78 Q70,86 62,92 Q54,86 60,78 Z" fill="#1c1c1c"/></svg><span class="board-post-name">Sam R.</span></span>
             <span class="board-post-time">1 Sep, 6:15 pm</span>
@@ -272,6 +273,7 @@
               <span class="board-curious-count">1</span>
             </button>
             <a class="board-report-link" href="contact.html?topic=report&page=Community%20Board%20post%20(example-2)">Report</a>
+            <button type="button" class="board-delete-link" data-post-id="example-2">Delete</button>
           </div>
           <form class="board-comment-form" data-post-id="example-2">
             <div class="board-comment-input-row">
@@ -360,7 +362,7 @@
           </form>
         </article>
 
-        <article class="board-post" data-post-id="example-3">
+        <article class="board-post" data-post-id="example-3" data-author-key="marco d.">
           <div class="board-post-head">
             <span class="board-post-author"><svg viewBox="0 0 100 100" width="26" height="26" role="img" aria-label="Sulphur-crested Cockatoo"><circle cx="50" cy="50" r="48" fill="#f6f3e6" stroke="var(--accent-warm)" stroke-width="3"/><ellipse cx="52" cy="60" rx="22" ry="19" fill="#fbfaf3"/><circle cx="38" cy="44" r="13" fill="#fbfaf3"/><path d="M32,32 L26,12 L38,30 Z" fill="#e8c34a"/><path d="M40,30 L40,10 L48,28 Z" fill="#e8c34a"/><path d="M48,32 L54,14 L56,32 Z" fill="#e8c34a"/><path d="M25,42 L10,39 L25,49 Z" fill="#45342b"/><circle cx="35" cy="40" r="2.4" fill="#172621"/></svg><span class="board-post-name">Marco D.</span></span>
             <span class="board-post-time">30 Aug, 9:03 am</span>
@@ -374,6 +376,7 @@
               <span class="board-curious-count">3</span>
             </button>
             <a class="board-report-link" href="contact.html?topic=report&page=Community%20Board%20post%20(example-3)">Report</a>
+            <button type="button" class="board-delete-link" data-post-id="example-3">Delete</button>
           </div>
           <form class="board-comment-form" data-post-id="example-3">
             <div class="board-comment-input-row">
@@ -484,8 +487,8 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="assets/supabase-client.js?v=20261029b"></script>
+<script src="assets/supabase-client.js?v=20261030a"></script>
 <script src="assets/avatars.js?v=20261018h"></script>
-<script src="assets/chat.js?v=20261018h"></script>
+<script src="assets/chat.js?v=20261030a"></script>
 </body>
 </html>
