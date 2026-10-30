@@ -709,6 +709,32 @@ function createBoardComment(record) {
   });
 }
 
+// Deletes one of *this participant's own* posts via delete_board_post()
+// (security definer — checks registration/active/PIN, then confirms the
+// post actually belongs to this name, before removing it; see
+// supabase/board-delete-migration.sql). Removing someone else's post is
+// still dashboard-only for George, same as always — this only ever
+// targets record.name's own posts, enforced server-side regardless of
+// what the client sends. record: { id, name, pinHash }. Rejects with an
+// error whose .message is "not_registered" / "not_active" /
+// "invalid_pin" / "post_not_found" / "not_your_post".
+function deleteBoardPost(record) {
+  if (!supabaseClient) {
+    return Promise.reject(new Error("offline-demo"));
+  }
+  return verifyPinAttempt(record.name, record.pinHash).then(function () {
+    return supabaseClient
+      .rpc("delete_board_post", {
+        p_post_id: record.id,
+        p_name: record.name,
+        p_pin_hash: record.pinHash,
+      })
+      .then(function (res) {
+        if (res.error) throw res.error;
+      });
+  });
+}
+
 // Fetches the board feed, newest first. Resolves with [] if the backend
 // isn't configured (rather than rejecting), so the page can fall back to
 // example posts — see assets/chat.js.

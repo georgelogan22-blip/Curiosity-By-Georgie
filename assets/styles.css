@@ -2610,6 +2610,34 @@ tr:last-child td { border-bottom: none; }
   color: var(--ink);
   text-decoration-color: currentColor;
 }
+/* Only ever shown on a post .is-own-post marks as the current name's
+   own (see updateOwnPostMarks() in chat.js) — hidden by default so
+   everyone else's posts don't carry a button that would just error out
+   if tapped. A reset <button>, not an <a>, since it has no href — it
+   triggers the delete flow in chat.js instead of navigating. Coral, not
+   the neutral ink-soft of Report/Beauty!, since this one is destructive
+   and shouldn't read as equally casual as those two. */
+.board-delete-link {
+  display: none;
+  align-self: center;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+  color: var(--accent-coral);
+  font-size: 0.78rem;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.15s ease;
+}
+.is-own-post .board-delete-link { display: inline; }
+.board-delete-link:hover,
+.board-delete-link:focus-visible {
+  text-decoration-color: currentColor;
+}
+.board-delete-link:disabled { opacity: 0.6; cursor: default; }
 
 .board-comments {
   display: flex;

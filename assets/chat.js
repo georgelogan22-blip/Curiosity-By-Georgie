@@ -201,12 +201,22 @@ document.addEventListener("DOMContentLoaded", function () {
     return '<a class="board-report-link" href="' + href + '">Report</a>';
   }
 
+  // A "Delete" button for a post, always rendered but hidden by CSS
+  // unless its article carries .is-own-post (see updateOwnPostMarks()
+  // below) — client-side visibility is a convenience only, not the
+  // security boundary: delete_board_post() independently confirms the
+  // post actually belongs to whatever name+PIN gets sent, regardless of
+  // which button someone manages to click.
+  function renderDeleteButton(post) {
+    return '<button type="button" class="board-delete-link" data-post-id="' + escapeHtml(post.id) + '">Delete</button>';
+  }
+
   function renderPost(post) {
     var photoBit = post.photoUrl
       ? '<img class="board-post-photo" src="' + escapeHtml(post.photoUrl) + '" alt="" loading="lazy" onload="window.classifyBoardPhoto(this)">'
       : "";
     return (
-      '<article class="board-post" data-post-id="' + escapeHtml(post.id) + '">' +
+      '<article class="board-post" data-post-id="' + escapeHtml(post.id) + '" data-author-key="' + escapeHtml((post.name || "").trim().toLowerCase()) + '">' +
       '<div class="board-post-head">' +
       '<span class="board-post-author">' +
       renderAuthorAvatar(post.name) +
@@ -217,7 +227,7 @@ document.addEventListener("DOMContentLoaded", function () {
       '<p class="board-post-caption">' + escapeHtml(post.caption) + "</p>" +
       photoBit +
       '<div class="board-comments">' + post.comments.map(renderComment).join("") + "</div>" +
-      '<div class="board-post-actions">' + renderCuriousButton(post) + renderReportLink(post) + "</div>" +
+      '<div class="board-post-actions">' + renderCuriousButton(post) + renderReportLink(post) + renderDeleteButton(post) + "</div>" +
       '<form class="board-comment-form" data-post-id="' + escapeHtml(post.id) + '">' +
       '<div class="board-comment-input-row">' +
       '<textarea name="body" maxlength="300" placeholder="Add a comment…" required></textarea>' +
@@ -232,8 +242,26 @@ document.addEventListener("DOMContentLoaded", function () {
     );
   }
 
+  // Shows the Delete button only on posts whose author matches whatever
+  // name is currently typed into the name field above the composer —
+  // the same field already used to authorise posting/commenting/
+  // reacting, so "is this my post" just reads it live rather than
+  // tracking identity separately. Re-run after every render (the field
+  // may already have a value, e.g. the localStorage prefill below) and
+  // on every keystroke in the name field, so switching names (a shared
+  // device, or posting under a different name) immediately shows the
+  // right set of Delete buttons without needing a page reload.
+  function updateOwnPostMarks() {
+    var myKey = (nameField && nameField.value || "").trim().toLowerCase();
+    feed.querySelectorAll(".board-post").forEach(function (article) {
+      var isMine = !!myKey && article.getAttribute("data-author-key") === myKey;
+      article.classList.toggle("is-own-post", isMine);
+    });
+  }
+
   function renderFeed() {
     feed.innerHTML = posts.map(renderPost).join("");
+    updateOwnPostMarks();
   }
 
   function setStatus(html) {
@@ -674,6 +702,84 @@ document.addEventListener("DOMContentLoaded", function () {
       // localStorage unavailable — fine, just means no prefill.
     }
   }
+  if (nameField) nameField.addEventListener("input", updateOwnPostMarks);
+  updateOwnPostMarks(); // covers the prefill above, which lands after renderFeed()'s first call
+
+  // ---- deleting your own post (event delegation — same reasoning as
+  // the comment-form/curious-button listeners above) -------------------
+  feed.addEventListener("click", function (evt) {
+    var deleteBtn = evt.target.closest(".board-delete-link");
+    if (!deleteBtn) return;
+
+    var postId = deleteBtn.getAttribute("data-post-id");
+    var post = findPost(postId);
+    if (!post) return;
+
+    var name = (nameField.value || "").trim();
+    var pin = (pinField.value || "").trim();
+
+    if (!name) {
+      setStatus("Enter your name above to delete a post.");
+      return;
+    }
+    if (!/^[0-9]{6}$/.test(pin)) {
+      setStatus("Enter your 6-digit PIN above to delete a post.");
+      return;
+    }
+
+    if (!window.confirm("Delete this post? This can't be undone.")) return;
+
+    // Local-only post (demo mode, or the backend wasn't reachable when
+    // it was made) — nothing saved server-side to delete, so just drop
+    // it from the in-memory list.
+    if (String(postId).indexOf("local-") === 0) {
+      posts = posts.filter(function (p) { return p.id !== postId; });
+      renderFeed();
+      return;
+    }
+
+    deleteBtn.disabled = true;
+    setStatus("Deleting…");
+
+    var doDelete = typeof hashPin === "function"
+      ? hashPin(pin).then(function (pinHash) {
+          return typeof deleteBoardPost === "function"
+            ? deleteBoardPost({ id: postId, name: name, pinHash: pinHash })
+            : Promise.reject(new Error("offline-demo"));
+        })
+      : Promise.reject(new Error("offline-demo"));
+
+    doDelete
+      .then(function () {
+        posts = posts.filter(function (p) { return p.id !== postId; });
+        renderFeed();
+        setStatus("Post deleted.");
+        try { window.localStorage.setItem("cg_participant_name", name); } catch (e) {}
+      })
+      .catch(function (err) {
+        var msg = err && err.message;
+        if (msg === "offline-demo") {
+          setStatus("This isn't connected right now — please try again shortly.");
+        } else if (msg === "not_registered") {
+          setStatus('That name isn\'t registered yet — <a href="register.html">register here</a> first.');
+        } else if (msg === "not_active") {
+          setStatus('This name isn\'t able to delete posts right now. If you think this is a mistake, <a href="contact.html?topic=account">get in touch</a>.');
+        } else if (msg === "invalid_pin") {
+          setStatus('<span class="status-warn">That PIN doesn\'t match this name — check it and try again.</span>');
+        } else if (msg === "pin_locked") {
+          setStatus('<span class="status-warn">Too many incorrect PIN attempts — this name is locked for 15 minutes. <a href="forgot-pin.html">Forgot your PIN?</a></span>');
+        } else if (msg === "not_your_post") {
+          setStatus("That post belongs to a different name, so it can't be deleted from here.");
+        } else if (msg === "post_not_found") {
+          setStatus("That post isn't there anymore.");
+          posts = posts.filter(function (p) { return p.id !== postId; });
+          renderFeed();
+        } else {
+          setStatus("Couldn't delete that post right now — please try again.");
+        }
+        deleteBtn.disabled = false;
+      });
+  });
 
   // ---- "Check my replies" (self-service, no email/push notifications) -
   // The board has no notification system — see
