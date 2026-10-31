@@ -15,7 +15,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Curiosity">
 <meta name="theme-color" content="#f5f4ea">
-<link rel="stylesheet" href="assets/styles.css?v=20261030i">
+<link rel="stylesheet" href="assets/styles.css?v=20261030j">
 <script src="assets/species-data.js?v=20261018i" defer></script>
 <script src="assets/search-data.js?v=20261018h" defer></script>
 <script src="assets/nav.js?v=20261018h" defer></script>
@@ -118,7 +118,7 @@
       <img src="assets/badge-founding-flock.png" width="144" height="144" alt="The Founding Flock badge — a chick in a nest, stamped CG, Founding Flock" class="founding-flock-block-badge" loading="lazy">
     </div>
     <div>
-      <p>The first <strong>100 people</strong> to register become the <strong>Founding Flock</strong> — a badge that appears next to your name on the <a href="leaderboard.html">Leaderboard</a> and <a href="hall-of-fame.html">Hall of Fame</a> the moment you sign up, and stays there for good, whether or not you ever finish a challenge. Go on to complete the full Brisbane Air 50 as one of the Founding Flock and there's a second thank-you waiting for you too — we're not saying what it is yet. It stacks with the finisher's coin (see <a href="finisher-rewards.html">Finisher Rewards</a>) if you're also one of the first fifty to finish, so it's entirely possible to earn both.</p>
+      <p>The first <strong>100 people</strong> to register become the <strong>Founding Flock</strong> — a badge that appears next to your name on the <a href="leaderboard.html">Leaderboard</a> and <a href="hall-of-fame.html">Hall of Fame</a> the moment you sign up, and stays there for good, whether or not you ever finish a challenge. Go on to complete the full Brisbane Air 50 as one of the Founding Flock and there's a second thank-you waiting for you too: a free Air 50 pin badge — the same keepsake pin other finishers will otherwise be able to add to their coin order — yours is on us. It stacks with the finisher's coin (see <a href="finisher-rewards.html">Finisher Rewards</a>) if you're also one of the first fifty to finish, so it's entirely possible to earn both.</p>
       <p class="hint">Registration only opens once the challenge itself launches — there's no way to register early to improve your odds. From that moment, it's first in, first served.</p>
     </div>
   </div>
@@ -234,12 +234,18 @@
       </div>
       <p class="hint" style="margin-top:-8px; margin-bottom:18px;">You'll enter this alongside your display name whenever you log a sighting, so no one else can log sightings under your name. Keep it simple — if you forget it, you can reset it yourself on the <a href="forgot-pin.html">Forgot Your PIN</a> page.</p>
 
-      <div class="field" id="parental-consent-field" hidden>
-        <label style="display:flex; align-items:flex-start; gap:8px; font-weight:400;">
-          <input type="checkbox" id="parental-consent" name="parentalConsent" style="width:auto; margin-top:3px;">
-          <span>I confirm I am this participant's parent or guardian, or I have my parent or guardian's permission to register and take part in the Brisbane Air 50.</span>
-        </label>
-        <p class="hint">Shown because the date of birth entered above is under 18 — a parent or guardian's approval is required to register.</p>
+      <div class="field" id="parent-consent-field" hidden>
+        <p class="hint" style="margin-top:0;">Because the date of birth above is under 18, we need a parent or guardian to approve this registration directly — not just a box ticked here. Fill in their details below and we'll email them a confirmation link; registration finishes once they confirm it (usually within a few minutes, never more than 7 days).</p>
+        <label for="parent-name">Parent/guardian's full name</label>
+        <input type="text" id="parent-name" name="parentName">
+        <label for="parent-email" style="margin-top:10px;">Parent/guardian's email</label>
+        <input type="email" id="parent-email" name="parentEmail" placeholder="parent@example.com">
+        <label for="parent-relationship" style="margin-top:10px;">Relationship to participant</label>
+        <select id="parent-relationship" name="parentRelationship">
+          <option value="Parent" selected>Parent</option>
+          <option value="Legal guardian">Legal guardian</option>
+          <option value="Other">Other</option>
+        </select>
       </div>
 
       <div class="field">
@@ -271,7 +277,7 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="assets/supabase-client.js?v=20261030d"></script>
-<script src="assets/register.js?v=20261018h"></script>
+<script src="assets/supabase-client.js?v=20261031a"></script>
+<script src="assets/register.js?v=20261031a"></script>
 </body>
 </html>

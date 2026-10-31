@@ -15,7 +15,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Curiosity">
 <meta name="theme-color" content="#f5f4ea">
-<link rel="stylesheet" href="assets/styles.css?v=20261030i">
+<link rel="stylesheet" href="assets/styles.css?v=20261030j">
 <script src="assets/species-data.js?v=20261018i" defer></script>
 <script src="assets/search-data.js?v=20261018h" defer></script>
 <script src="assets/nav.js?v=20261018h" defer></script>
@@ -203,54 +203,118 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="assets/supabase-client.js?v=20261030d"></script>
+<script src="assets/supabase-client.js?v=20261031a"></script>
 <script src="assets/avatars.js?v=20261018h"></script>
-<script src="assets/script.js?v=20261030c"></script>
+<script src="assets/script.js?v=20261031a"></script>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     if (typeof fetchHallOfFame !== "function") return;
-    fetchHallOfFame()
-      .then(function (rows) {
-        if (!rows || !rows.length) return; // keep example cards until real inductees exist
+
+    function renderRealCard(r) {
+      var avatar = (typeof renderAvatarBadge === "function") ? renderAvatarBadge(r.avatarKey, r.avatarPhotoUrl, 40, r.name) : "";
+      var foundingFlock = (typeof foundingFlockChipHtml === "function") ? foundingFlockChipHtml(r.foundingFlockRank) : "";
+      var medalsHtml = r.medals
+        .map(function (m) {
+          var inducted = m.inductedAt
+            ? new Date(m.inductedAt + "T00:00:00").toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })
+            : "—";
+          // finisherNumber is this medal's 1-based rank within its
+          // OWN discipline's induction order (fetchHallOfFame()
+          // computes it per-discipline) — the same order the
+          // coin's own "first fifty" count is reckoned by, see
+          // finisher-coin-scarcity-2026-09-28.
+          var number = "#" + String(m.finisherNumber).padStart(3, "0");
+          return (
+            '<div class="fame-medal">' + disciplineBadgeHtml(m.discipline) +
+            '<div class="badge-title">' + escapeHtml(disciplineTitle(m.discipline)) + "</div>" +
+            '<div class="badge-number">' + number + "</div>" +
+            '<div class="date">Inducted ' + inducted + "</div></div>"
+          );
+        })
+        .join("");
+      // species/points stats only exist for Air 50 right now (see
+      // the comment on fetchHallOfFame() in supabase-client.js) —
+      // shown once per card, not once per medal, until a second
+      // discipline has its own scoring/leaderboard view.
+      var stats = r.count != null && r.points != null
+        ? '<div class="count">' + r.count + " species · " + r.points + " pts</div>"
+        : "";
+      return (
+        '<div class="fame-card"><div class="fame-card-head">' + avatar + '<div class="name">' + escapeHtml(r.name) + foundingFlock + "</div></div>" +
+        '<div class="fame-card-medals">' + medalsHtml + "</div>" +
+        stats + "</div>"
+      );
+    }
+
+    // "PENDING FINAL REVIEW" cards — see
+    // supabase/air50-completion-tracking-migration.sql and
+    // fetchAir50PendingInduction() in assets/supabase-client.js. Shown
+    // for anyone who's reached all 50 confirmed official species but
+    // hasn't been through Georgie's manual review yet. Deliberately
+    // leaves out the finisher number and any "Inducted" date — neither
+    // is real until the review happens — and shows instead the exact
+    // moment (Brisbane time) their 50th species was confirmed, so the
+    // order people actually finished in is a matter of public record
+    // from the moment it happens, not whenever Georgie gets to it.
+    function renderPendingCard(r) {
+      var avatar = (typeof renderAvatarBadge === "function") ? renderAvatarBadge(r.avatarKey, r.avatarPhotoUrl, 40, r.participant_name) : "";
+      var foundingFlock = (typeof foundingFlockChipHtml === "function") ? foundingFlockChipHtml(r.founding_flock_rank) : "";
+      var completed = r.completed_at
+        ? new Date(r.completed_at).toLocaleString("en-AU", {
+            timeZone: "Australia/Brisbane",
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+          }) + " AEST"
+        : "—";
+      var stats = r.species_count != null && r.total_points != null
+        ? '<div class="count">' + r.species_count + " species · " + r.total_points + " pts</div>"
+        : "";
+      return (
+        '<div class="fame-card fame-card-pending">' +
+        '<div class="fame-pending-stamp" aria-hidden="true">Pending Final Review</div>' +
+        '<div class="fame-card-head">' + avatar + '<div class="name">' + escapeHtml(r.participant_name) + foundingFlock + "</div></div>" +
+        '<div class="fame-card-medals"><div class="fame-medal fame-medal-pending">' + disciplineBadgeHtml("air50") +
+        '<div class="badge-title">AIR 50 Full Completion Submitted</div>' +
+        '<div class="date">' + escapeHtml(completed) + "</div></div></div>" +
+        stats + "</div>"
+      );
+    }
+
+    Promise.all([
+      fetchHallOfFame(),
+      typeof fetchAir50PendingInduction === "function" ? fetchAir50PendingInduction() : Promise.resolve([]),
+    ])
+      .then(function (results) {
+        var realRows = results[0] || [];
+        var pendingRows = results[1] || [];
+        if (!realRows.length && !pendingRows.length) return; // keep example cards until real data exists
+
+        // Merge both kinds into one chronological list — a real card
+        // sorts by its earliest medal's inducted date, a pending card by
+        // its true 50th-species completion timestamp — so a pending
+        // card can sit ahead of (or behind) a real one exactly where it
+        // honestly belongs, not in a separate section of its own.
+        var items = [];
+        realRows.forEach(function (r) {
+          var earliest = r.medals.reduce(function (min, m) {
+            return !min || (m.inductedAt && m.inductedAt < min) ? m.inductedAt : min;
+          }, null);
+          items.push({ sortKey: earliest || "9999-99-99", html: renderRealCard(r) });
+        });
+        pendingRows.forEach(function (r) {
+          items.push({ sortKey: r.completed_at || "9999-99-99T00:00:00Z", html: renderPendingCard(r) });
+        });
+        items.sort(function (a, b) {
+          return a.sortKey < b.sortKey ? -1 : a.sortKey > b.sortKey ? 1 : 0;
+        });
+
         var grid = document.getElementById("fame-grid");
         var note = document.getElementById("fame-note");
-        grid.innerHTML = rows
-          .map(function (r) {
-            var avatar = (typeof renderAvatarBadge === "function") ? renderAvatarBadge(r.avatarKey, r.avatarPhotoUrl, 40, r.name) : "";
-            var foundingFlock = (typeof foundingFlockChipHtml === "function") ? foundingFlockChipHtml(r.foundingFlockRank) : "";
-            var medalsHtml = r.medals
-              .map(function (m) {
-                var inducted = m.inductedAt
-                  ? new Date(m.inductedAt + "T00:00:00").toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })
-                  : "—";
-                // finisherNumber is this medal's 1-based rank within its
-                // OWN discipline's induction order (fetchHallOfFame()
-                // computes it per-discipline) — the same order the
-                // coin's own "first fifty" count is reckoned by, see
-                // finisher-coin-scarcity-2026-09-28.
-                var number = "#" + String(m.finisherNumber).padStart(3, "0");
-                return (
-                  '<div class="fame-medal">' + disciplineBadgeHtml(m.discipline) +
-                  '<div class="badge-title">' + escapeHtml(disciplineTitle(m.discipline)) + "</div>" +
-                  '<div class="badge-number">' + number + "</div>" +
-                  '<div class="date">Inducted ' + inducted + "</div></div>"
-                );
-              })
-              .join("");
-            // species/points stats only exist for Air 50 right now (see
-            // the comment on fetchHallOfFame() in supabase-client.js) —
-            // shown once per card, not once per medal, until a second
-            // discipline has its own scoring/leaderboard view.
-            var stats = r.count != null && r.points != null
-              ? '<div class="count">' + r.count + " species · " + r.points + " pts</div>"
-              : "";
-            return (
-              '<div class="fame-card"><div class="fame-card-head">' + avatar + '<div class="name">' + escapeHtml(r.name) + foundingFlock + "</div></div>" +
-              '<div class="fame-card-medals">' + medalsHtml + "</div>" +
-              stats + "</div>"
-            );
-          })
-          .join("");
+        grid.innerHTML = items.map(function (it) { return it.html; }).join("");
         if (note) note.hidden = true;
       })
       .catch(function () { /* keep example data if the backend isn't reachable */ });
