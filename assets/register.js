@@ -1,13 +1,21 @@
 // Curiosity by Georgie — registration form logic
 //
-// Handles the parental-consent checkbox (shown only when the entered
+// Handles the parent/guardian consent flow (shown only when the entered
 // date of birth is under 18) and submits the form to Supabase via
-// registerParticipant() in assets/supabase-client.js. The database
-// enforces the same under-18 rule server-side (see
-// supabase/registration-migration.sql) — this front-end check is just
-// so people see the checkbox before they hit submit, not the only
-// thing standing between a minor and an unapproved registration.
-
+// registerParticipant() in assets/supabase-client.js, which now calls
+// register_participant() — see supabase/parent-consent-migration.sql.
+//
+// This used to be a simple self-declared "I confirm I am this
+// participant's parent or guardian" tickbox. Per Ashlee Zileski's
+// (Sprintlaw) recommendation during the 2026-10-29 legal review, a minor
+// registering here no longer ticks anything about consent themselves —
+// they just give us their parent/guardian's name + email, and the real
+// consent step happens separately, by the actual parent, on
+// parent-consent.html, once they confirm the email we send them. Until
+// they do, the registration sits as `status = 'pending_consent'` (can't
+// log sightings yet) — see register_participant() for exactly how that
+// decision is made server-side (never trusted to this file alone).
+//
 // hashPin() is defined in assets/supabase-client.js (loaded before this
 // file on register.html) and shared with assets/script.js, which hashes
 // the PIN a participant re-enters at sighting-log time the same way, so
@@ -19,8 +27,9 @@ document.addEventListener("DOMContentLoaded", function () {
   if (!form) return;
 
   var dobInput = document.getElementById("dob");
-  var consentField = document.getElementById("parental-consent-field");
-  var consentBox = document.getElementById("parental-consent");
+  var parentField = document.getElementById("parent-consent-field");
+  var parentNameInput = document.getElementById("parent-name");
+  var parentEmailInput = document.getElementById("parent-email");
   var statusEl = document.getElementById("form-status");
 
   function isUnder18(dobStr) {
@@ -38,9 +47,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function refreshConsentVisibility() {
     var minor = isUnder18(dobInput.value);
-    consentField.hidden = !minor;
-    consentBox.required = minor;
-    if (!minor) consentBox.checked = false;
+    parentField.hidden = !minor;
+    parentNameInput.required = minor;
+    parentEmailInput.required = minor;
+    if (!minor) {
+      parentNameInput.value = "";
+      parentEmailInput.value = "";
+    }
   }
 
   dobInput.addEventListener("change", refreshConsentVisibility);
@@ -75,6 +88,16 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
+    var minor = isUnder18(dobStr);
+    var parentName = (data.get("parentName") || "").toString().trim();
+    var parentEmail = (data.get("parentEmail") || "").toString().trim();
+    var parentRelationship = (data.get("parentRelationship") || "").toString().trim();
+
+    if (minor && (!parentName || !parentEmail)) {
+      setStatus("We need a parent or guardian's name and email before this can be submitted.");
+      return;
+    }
+
     var record = {
       displayName: (data.get("displayName") || "").toString().trim(),
       fullName: (data.get("fullName") || "").toString().trim(),
@@ -85,13 +108,10 @@ document.addEventListener("DOMContentLoaded", function () {
       postcode: (data.get("postcode") || "").toString().trim(),
       phone: (data.get("phone") || "").toString().trim(),
       email: (data.get("email") || "").toString().trim(),
-      parentalConsent: !!(data.get("parentalConsent")),
+      parentName: minor ? parentName : null,
+      parentEmail: minor ? parentEmail : null,
+      parentRelationship: minor ? (parentRelationship || "Parent") : null,
     };
-
-    if (isUnder18(record.dob) && !record.parentalConsent) {
-      setStatus("A parent or guardian needs to tick the approval box above before this can be submitted.");
-      return;
-    }
 
     var submitBtn = form.querySelector('button[type="submit"]');
     if (submitBtn) submitBtn.disabled = true;
@@ -108,13 +128,27 @@ document.addEventListener("DOMContentLoaded", function () {
         record.pinHash = pinHash;
         return registerParticipant(record);
       })
-      .then(function () {
+      .then(function (result) {
         try {
           window.localStorage.setItem("cg_participant_name", record.displayName);
         } catch (e) {
           // localStorage unavailable (private browsing etc.) — not essential.
         }
         form.hidden = true;
+
+        // A minor's registration isn't active yet — it only becomes so
+        // once their parent/guardian confirms via the emailed link (see
+        // parent-consent.html). Show that instead of the usual "you're
+        // registered, go log a sighting" message, and skip the Founding
+        // Flock lookup below entirely — fetchParticipantDashboard() only
+        // works for an active participant.
+        if (result && result.consent_pending) {
+          setStatus(
+            "Almost there — we've emailed " + record.parentEmail + " to ask your parent or guardian to approve this " +
+            "registration. Once they confirm, “" + record.displayName + "” will be fully registered and ready to log sightings."
+          );
+          return;
+        }
 
         // Founding Flock check — see supabase/founding-flock-migration.sql.
         // The rank was assigned server-side the instant the registration
@@ -148,15 +182,18 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .catch(function (err) {
         var code = err && err.code;
-        var message = "Something went wrong — please try again, or get in touch via the Contact page if it keeps happening.";
-        if (err && err.message === "offline-demo") {
-          message = "Registration isn't connected to the shared database right now — please try again shortly.";
+        var message = err && err.message;
+        var text = "Something went wrong — please try again, or get in touch via the Contact page if it keeps happening.";
+        if (message === "offline-demo") {
+          text = "Registration isn't connected to the shared database right now — please try again shortly.";
+        } else if (message === "parent_name_required" || message === "parent_email_required") {
+          text = "We need a parent or guardian's name and email before this can be submitted.";
         } else if (code === "23505") {
-          message = "That display name is already registered — try adding an initial or your suburb, or if that's you, head to Log a Sighting.";
+          text = "That display name is already registered — try adding an initial or your suburb, or if that's you, head to Log a Sighting.";
         } else if (code === "23514") {
-          message = "A parent or guardian needs to tick the approval box above before this can be submitted.";
+          text = "That registration couldn't be saved as entered — double-check the date of birth and parent/guardian details above.";
         }
-        setStatus(message);
+        setStatus(text);
         if (submitBtn) submitBtn.disabled = false;
       });
   });

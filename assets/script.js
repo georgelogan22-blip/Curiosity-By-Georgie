@@ -123,6 +123,20 @@ document.addEventListener("DOMContentLoaded", function () {
           if (submitBtn) submitBtn.disabled = false;
           return;
         }
+        if (status === "pending_consent") {
+          // See supabase/parent-consent-migration.sql — a minor's
+          // registration isn't active until their parent/guardian
+          // confirms via the emailed link. Catching this here (rather
+          // than letting it fall through to submit_sighting()'s generic
+          // "not_active" rejection further below) avoids wasting a photo
+          // upload on an attempt that can't succeed yet, and gives a
+          // message that actually explains why.
+          setStatusHtml(
+            "Almost there — we're still waiting on your parent or guardian to confirm your registration by email. Once they do, you'll be able to log sightings."
+          );
+          if (submitBtn) submitBtn.disabled = false;
+          return;
+        }
 
         setStatusHtml("Uploading photo…");
         var save =

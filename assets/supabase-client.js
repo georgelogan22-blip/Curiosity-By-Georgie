@@ -300,44 +300,64 @@ function readPhotoExifSummary(file) {
     });
 }
 
-// Register a new participant (see supabase/registration-migration.sql).
-// Resolves once the row is saved (with no data — see note below), or
-// rejects with the Supabase/Postgres error (err.code is the Postgres
-// error code — e.g. "23505" for a duplicate display name, "23514" for
-// the parental-consent check) so the form can show a friendly message
-// for the common cases.
+// Register a new participant via register_participant() (see
+// supabase/parent-consent-migration.sql, which replaced the direct
+// `.from("participants").insert(...)` this used to do). Resolves with
+// { status, consent_pending } — "active"/false for an adult (registered
+// and ready to log sightings immediately, same as before), or
+// "pending_consent"/true for a minor (their parent/guardian has just
+// been emailed a confirmation link — see register.js for how that's
+// shown). Rejects with the Supabase/Postgres error — err.code is the
+// Postgres error code ("23505" for a duplicate display name) and
+// err.message is one of "parent_name_required"/"parent_email_required"
+// for a minor missing those fields (raised by the database function) —
+// so the form can show a friendly message for each case.
 //
-// Deliberately does NOT chain .select() here. participants only has an
-// INSERT policy for the anon role, not a SELECT one (it holds full
-// legal names, addresses, phone numbers and pin_hash — not something
-// to expose via a public read policy), and Postgres checks a
-// RETURNING/`.select()` row against SELECT policies too. Asking for
-// the row back therefore fails RLS even though the insert itself is
-// allowed. Nothing currently needs the returned row (register.js uses
-// the record it already has locally), so the fix is simply not to ask
-// for it back.
+// Switching from a direct insert to this RPC is also what made it safe
+// to drop participants' public SELECT concern entirely: a function's
+// return value isn't filtered by the table's RLS SELECT policy the way
+// `.insert().select()` would be, but register_participant() itself only
+// ever returns those two non-sensitive fields, never the row.
 function registerParticipant(record) {
   if (!supabaseClient) {
     return Promise.reject(new Error("offline-demo"));
   }
   return supabaseClient
-    .from("participants")
-    .insert({
-      display_name: record.displayName,
-      full_legal_name: record.fullName,
-      date_of_birth: record.dob,
-      address_line: record.addressLine,
-      suburb: record.suburb,
-      state: record.state,
-      postcode: record.postcode,
-      phone: record.phone,
-      email: record.email,
-      parental_consent: !!record.parentalConsent,
-      pin_hash: record.pinHash,
+    .rpc("register_participant", {
+      p_display_name: record.displayName,
+      p_full_legal_name: record.fullName,
+      p_date_of_birth: record.dob,
+      p_address_line: record.addressLine,
+      p_suburb: record.suburb,
+      p_state: record.state,
+      p_postcode: record.postcode,
+      p_phone: record.phone,
+      p_email: record.email,
+      p_pin_hash: record.pinHash,
+      p_parent_name: record.parentName || null,
+      p_parent_email: record.parentEmail || null,
+      p_parent_relationship: record.parentRelationship || null,
     })
     .then(function (res) {
       if (res.error) throw res.error;
-      return res.data;
+      var row = Array.isArray(res.data) ? res.data[0] : res.data;
+      return row || { status: "active", consent_pending: false };
+    });
+}
+
+// Calls confirm_parent_consent() (see supabase/parent-consent-migration.sql)
+// once a parent/guardian has followed their emailed link and ticked the
+// required boxes on parent-consent.html. checks is a plain object of
+// whatever that page's checkboxes are — stored as-is (jsonb), not
+// validated against a fixed shape here. Rejects with an error whose
+// .message is "invalid_token", "token_used", or "token_expired" (raised
+// by the database function), same pattern as redeemPinReset() below.
+function confirmParentConsent(token, checks) {
+  if (!supabaseClient) return Promise.reject(new Error("offline-demo"));
+  return supabaseClient
+    .rpc("confirm_parent_consent", { p_token: token, p_checks: checks || {} })
+    .then(function (res) {
+      if (res.error) throw res.error;
     });
 }
 
@@ -559,6 +579,34 @@ function fetchHallOfFame() {
             };
           });
         });
+    });
+}
+
+// Participants who've reached all 50 confirmed official species for a
+// discipline but haven't been through Georgie's manual review yet — see
+// supabase/air50-completion-tracking-migration.sql. Reads the narrow
+// public.air50_pending_induction view (name, avatar, Founding Flock
+// rank, species count, points, and the exact moment their 50th species
+// was confirmed — nothing about their actual sightings or photos), so
+// hall-of-fame.html can show an honest "PENDING FINAL REVIEW" card the
+// instant someone crosses the line, with a public, disputable timestamp
+// of when it genuinely happened — rather than only ever showing
+// finishers once Georgie gets around to reviewing them. Resolves with
+// [] (never rejects) if the view isn't reachable, same fail-quiet
+// pattern as fetchHallOfFame() above — the example cards stay up rather
+// than the page breaking.
+function fetchAir50PendingInduction() {
+  if (!supabaseClient) return Promise.resolve([]);
+  return supabaseClient
+    .from("air50_pending_induction")
+    .select("*")
+    .order("completed_at", { ascending: true })
+    .then(function (res) {
+      if (res.error) throw res.error;
+      return res.data || [];
+    })
+    .catch(function () {
+      return [];
     });
 }
 
