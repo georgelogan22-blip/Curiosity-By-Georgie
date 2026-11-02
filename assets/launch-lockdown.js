@@ -1,7 +1,7 @@
 // Pre-launch lockdown gate — prototype, 2026-10-25. Dates confirmed 2026-10-25,
 // lockdown start date revised 2026-10-25.
 //
-// What this does: from 3 November 2026, every page on the site except
+// What this does: from 6 November 2026, every page on the site except
 // Rules and Register redirects to countdown.html. On launch day itself
 // (16 November 2026, 5:00 AM Brisbane time), the whole site opens back up
 // automatically — nothing to flip by hand at launch time.
@@ -29,8 +29,11 @@
   // ---- Single source of truth for the lockdown window ----
   // Confirmed by George, 2026-10-25: full lockdown for everyone (no
   // exceptions beyond Rules/Register/Countdown — Contact included) starts
-  // 3 November 2026; launch is 16 November 2026 at 5:00 AM Brisbane time.
-  var LOCKDOWN_START = new Date("2026-11-03T00:00:00+10:00");
+  // 6 November 2026 (pushed back from the original 3 November on
+  // 2026-11-02 to give the solicitor's legal review more time — the
+  // review was quoted at 5 business days from 2026-10-29); launch is
+  // still 16 November 2026 at 5:00 AM Brisbane time.
+  var LOCKDOWN_START = new Date("2026-11-06T00:00:00+10:00");
   var LAUNCH_DATE     = new Date("2026-11-16T05:00:00+10:00"); // confirmed launch date + time
 
   // Pages the public can still reach once the lockdown window starts.
