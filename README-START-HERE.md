@@ -39,8 +39,13 @@ When you're actually ready to open registration for real (legal review
 cleared, launch date reached), run this one line yourself in SQL Editor:
 
 ```sql
-grant execute on function public.register_participant(text, text, date, text, text, text, text, text, text, text, text, text, text) to anon;
+grant execute on function public.register_participant(text, text, date, text, text, text, text, text, text) to anon;
 ```
+
+(Updated 2026-11-06 — registration no longer collects an address, so
+the function dropped from 13 params to 9. See `supabase/parent-consent-migration.sql`,
+which now actually exists in this repo instead of only living in the
+Supabase dashboard.)
 
 That's the new on/off switch, replacing the old "grant insert on
 participants" switch.
