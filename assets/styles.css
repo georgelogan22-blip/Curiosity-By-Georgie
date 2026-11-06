@@ -2796,6 +2796,81 @@ footer a { color: var(--ink-soft); }
   display: block;
 }
 
+/* Legal links row in the footer — Terms/Privacy, same quiet footer-text
+   treatment as the rest of the footer. Added 2026-11-06 once dedicated
+   terms.html/privacy.html pages existed for them to point to. */
+.footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+  font-size: 0.82rem;
+}
+.footer-legal a { color: var(--ink-soft); }
+.footer-legal a:hover,
+.footer-legal a:focus-visible { color: var(--ink); }
+.footer-legal span { color: var(--line); }
+
+/* ---------- legal documents (Terms / Privacy) ---------- */
+/* The full lawyer-drafted Terms and Privacy Policy, as their own pages
+   (terms.html / privacy.html), linked from the footer above and from
+   the short plain-language summaries on Rules/Register. Built 2026-11-06
+   as a nested <ol> straight out of the source document's own numbering
+   (1., a., i.) via pandoc — styled here rather than restructured, so a
+   later wording update is a straight content swap, not a rebuild. */
+.legal-doc {
+  max-width: 760px;
+}
+.legal-doc .draft-banner {
+  background: color-mix(in srgb, var(--accent-warm) 14%, var(--paper-raised));
+  border: 1px solid var(--accent-warm);
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 32px;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+.legal-doc .draft-banner strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--ink);
+}
+.legal-doc > p:first-of-type,
+.legal-doc > p:nth-of-type(2) {
+  color: var(--ink-soft);
+}
+.legal-doc ol {
+  padding-left: 1.3em;
+}
+.legal-doc ol > li {
+  margin: 0.6em 0;
+}
+.legal-doc ol ol {
+  list-style-type: lower-alpha;
+  margin-top: 0.4em;
+}
+.legal-doc ol ol ol {
+  list-style-type: lower-roman;
+}
+.legal-doc blockquote {
+  margin: 1.2em 0;
+  padding-left: 1em;
+  border-left: 3px solid var(--line);
+  color: var(--ink-soft);
+}
+.legal-doc blockquote p {
+  margin: 0.5em 0;
+}
+/* Highlights a clause that's still unconfirmed/pending sign-off —
+   distinct from the draft-banner above, which flags the whole page;
+   this flags one specific passage inline. */
+.legal-pending {
+  background: color-mix(in srgb, var(--accent-coral) 22%, transparent);
+  border-radius: 4px;
+  padding: 0 4px;
+  font-weight: 600;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
 }
