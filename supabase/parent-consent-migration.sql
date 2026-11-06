@@ -115,20 +115,25 @@ $$;
 
 -- ---------------------------------------------------------------------
 -- 3. Lock it down again, deliberately.
--- Postgres grants EXECUTE to PUBLIC by default on a newly created
--- function — dropping and recreating register_participant() above
--- reset its permissions. Confirmed live on 2026-11-06 that `anon` had
--- EXECUTE on the old signature (real sign-ups were actually open),
--- so this explicitly revokes that rather than silently carrying it
--- forward — matching the project's "don't reopen registration early"
--- principle. When registration is actually meant to go live for real,
--- run:
+-- Dropping and recreating register_participant() above reset its
+-- permissions. Confirmed live on 2026-11-06 that `anon` (and
+-- `authenticated`) had EXECUTE on the old signature — this project's
+-- Supabase instance auto-grants EXECUTE on every new public-schema
+-- function directly to anon/authenticated/service_role, which is a
+-- Supabase-level default, NOT the Postgres "PUBLIC" pseudo-role — so
+-- `revoke ... from public` (an earlier, buggy version of this
+-- migration) does nothing to it. Has to explicitly name anon and
+-- authenticated. service_role and postgres are left untouched — they
+-- aren't reachable from the public website anyway. Confirmed via
+-- information_schema.role_routine_grants that this actually removes
+-- anon's access (the first version of this fix did not).
 --
+-- When registration is actually meant to go live for real, run:
 --   grant execute on function public.register_participant(text, text, date, text, text, text, text, text, text) to anon;
 -- ---------------------------------------------------------------------
-revoke all on function public.register_participant(
+revoke execute on function public.register_participant(
   text, text, date, text, text, text, text, text, text
-) from public;
+) from anon, authenticated;
 
 -- ---------------------------------------------------------------------
 -- 4. Re-save confirm_parent_consent() and resend_parent_consent()
