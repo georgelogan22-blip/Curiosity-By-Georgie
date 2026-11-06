@@ -116,7 +116,16 @@ function submitSighting(record) {
 // that function always reads EXIF from the *original* File the user
 // picked (never from the resized copy this function returns), because a
 // canvas re-encode strips EXIF entirely — so capture-date/GPS/camera
-// verification keeps working exactly as before, unaffected by this. Never rejects: if the
+// verification keeps working exactly as before, unaffected by this.
+// ALWAYS re-encodes through canvas, even when the photo is already
+// smaller than `maxDim` (fixed 2026-11-06 — previously skipped the
+// re-encode entirely for anything already under the size threshold,
+// which meant EXIF/GPS stripping only happened to depend on a photo's
+// dimensions. The Privacy Policy and Terms state that location data is
+// removed from every Sighting/avatar/board photo on upload — that has to
+// be true regardless of size, since a lower-resolution phone camera or a
+// photo already compressed by a messaging app is exactly the case that
+// was previously skipping the strip). Never rejects: if the
 // browser can't decode the file (unsupported format, corrupt image) or
 // canvas isn't available, it resolves with the original, untouched file
 // so the upload can still proceed rather than being blocked by this
@@ -141,11 +150,15 @@ function resizeImageForUpload(file, maxDim, quality) {
     img.onload = function () {
       var w = img.naturalWidth;
       var h = img.naturalHeight;
-      if (!w || !h || Math.max(w, h) <= maxDim) {
-        finish(file); // Already small enough — skip the re-encode.
+      if (!w || !h) {
+        finish(file); // Couldn't read dimensions — fall back to the original file.
         return;
       }
-      var scale = maxDim / Math.max(w, h);
+      // Clamp to 1 so an already-small photo is re-encoded at its own
+      // size (no upscaling) rather than skipped — the re-encode itself,
+      // not the resizing, is what strips EXIF/GPS, so it has to happen
+      // every time regardless of the photo's original dimensions.
+      var scale = Math.min(1, maxDim / Math.max(w, h));
       var canvas = document.createElement("canvas");
       canvas.width = Math.round(w * scale);
       canvas.height = Math.round(h * scale);
