@@ -37,7 +37,7 @@
   var LAUNCH_DATE     = new Date("2026-11-16T05:00:00+10:00"); // confirmed launch date + time
 
   // Pages the public can still reach once the lockdown window starts.
-  var ALLOWED_DURING_LOCKDOWN = ["rules.html", "register.html", "countdown.html"];
+  var ALLOWED_DURING_LOCKDOWN = ["rules.html", "register.html", "countdown.html", "parent-consent.html"];
 
   function currentPage() {
     var p = location.pathname.split("/").pop();
