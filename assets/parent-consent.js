@@ -8,34 +8,32 @@
 // supabase/parent-consent-migration.sql.
 //
 // ---------------------------------------------------------------------
-// CONSENT_ITEMS — PLACEHOLDER WORDING, NOT LEGAL TEXT.
-// Written only so the end-to-end flow (email → this page → database)
-// could be built and tested before Ashlee Zileski's (Sprintlaw) final
-// checkbox wording and ordering arrive. Replace the `text` on each item
-// below with her exact wording once it lands — ids, count, and order can
-// all change freely; nothing elsewhere on the site assumes a fixed shape,
-// since confirm_parent_consent() stores whatever's ticked as plain jsonb.
-// Every item here is required (all must be ticked) before the confirm
-// button enables — change `required: false` on an item if a future
-// wording has an optional one.
+// CONSENT_ITEMS — final wording from Sprintlaw (Ashlee Zileski),
+// Website Page Wording, Part E.3 ("Consent page: parent or guardian
+// declaration"), delivered 2026-11-08. Do not reword these items —
+// they're the actual consent declaration, not paraphrased copy.
 // ---------------------------------------------------------------------
 var CONSENT_ITEMS = [
-  { id: "guardian", required: true,
-    text: "I confirm I am the parent or legal guardian of this participant, or otherwise hold parental responsibility for them." },
-  { id: "rules", required: true,
-    text: "I have read the Brisbane Air 50 Rules & Regulations, including Rule #1 (Safety First)." },
-  { id: "risk", required: true,
-    text: "I understand this challenge takes place outdoors around real wildlife, and I consent to this participant taking part at their own (and my) risk." },
-  { id: "privacy", required: true,
-    text: "I understand what personal information was collected at registration, how it's used and stored, and that it is never published — see the Registration page's Your Privacy section." },
-  { id: "photos", required: true,
-    text: "I understand sighting photos this participant submits are reviewed by the challenge admin before being counted, and are not published without further review." },
-  { id: "display-name", required: true,
-    text: "I understand this participant's chosen display name (not their real name) may appear publicly on the Leaderboard and Hall of Fame." },
+  { id: "guardian-age", required: true,
+    text: "I am the parent or legal guardian of this participant (my child) and I am 18 or over." },
+  { id: "consent-participate", required: true,
+    text: "I consent to my child registering for and taking part in the Brisbane Air 50." },
+  { id: "terms-privacy", required: true,
+    text: "I have read the Website Terms and Challenge Rules and the Privacy Policy, and I agree to be bound by the Website Terms and Challenge Rules, as updated from time to time, on my child's behalf." },
+  { id: "risks-liability", required: true,
+    text: "I understand the risks described above and in the Website Terms and Challenge Rules, and I understand that the Website Terms and Challenge Rules limit Curiosity by Georgie's liability." },
+  { id: "supervision", required: true,
+    text: "I accept responsibility for supervising my child's participation, including making sure that my child follows the safety rules and, while my child is under 16, that they are accompanied by me or another responsible adult I approve when taking part outdoors (clause 3.5 of the Terms)." },
+  { id: "privacy-consent", required: true,
+    text: "I consent to Curiosity by Georgie collecting, using and disclosing my child's personal information, and mine, in accordance with the Privacy Policy, including publicly displaying my child's display name, avatar, species tally and progress on the Leaderboard and Hall of Fame." },
+  { id: "avatar-gallery", required: true,
+    text: "I understand that my child must choose an avatar from Curiosity by Georgie's gallery and cannot upload their own image." },
+  { id: "photo-feature-consent", required: true,
+    text: "I understand that Curiosity by Georgie will only feature my child's sighting photos on its Announcements Feed or social media accounts if it first asks for, and I give, my consent for each photo." },
+  { id: "social-accounts", required: true,
+    text: "I understand that Curiosity by Georgie's Facebook, Instagram and YouTube accounts are subject to each platform's own terms and minimum age requirements." },
   { id: "withdraw", required: true,
-    text: "I understand I can withdraw this consent at any time by contacting the challenge admin, which stops this participant from taking part." },
-  { id: "liability", required: true,
-    text: "I accept the Registration & Liability terms on this participant's behalf." },
+    text: "I understand that I can withdraw my consent at any time by contacting Curiosity by Georgie, and that if I do, my child's Account will be closed." },
 ];
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -65,6 +63,31 @@ document.addEventListener("DOMContentLoaded", function () {
     if (formWrap) formWrap.hidden = true;
     return;
   }
+
+  // Part E.3 also asks for the parent/guardian's full name and their
+  // relationship to the child, in addition to the 10 checkboxes below.
+  // confirm_parent_consent() stores whatever's passed as plain jsonb, so
+  // these ride along inside the same `checks` object rather than needing
+  // a dedicated database parameter.
+  var nameWrap = document.createElement("div");
+  nameWrap.className = "field";
+  nameWrap.innerHTML =
+    '<label for="pc-parent-name">Parent or guardian’s full name</label>' +
+    '<input type="text" id="pc-parent-name" name="parentFullName" required>';
+  checklistEl.parentNode.insertBefore(nameWrap, checklistEl);
+
+  var relWrap = document.createElement("div");
+  relWrap.className = "field";
+  relWrap.style.marginBottom = "18px";
+  relWrap.innerHTML =
+    '<label for="pc-relationship">Relationship to child</label>' +
+    '<select id="pc-relationship" name="relationshipToChild" required>' +
+    '<option value="" selected disabled>Choose one…</option>' +
+    '<option value="Parent">Parent</option>' +
+    '<option value="Legal guardian">Legal guardian</option>' +
+    '<option value="Other">Other</option>' +
+    '</select>';
+  checklistEl.parentNode.insertBefore(relWrap, checklistEl);
 
   CONSENT_ITEMS.forEach(function (item) {
     var wrap = document.createElement("label");
@@ -97,6 +120,10 @@ document.addEventListener("DOMContentLoaded", function () {
     checklistEl.querySelectorAll("input[type=checkbox]").forEach(function (box) {
       checks[box.dataset.itemId] = box.checked;
     });
+    var nameEl = document.getElementById("pc-parent-name");
+    var relEl = document.getElementById("pc-relationship");
+    checks.parentFullName = nameEl ? nameEl.value.trim() : "";
+    checks.relationshipToChild = relEl ? relEl.value : "";
 
     if (submitBtn) submitBtn.disabled = true;
     setStatus("Saving…");

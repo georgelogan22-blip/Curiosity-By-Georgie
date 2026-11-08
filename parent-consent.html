@@ -121,20 +121,24 @@
 <header class="page-head wrap">
   <span class="eyebrow">Parent/Guardian Consent</span>
   <h1 id="pc-heading">Review and confirm</h1>
-  <p class="lede" id="pc-intro">A young birder has listed you as their parent or guardian when registering for the Brisbane Air 50. Please read the checklist below and confirm it to activate their registration.</p>
+  <p class="lede" id="pc-intro">A young birder has listed you as their parent or guardian when registering for the Brisbane Air 50. Please read everything below before confirming — it activates their registration.</p>
 </header>
 
 <section class="wrap section-tight">
 
-  <div class="rules-block rules-grid" style="max-width: 640px; border-color: var(--accent-warm);">
-    <h3><span class="rule-tag">Draft — For Legal Review</span><br>Placeholder wording</h3>
+  <div class="rules-block rules-grid safety-block" style="max-width: 640px;">
+    <h3><span class="rule-tag">Please read</span><br>About the Brisbane Air 50</h3>
     <div>
-      <p>The checklist below is placeholder copy, built so the parent-consent flow could be tested end to end before Sprintlaw's final wording and checkbox list arrive. <strong>Swap the items in the <code>CONSENT_ITEMS</code> array in assets/parent-consent.js</strong> for Ashlee's exact wording and order once the legal review clears — nothing else on this page or in the backend needs to change to match a different checkbox count or order.</p>
+      <p>The Brisbane Air 50 is a free challenge to spot and photograph 50 wild bird species within Greater Brisbane. Participants choose where and when they go. We don't organise or supervise any outings, and we don't inspect or control any location.</p>
+      <p>Taking part involves risks, many of which are obvious, including uneven or slippery terrain, weather and heat, water, snakes, insects and other wildlife (including diseases such as bird flu), roads and traffic, and the conduct of other people. These risks can result in injury, illness or, in rare cases, death.</p>
+      <p>Please read our <a href="terms.html">Website Terms and Challenge Rules</a>, particularly clause 4 (Registration and Accounts), clause 3 (Safety first), clause 5 (Assumption of risk) and clause 6 (Limitation of liability), and our <a href="privacy.html">Privacy Policy</a>, before confirming.</p>
     </div>
   </div>
 
   <div class="log-layout" style="grid-template-columns: 1fr; max-width: 640px;" id="pc-form-wrap">
     <form id="parent-consent-form">
+      <h3 style="margin-bottom: 4px;">Your confirmation</h3>
+      <p class="hint" style="margin-top: 0; margin-bottom: 16px;">By ticking each box below, I confirm that:</p>
       <div id="pc-checklist"></div>
       <button type="submit" class="btn btn-primary">Confirm &amp; activate registration</button>
       <p class="hint" id="pc-status" hidden></p>
