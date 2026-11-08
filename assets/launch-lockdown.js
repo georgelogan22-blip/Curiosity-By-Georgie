@@ -92,17 +92,31 @@
     if (search) search.style.display = "none";
 
     document.querySelectorAll(".nav-links .nav-more").forEach(function (group) {
-      var anyVisible = false;
+      var visibleLinks = [];
       group.querySelectorAll("a[href]").forEach(function (a) {
         var href = a.getAttribute("href").split(/[?#]/)[0];
         var li = a.closest("li");
         if (ALLOWED_DURING_LOCKDOWN.indexOf(href) === -1) {
           if (li) li.style.display = "none";
         } else {
-          anyVisible = true;
+          visibleLinks.push(a);
         }
       });
-      group.style.display = anyVisible ? "" : "none";
+      group.style.display = visibleLinks.length ? "" : "none";
+
+      // A group built for the full post-launch menu can overpromise once
+      // trimmed down for lockdown — e.g. the toggle still reads "Rules &
+      // Checklist" when Species Checklist is hidden and only Rules is
+      // left inside. If exactly one item survives, relabel the toggle
+      // (and the mobile-only group heading) to match what's actually in
+      // the menu, rather than leave a label for content that is not there.
+      if (visibleLinks.length === 1) {
+        var label = visibleLinks[0].textContent;
+        var toggle = group.querySelector(".nav-more-toggle");
+        if (toggle) toggle.textContent = label;
+        var groupLabel = group.querySelector(".nav-group-label");
+        if (groupLabel) groupLabel.textContent = label;
+      }
     });
   }
 
