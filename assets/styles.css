@@ -1126,6 +1126,16 @@ section { padding: 40px 0; }
 /* ---------- rules page ---------- */
 .rules-block { padding: 30px 0; border-bottom: 1px dashed var(--line); }
 .rules-block:last-of-type { border-bottom: none; }
+/* .wrap zeroes out the section's own top padding (see .wrap above), so a
+   rules-block that opens the page sits with its own top border flush
+   against .page-head's border-bottom — two 1px lines on the exact same
+   pixel. Only matters when that first block is a coloured callout
+   (safety-block/consent-block) with a visible border of its own; a
+   plain text block has nothing there to collide with. Margin (not
+   padding) so it pushes the whole bordered box down rather than just
+   its inner content. A block with its own margin-top already set
+   inline (register.html's founding-flock-block) keeps that instead. */
+.rules-block:first-of-type { margin-top: 28px; }
 .rules-block ul { padding-left: 1.2em; margin: 0.6em 0 1em; }
 .rules-block li { margin-bottom: 0.5em; max-width: 65ch; }
 .rules-grid {
@@ -2759,12 +2769,28 @@ tr:last-child td { border-bottom: none; }
 }
 
 /* ---------- footer ---------- */
+/* footer is itself a `.wrap` (max-width: 1080px, centered) so a plain
+   border-top on it would only span that inset content column, not the
+   page — unlike .site-nav's bottom line, which sits on the full-bleed
+   nav bar. This breaks the line out to the true viewport edges (the
+   classic "full-bleed inside a centered container" trick: 100vw wide,
+   shifted left by half its own width from dead centre) so the footer
+   divider reads the same edge-to-edge as the nav's. */
 footer {
-  border-top: 1px solid var(--line);
+  position: relative;
   margin-top: 40px;
   padding: 28px 0 40px;
   color: var(--ink-soft);
   font-size: 0.86rem;
+}
+footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  border-top: 1px solid var(--line);
 }
 footer a { color: var(--ink-soft); }
 
