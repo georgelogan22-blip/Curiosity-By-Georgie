@@ -14,6 +14,12 @@
 // Deliberately still name+PIN-per-visit, not a persistent login — same
 // no-accounts approach the rest of the site uses (George's call when
 // this was scoped).
+//
+// profile.is_minor (added by supabase/avatar-photo-minor-gate-migration.sql,
+// 2026-11-09) hides the photo-upload control below for a Minor, per
+// Terms clause 12.2 — they can still pick any of the 8 gallery icons.
+// This is belt-and-braces: update_participant_avatar_photo() enforces
+// the same rule server-side, which is what actually stops it.
 
 document.addEventListener("DOMContentLoaded", function () {
   var form = document.getElementById("my-sightings-form");
@@ -150,9 +156,14 @@ document.addEventListener("DOMContentLoaded", function () {
       }).join("") +
       "</div>" +
       '<div class="avatar-picker-photo">' +
-      '<input type="file" accept="image/*" id="avatar-photo-input" class="avatar-photo-input">' +
-      '<label class="avatar-photo-upload-btn" for="avatar-photo-input">Or upload your own photo</label>' +
-      '<button type="button" class="avatar-photo-remove-btn" id="avatar-photo-remove"' + (profile.avatar_photo_path ? "" : " hidden") + ">Remove photo</button>" +
+      (profile.is_minor
+        ? '<p class="hint avatar-picker-minor-note">As you’re under 18, you can only choose a character from the gallery above — uploading your own photo isn’t available.</p>' +
+          (profile.avatar_photo_path
+            ? '<button type="button" class="avatar-photo-remove-btn" id="avatar-photo-remove">Remove photo</button>'
+            : "")
+        : '<input type="file" accept="image/*" id="avatar-photo-input" class="avatar-photo-input">' +
+          '<label class="avatar-photo-upload-btn" for="avatar-photo-input">Or upload your own photo</label>' +
+          '<button type="button" class="avatar-photo-remove-btn" id="avatar-photo-remove"' + (profile.avatar_photo_path ? "" : " hidden") + ">Remove photo</button>") +
       "</div>" +
       '<p class="hint" id="avatar-picker-status" style="margin:10px 0 0;"></p>' +
       "</div>" +
