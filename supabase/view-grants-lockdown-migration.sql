@@ -1,0 +1,48 @@
+-- Curiosity by Georgie — Brisbane Air 50: lock down two internal-only views (v1.0)
+--
+-- Found 2026-11-09 going through Supabase's Security Advisor. Two "narrow
+-- public view" style views turned out to have anon/authenticated SELECT
+-- (and the usual blanket INSERT/UPDATE/DELETE/TRUNCATE grants Supabase
+-- auto-applies to every new object in this project — see the comment on
+-- this in registration-migration.sql, step 3) even though neither is ever
+-- queried from the live site's own code:
+--
+--   - public.pending_sightings_review — George's own moderation view for
+--     the automated photo-check queue. Exposes participant_name, exact
+--     sighting location, raw GPS lat/lng, photo_url, AI detection score
+--     and review notes for every pending sighting. Confirmed via grep: no
+--     file in assets/ ever queries it — it's purely for the SQL Editor /
+--     Table Editor. With anon SELECT granted, anyone on the internet could
+--     have called Supabase's REST API directly (just the public anon key,
+--     no login) and pulled this for every pending sighting — a direct
+--     contradiction of privacy.html's "Your Sighting Photos and the
+--     location of each Sighting are visible only to us and to you."
+--     (Low *actual* exposure so far, since register_participant()'s own
+--     anon EXECUTE is still revoked pre-launch, so there's no real
+--     registration data yet — but worth closing now rather than
+--     forgetting about it before launch.)
+--
+--   - public.founding_flock_pin_pending — also never queried from
+--     assets/. Its own columns are harmless (same info the public
+--     leaderboard already shows), so this one was never an actual leak,
+--     just needless public exposure of an internal-only view. Tidied up
+--     here while already in the file.
+--
+-- public.air50_pending_induction is NOT touched here — unlike the two
+-- above, it IS legitimately queried by assets/supabase-client.js's
+-- fetchAir50PendingInduction(), for hall-of-fame.html's "pending final
+-- review" cards, and its own columns were already checked clean. Its anon
+-- SELECT stays exactly as it is.
+--
+-- How to use: Supabase dashboard → SQL Editor → New query → paste this
+-- whole file → Run. Safe to re-run.
+
+revoke all on public.pending_sightings_review from anon, authenticated;
+revoke all on public.founding_flock_pin_pending from anon, authenticated;
+
+-- postgres and service_role keep full access, same as every other table/
+-- view on the site — this only removes the public-facing anon/
+-- authenticated roles, which is what Supabase's REST API actually uses
+-- for an unauthenticated request. George's own access via the dashboard
+-- (Table Editor, SQL Editor) is unaffected either way, since that always
+-- runs with full database credentials regardless of these grants.
