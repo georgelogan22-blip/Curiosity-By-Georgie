@@ -71,6 +71,45 @@ Dashboard → Database → Webhooks → Create a new hook:
 (Same pattern as the `pin_resets` → `send-pin-reset` webhook you already
 have.)
 
+## 4b. Updated 2026-11-09 — real copy, and a second email you also need
+
+Two things changed since this doc was first written:
+
+- **`supabase/functions/notify-parent-consent/index.ts` now actually exists
+  in the repo**, with Sprintlaw's FINAL consent-request wording (Page
+  Wording Part E.2) baked in instead of placeholder copy. It turns out this
+  file was never saved back into the repo the first time around — it only
+  ever lived as whatever was pasted into the dashboard in step 3 above — so
+  if a `notify-parent-consent` function is already deployed and sending
+  placeholder-looking emails, replace its contents with this file's.
+
+- **There's a second transactional email in the final Page Wording (Part
+  E.4)** — confirming to the parent that their consent went through and
+  the registration is active — that never had any backend at all until
+  now. It's a new function, `supabase/functions/notify-consent-confirmed/
+  index.ts`, deployed and wired up the same way as step 3/4 above:
+
+```
+Dashboard → Edge Functions → Deploy a new function → name it
+"notify-consent-confirmed" → paste in supabase/functions/
+notify-consent-confirmed/index.ts
+
+Dashboard → Database → Webhooks → Create a new hook
+  Table: consent_requests   Events: Update   Type: Supabase Edge Functions
+  Edge Function: notify-consent-confirmed
+```
+
+This is a **second webhook on the same `consent_requests` table** as the
+one in step 4 (that one's on Insert, this one's on Update) — both sit side
+by side without conflicting. It only ever fires the email once, on the
+exact moment `confirmed_at` goes from empty to set (i.e. the instant a
+parent submits parent-consent.html) — any other update to that row is
+ignored.
+
+Both functions reuse the same `RESEND_API_KEY` secret and
+curiositybygeorgie.au sending domain already set up for `send-pin-reset` —
+nothing new to add in Resend for either one.
+
 ## 5. Upload the website files
 
 All of these go to GitHub, same as usual:
