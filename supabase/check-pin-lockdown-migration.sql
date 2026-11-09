@@ -1,0 +1,36 @@
+-- Curiosity by Georgie — Brisbane Air 50: close a PIN-lockout bypass (v1.0)
+--
+-- Found 2026-11-09 going through Supabase's Security Advisor, then
+-- confirmed by reading check_pin()'s actual definition (see
+-- pin-security-lockout-2026-10-27.md / pin-lockout-bugfix-2026-10-28.md
+-- for the lockout feature this undoes).
+--
+-- check_pin(p_participant participants, p_pin_hash text), unlike every
+-- other PIN-gated function on the site, takes an ALREADY-FETCHED
+-- participant row as its own argument instead of doing its own lookup
+-- from a name + PIN. That's fine when it's called internally by another
+-- function that fetched a real row first — but it was also directly
+-- callable by anon over the REST API, which meant anyone could hand it a
+-- fabricated row instead of a real one: set participant_key to any real
+-- display name, pin_locked_until to any expired-in-the-past timestamp,
+-- and pin_hash to whatever they also pass as p_pin_hash (so the match
+-- check always "succeeds," since both sides are attacker-controlled).
+-- The function then sees "an expired lock that needs clearing" and
+-- writes failed_pin_attempts = 0, pin_locked_until = null straight onto
+-- the REAL participant's row — letting anyone reset a real participant's
+-- lockout on demand, with no need to know their actual PIN. That
+-- completely defeats the 5-attempt/15-minute lockout: brute-force a PIN
+-- via the real login flow, get locked, call check_pin directly to clear
+-- it, repeat indefinitely.
+--
+-- Fix: revoke anon/authenticated's direct EXECUTE. Every legitimate
+-- caller on the site (participant_dashboard, submit_sighting, etc.)
+-- fetches the real row itself and calls check_pin() from inside its own
+-- SECURITY DEFINER function body — that keeps working exactly as before,
+-- since a function-to-function call isn't subject to the inner
+-- function's own grants, only the outer function's.
+--
+-- How to use: Supabase dashboard → SQL Editor → New query → paste this
+-- whole file → Run. Safe to re-run.
+
+revoke execute on function public.check_pin(public.participants, text) from anon, authenticated;
