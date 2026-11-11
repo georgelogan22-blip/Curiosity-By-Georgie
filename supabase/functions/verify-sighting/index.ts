@@ -47,7 +47,7 @@
 // "Resend account email" note in the deployment instructions further
 // down this file before redeploying.
 
-const LAUNCH_DATE = "2026-01-01"; // TODO: George — set the real Brisbane Air 50 launch date here
+const LAUNCH_DATE = "2026-11-16"; // Brisbane Air 50 launch date (fixed 2026-11-11 — was left as a placeholder "2026-01-01", which meant the date check wasn't actually enforcing the real launch at all)
 const NOTIFY_EMAIL = "curiositybygeorgie@gmail.com";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
@@ -156,8 +156,20 @@ async function checkSpeciesWithVision(
   photoPath: string,
   species: string,
 ): Promise<{ confidence: "high" | "medium" | "low"; reason: string }> {
-  const photoUrl = `${SUPABASE_URL}/storage/v1/object/public/sighting-photos/${photoPath}`;
-  const imgResp = await fetch(photoUrl);
+  // Uses the service-role-authenticated object endpoint (no "/public/" in
+  // the path), not the plain public URL — the sighting-photos bucket was
+  // locked to private access 2026-11-11 (see
+  // supabase/sighting-photos-lockdown-migration.sql). Service role always
+  // bypasses storage RLS entirely, same pattern as updateSighting() below,
+  // so this keeps working exactly as before regardless of the bucket's
+  // public/private flag.
+  const photoUrl = `${SUPABASE_URL}/storage/v1/object/sighting-photos/${photoPath}`;
+  const imgResp = await fetch(photoUrl, {
+    headers: {
+      apikey: SERVICE_ROLE_KEY,
+      authorization: `Bearer ${SERVICE_ROLE_KEY}`,
+    },
+  });
   if (!imgResp.ok) {
     return { confidence: "low", reason: `Couldn't fetch the photo to check it (HTTP ${imgResp.status}).` };
   }
