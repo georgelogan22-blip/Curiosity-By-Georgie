@@ -983,3 +983,31 @@ function fetchCityWideStats() {
       };
     });
 }
+
+// Announcements Feed — see supabase/announcements-feed-migration.sql.
+// Read-only, newest first; no registration/PIN needed since nobody but
+// George can ever post to it (there is no create-function at all, only
+// a public SELECT policy). Resolves with [] if the backend isn't
+// configured or the query fails, so announcements.html can show its
+// "nothing posted yet" state rather than breaking.
+function fetchAnnouncements(limit) {
+  if (!supabaseClient) return Promise.resolve([]);
+  return supabaseClient
+    .from("announcements")
+    .select("id, title, body, photo_path, created_at")
+    .order("created_at", { ascending: false })
+    .limit(limit || 50)
+    .then(function (res) {
+      if (res.error) throw res.error;
+      return res.data || [];
+    });
+}
+
+// Builds the public URL for a photo uploaded to the announcement-photos
+// bucket (photo_path as stored on an announcements row) — same pattern
+// as boardPhotoUrl()/sightingPhotoUrl() elsewhere in this file. Safe to
+// do client-side since the bucket is public (see the migration above).
+function announcementPhotoUrl(path) {
+  if (!path) return null;
+  return SUPABASE_URL + "/storage/v1/object/public/announcement-photos/" + path;
+}
