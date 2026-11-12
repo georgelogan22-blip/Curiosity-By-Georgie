@@ -119,7 +119,7 @@ async function sendConsentRequestEmail(details: {
           `<p>If you don't confirm within 7 days, we'll cancel the registration and delete the information ` +
           `we've collected. If you didn't expect this email, or you don't consent, you don't need to do ` +
           `anything, but you can let us know by replying to this email.</p>` +
-          `<p>Thanks,<br>Georgie<br>Curiosity by Georgie | George Logan | curiositybygeorgie.au</p>`,
+          `<p>Yours curiously,<br>Georgie<br>Curiosity by Georgie | George Logan | curiositybygeorgie.au</p>`,
       }),
     });
     if (!resp.ok) {

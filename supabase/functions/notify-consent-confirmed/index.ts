@@ -105,7 +105,7 @@ async function sendConsentConfirmedEmail(details: {
           `<p>You can withdraw your consent, or ask to see, correct or delete your child's information, at ` +
           `any time by replying to this email or contacting us at curiositybygeorgie.au/contact. Our ` +
           `Privacy Policy explains how we handle your information.</p>` +
-          `<p>Thanks,<br>Georgie<br>Curiosity by Georgie | George Logan | curiositybygeorgie.au</p>`,
+          `<p>Yours curiously,<br>Georgie<br>Curiosity by Georgie | George Logan | curiositybygeorgie.au</p>`,
       }),
     });
     if (!resp.ok) {
