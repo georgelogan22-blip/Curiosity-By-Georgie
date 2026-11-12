@@ -124,7 +124,8 @@ async function sendResetEmail(details: {
           `in 30 minutes:</p>` +
           `<p><a href="${resetUrl}">${resetUrl}</a></p>` +
           `<p>If you didn't ask for this, you can safely ignore this email — your PIN ` +
-          `stays exactly as it was.</p>`,
+          `stays exactly as it was.</p>` +
+          `<p>Yours curiously,<br>Georgie<br>Curiosity by Georgie | George Logan | curiositybygeorgie.au</p>`,
       }),
     });
     if (!resp.ok) {
