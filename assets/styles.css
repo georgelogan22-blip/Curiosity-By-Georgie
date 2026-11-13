@@ -2887,6 +2887,17 @@ footer a { color: var(--ink-soft); }
 .legal-doc blockquote p {
   margin: 0.5em 0;
 }
+/* George, 2026-11-13: the all-ink wall of legal text read as too dense to
+   stay with, so the page title gets the brand green and each numbered
+   clause/section heading gets a warm gold — using --accent-warm rather
+   than the raw --brand-yellow lens colour, which is far too light/low-
+   contrast to read as body-sized text against the paper background. */
+.page-head h1.legal-title {
+  color: var(--accent);
+}
+.legal-doc .clause-title {
+  color: var(--accent-warm);
+}
 /* Highlights a clause that's still unconfirmed/pending sign-off —
    distinct from the draft-banner above, which flags the whole page;
    this flags one specific passage inline. */
