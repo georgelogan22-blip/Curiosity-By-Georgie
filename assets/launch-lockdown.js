@@ -23,6 +23,14 @@
 // `revoke/grant insert on public.participants`), on purpose, since it's
 // tied to the legal review clearing rather than to a date. See
 // countdown.html and the project notes for more on that split.
+//
+// Local-file exception: when this page is opened straight from a Finder
+// folder (file://...) rather than fetched from the real domain, the gate
+// is skipped entirely and the site behaves as if it were already live.
+// A real visitor can only ever reach these pages over https://, so this
+// has no effect on the public lockdown — it only means George's own
+// local copy on his Desktop always shows him the real, post-launch site
+// while he's working on it.
 (function () {
   "use strict";
 
@@ -45,6 +53,10 @@
   }
 
   function computePhase() {
+    // Local preview copies (opened as a file, not served over the real
+    // domain) always behave as if launch has already happened.
+    if (location.protocol === "file:") return "live";
+
     var now = new Date();
     if (now >= LAUNCH_DATE) return "live";
     if (now >= LOCKDOWN_START) return "countdown";
