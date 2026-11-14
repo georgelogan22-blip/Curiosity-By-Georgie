@@ -2966,6 +2966,9 @@ footer a { color: var(--ink-soft); }
 .tribute-doc h2 {
   margin-top: 0.2em;
 }
+.tribute-doc p > strong {
+  color: var(--accent-warm);
+}
 .tribute-closing {
   margin-top: 1.6em;
   padding-top: 1.4em;
