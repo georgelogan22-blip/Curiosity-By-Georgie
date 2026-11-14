@@ -975,6 +975,14 @@ section { padding: 40px 0; }
   letter-spacing: 0.03em;
   margin-top: 10px;
 }
+.coin-disclosure {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--ink-soft);
+  letter-spacing: 0.03em;
+  margin-top: 10px;
+  margin-bottom: 0;
+}
 .sample-note .dot {
   display: inline-block;
   width: 6px; height: 6px;
