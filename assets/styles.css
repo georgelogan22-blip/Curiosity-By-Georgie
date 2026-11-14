@@ -2973,7 +2973,7 @@ footer a { color: var(--ink-soft); }
   margin-top: 1.6em;
   padding-top: 1.4em;
   border-top: 1px solid var(--line);
-  color: var(--ink-soft);
+  color: var(--accent);
   font-style: italic;
 }
 /* Highlights a clause that's still unconfirmed/pending sign-off —
