@@ -2950,6 +2950,7 @@ footer a { color: var(--ink-soft); }
   vertical-align: middle;
   margin: 0 0.12em 0.15em;
   display: inline-block;
+  border-radius: 3px;
 }
 .dedication-figure img {
   width: 100%;
