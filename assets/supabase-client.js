@@ -280,7 +280,16 @@ function readPhotoExifSummary(file) {
       if (d) {
         var date = d instanceof Date ? d : new Date(d);
         if (!isNaN(date.getTime())) {
-          takenDate = date.toISOString().slice(0, 10);
+          // Deliberately NOT date.toISOString().slice(0, 10) here — that
+          // converts to UTC first, which silently rolls any photo taken
+          // between midnight and ~10am local time back onto the previous
+          // calendar day (Brisbane is UTC+10), making a genuinely
+          // same-day photo fail the LAUNCH_DATE check in verify-sighting.
+          // Read the Date object's own local Y/M/D instead, since exifr
+          // already built it from the EXIF timestamp's local wall-clock
+          // digits in this same browser/device's timezone.
+          var pad2 = function (n) { return n < 10 ? "0" + n : String(n); };
+          takenDate = date.getFullYear() + "-" + pad2(date.getMonth() + 1) + "-" + pad2(date.getDate());
           capturedAt = date.toISOString();
         }
       }
