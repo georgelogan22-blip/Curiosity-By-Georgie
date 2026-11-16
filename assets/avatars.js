@@ -168,3 +168,27 @@ function escapeAvatarLabel(str) {
   div.textContent = str == null ? "" : str;
   return div.innerHTML;
 }
+
+// The small badge chip shown inline next to a Founding Flock member's
+// name — on the Leaderboard (.participant-cell), Hall of Fame
+// (.fame-card-head .name), and My Sightings' own dashboard greeting.
+// Built to match the .founding-flock-chip rule in assets/styles.css,
+// which was already in place and waiting for this function — rank is
+// r.founding_flock_rank from the database (1-100 for the first 100
+// real registrants, null/undefined for everyone after), and a falsy
+// rank renders nothing, same pattern as renderAvatarBadge() above.
+// iconSize is the badge image's pixel size; callers that sit next to
+// larger text (My Sightings' greeting) pass a bigger size than the
+// default, which is tuned for the chip's own small uppercase text.
+function foundingFlockChipHtml(rank, iconSize) {
+  if (!rank) return "";
+  iconSize = iconSize || 14;
+  return (
+    '<span class="founding-flock-chip" title="Founding Flock member #' + rank +
+    ' — among the first 100 to register for the Brisbane Air 50">' +
+    '<img src="assets/badge-founding-flock.png" width="' + iconSize + '" height="' + iconSize +
+    '" alt="" loading="lazy">' +
+    "Founding Flock #" + rank +
+    "</span>"
+  );
+}
