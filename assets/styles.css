@@ -1465,6 +1465,26 @@ section { padding: 40px 0; }
 .participant-cell .avatar-photo-badge {
   flex-shrink: 0;
 }
+/* On the Leaderboard specifically, a name can be followed by a Founding
+   Flock chip AND a registration-number chip — two more fixed-width
+   elements that don't shrink. Without flex-wrap, the flexible name text
+   (the only shrinkable child) got squeezed all the way to zero width
+   on narrow phones to make room for them, then the chips themselves
+   still overflowed past the row and were clipped by .leaderboard-
+   table's rounded corner (reported 2026-11-17: Founding Flock badge
+   "protruding" past the border, with the name invisible above it).
+   flex-wrap lets the badges drop to their own line instead, so the
+   name always gets real estate and nothing gets clipped. */
+.lb-row-toggle .participant-cell {
+  flex-wrap: wrap;
+  row-gap: 2px;
+}
+.lb-badges {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}
 
 .avatar-picker-photo {
   margin-top: 14px;
@@ -2199,7 +2219,7 @@ tr:last-child td { border-bottom: none; }
 .lb-row-toggle {
   display: flex;
   align-items: center;
-  gap: 72px;
+  gap: 12px;
   width: 100%;
   background: none;
   border: none;
@@ -2216,7 +2236,8 @@ tr:last-child td { border-bottom: none; }
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  min-width: 0;
+  flex: 1 1 auto;
+  min-width: 70px;
 }
 .lb-chevron {
   flex: none;
@@ -2284,8 +2305,11 @@ tr:last-child td { border-bottom: none; }
   .lb-head-cell.num { text-align: right; }
 
   .lb-row { display: flex; align-items: center; }
-  .lb-row-toggle { flex: 1 1 auto; min-width: 0; cursor: default; }
+  .lb-row-toggle { flex: 1 1 auto; min-width: 0; cursor: default; gap: 72px; }
   .lb-chevron { display: none; }
+  /* Desktop lays the whole row on one line with room to spare, so the
+     mobile-only wrap behaviour above is switched back off here. */
+  .lb-row-toggle .participant-cell { flex-wrap: nowrap; }
 
   .lb-row-details {
     display: flex !important;

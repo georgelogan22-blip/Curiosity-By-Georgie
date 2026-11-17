@@ -15,7 +15,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Curiosity">
 <meta name="theme-color" content="#f5f4ea">
-<link rel="stylesheet" href="assets/styles.css?v=20261114g">
+<link rel="stylesheet" href="assets/styles.css?v=20261117a">
 <script src="assets/species-data.js?v=20261018i" defer></script>
 <script src="assets/search-data.js?v=20261018h" defer></script>
 <script src="assets/nav.js?v=20261018h" defer></script>
@@ -324,7 +324,9 @@
         '<div class="lb-row" data-name="' + escapeHtml(nameKey) + '" data-reg="' + regKey + '">' +
         '<button type="button" class="lb-row-toggle" aria-expanded="false" aria-controls="lb-details-' + rank + '">' +
         '<span class="rank-badge ' + badgeClass + '">' + rank + "</span>" +
-        '<span class="participant-cell">' + badge + '<span class="lb-name-text">' + escapeHtml(r.participant_name) + "</span>" + foundingFlock + regChip + "</span>" +
+        '<span class="participant-cell">' + badge + '<span class="lb-name-text">' + escapeHtml(r.participant_name) + "</span>" +
+        (foundingFlock || regChip ? '<span class="lb-badges">' + foundingFlock + regChip + "</span>" : "") +
+        "</span>" +
         '<svg class="lb-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
         "</button>" +
         '<div class="lb-row-details" id="lb-details-' + rank + '">' +
