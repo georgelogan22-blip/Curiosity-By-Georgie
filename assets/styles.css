@@ -2503,6 +2503,33 @@ tr:last-child td { border-bottom: none; }
    looking broken. */
 .fame-card .badge-placeholder { flex: none; display: block; }
 
+/* Empty state shown in #fame-grid before anyone has been inducted —
+   replaces hall-of-fame.html's old static example cards. The real-data
+   script (see hall-of-fame.html's inline <script>) overwrites #fame-grid's
+   whole innerHTML the moment real or pending rows exist, so this markup
+   only ever needs to look good on its own, centred in the grid's one
+   remaining track. */
+.fame-card.fame-empty {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  padding: 48px 24px;
+  border-top-color: var(--line);
+}
+.fame-empty-icon { margin-bottom: 6px; }
+.fame-empty-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+.fame-empty-text {
+  color: var(--ink-soft);
+  max-width: 38ch;
+}
+
 /* Founding Flock chip — see foundingFlockChipHtml() in assets/avatars.js.
    Inline next to a name on the Leaderboard (.participant-cell), Hall of
    Fame (.fame-card-head .name), and My Sightings' profile greeting. */
